@@ -25,7 +25,7 @@ class MenuWidget extends StatelessWidget {
             const Expanded(
               child: Center(
                 child: Icon(
-                  Icons.star,
+                  Icons.assessment_outlined,
                   size: 40,
                 ),
               ),

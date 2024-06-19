@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:app_leitura/widgets/custom_button_navigation.dart';
-import 'package:app_leitura/widgets/sub_menu_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'initial_home.dart';
