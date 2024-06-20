@@ -209,13 +209,33 @@ class MenuWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: const Color.fromARGB(255, 1, 35, 99),
-      height: 50,
+      height: 70, // Ajusta a altura para acomodar o texto
       child: const Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.emoji_events, color: Colors.white),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.emoji_events, color: Colors.white),
+              SizedBox(height: 4), // Espaçamento entre ícone e texto
+              Text(
+                'conquistas',
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            ],
+          ),
           SizedBox(width: 250), // Ajusta o espaço entre os ícones
-          Icon(Icons.person, color: Colors.white),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.person, color: Colors.white),
+              SizedBox(height: 4), // Espaçamento entre ícone e texto
+              Text(
+                'perfil',
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            ],
+          ),
         ],
       ),
     );

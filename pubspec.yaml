@@ -27,7 +27,7 @@ dependencies:
 
   cupertino_icons: ^1.0.6
   google_fonts: ^6.2.1
-  provider: ^6.3.1  # Atualizei para a versão mais recente do provider
+ 
 
 dev_dependencies:
   flutter_test:
