@@ -2,6 +2,10 @@ import 'package:app_leitura/widgets/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+void main() {
+  runApp(InitialHome());
+}
+
 class InitialHome extends StatelessWidget {
   InitialHome({super.key});
 
@@ -15,55 +19,6 @@ class InitialHome extends StatelessWidget {
     "assets/cards/7.png",
     "assets/cards/8.png",
     "assets/cards/9.png",
-  ];
-
-  // Lista de sombras correspondentes a cada imagem
-  final List<BoxShadow> _imageShadows = [
-    const BoxShadow(
-      color: Colors.black26,
-      blurRadius: 4,
-      offset: Offset(0, 3),
-    ),
-    const BoxShadow(
-      color: Colors.black26,
-      blurRadius: 4,
-      offset: Offset(0, 3),
-    ),
-    const BoxShadow(
-      color: Colors.black26,
-      blurRadius: 4,
-      offset: Offset(0, 3),
-    ),
-    const BoxShadow(
-      color: Colors.black26,
-      blurRadius: 4,
-      offset: Offset(0, 3),
-    ),
-    const BoxShadow(
-      color: Colors.black26,
-      blurRadius: 4,
-      offset: Offset(0, 3),
-    ),
-    const BoxShadow(
-      color: Colors.black26,
-      blurRadius: 4,
-      offset: Offset(0, 3),
-    ),
-    const BoxShadow(
-      color: Colors.black26,
-      blurRadius: 4,
-      offset: Offset(0, 3),
-    ),
-    const BoxShadow(
-      color: Colors.black26,
-      blurRadius: 4,
-      offset: Offset(0, 3),
-    ),
-    const BoxShadow(
-      color: Colors.black26,
-      blurRadius: 4,
-      offset: Offset(0, 3),
-    ),
   ];
 
   @override
@@ -104,36 +59,10 @@ class InitialHome extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                child: SizedBox(
-                  height: 250,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      // ignore: unused_local_variable
-                      final itemWidth = (constraints.maxWidth - 300) / 2;
-                      return ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _imageList.length,
-                        itemBuilder: (context, index) {
-                          final double itemWidth = (constraints.maxWidth + 90) / 2;
-                
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 0),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                              child: SizedBox(
-                                width: itemWidth,
-                                child: CustomCard(imagePath: _imageList[index]),
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
+              padding: const EdgeInsets.all(10.0),
+              child: SizedBox(
+                height: 200,
+                child: Carousel(imageList: _imageList),
               ),
             ),
             const SizedBox(height: 30),
@@ -194,6 +123,76 @@ class InitialHome extends StatelessWidget {
   }
 }
 
+class Carousel extends StatefulWidget {
+  final List<String> imageList;
+
+  const Carousel({required this.imageList, super.key});
+
+  @override
+  _CarouselState createState() => _CarouselState();
+}
+
+class _CarouselState extends State<Carousel> {
+  late final PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(viewportFraction: 0.3);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView.builder(
+      controller: _pageController,
+      itemCount: widget.imageList.length,
+      itemBuilder: (context, index) {
+        return AnimatedBuilder(
+          animation: _pageController,
+          builder: (context, child) {
+            double value = 0.0;
+            if (_pageController.position.haveDimensions) {
+              value = _pageController.page! - index;
+              value = (1 - (value.abs() * 0.5)).clamp(0.0, 1.0);
+            }
+            return Center(
+              child: SizedBox(
+                height: Curves.easeOut.transform(value) * 200,
+                width: MediaQuery.of(context).size.width *
+                    0.9, // Adjust width here
+                child: child,
+              ),
+            );
+          },
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 10),
+            width: MediaQuery.of(context).size.width * 8, // Adjust width here
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: const Color.fromARGB(255, 255, 255, 255),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  spreadRadius: 5,
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.asset(
+                widget.imageList[index],
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
 class MenuWidget extends StatelessWidget {
   const MenuWidget({super.key});
 
@@ -201,7 +200,7 @@ class MenuWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: const Color.fromARGB(255, 1, 35, 99),
-      height: 70, // Ajusta a altura para acomodar o texto
+      height: 70,
       child: const Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -209,19 +208,19 @@ class MenuWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.emoji_events, color: Colors.white),
-              SizedBox(height: 4), // Espaçamento entre ícone e texto
+              SizedBox(height: 4),
               Text(
                 'conquistas',
                 style: TextStyle(color: Colors.white, fontSize: 12),
               ),
             ],
           ),
-          SizedBox(width: 250), // Ajusta o espaço entre os ícones
+          SizedBox(width: 250),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.person, color: Colors.white),
-              SizedBox(height: 4), // Espaçamento entre ícone e texto
+              SizedBox(height: 4),
               Text(
                 'perfil',
                 style: TextStyle(color: Colors.white, fontSize: 12),
@@ -232,8 +231,4 @@ class MenuWidget extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(InitialHome());
 }
