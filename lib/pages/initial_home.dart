@@ -1,3 +1,4 @@
+import 'package:app_leitura/widgets/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -5,15 +6,15 @@ class InitialHome extends StatelessWidget {
   InitialHome({super.key});
 
   final List<String> _imageList = [
-    "assets/backgrounds/nivel1.png",
-    "assets/backgrounds/nivel2.png",
-    "assets/backgrounds/nivel3.png",
-    "assets/backgrounds/nivel4.png",
-    "assets/backgrounds/nivel5.png",
-    "assets/backgrounds/nivel6.png",
-    "assets/backgrounds/nivel7.png",
-    "assets/backgrounds/nivel8.png",
-    "assets/backgrounds/nivel9.png",
+    "assets/cards/1.png",
+    "assets/cards/2.png",
+    "assets/cards/3.png",
+    "assets/cards/4.png",
+    "assets/cards/5.png",
+    "assets/cards/6.png",
+    "assets/cards/7.png",
+    "assets/cards/8.png",
+    "assets/cards/9.png",
   ];
 
   // Lista de sombras correspondentes a cada imagem
@@ -104,43 +105,34 @@ class InitialHome extends StatelessWidget {
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.all(5.0),
-              child: SizedBox(
-                height: 200,
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    // ignore: unused_local_variable
-                    final itemWidth = (constraints.maxWidth - 32) / 3;
-                    return ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _imageList.length,
-                      itemBuilder: (context, index) {
-                        final double itemWidth =
-                            (constraints.maxWidth - 32) / 3;
-
-                        double scale = index == 1
-                            ? 1.1
-                            : 1.0; // Escala maior para a imagem central
-
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Transform.scale(
-                            scale: scale,
-                            child: Container(
-                              width: itemWidth,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                boxShadow: [_imageShadows[index]],
-                                image: DecorationImage(
-                                  image: AssetImage(_imageList[index]),
-                                  fit: BoxFit.fill,
-                                ),
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                child: SizedBox(
+                  height: 250,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      // ignore: unused_local_variable
+                      final itemWidth = (constraints.maxWidth - 300) / 2;
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _imageList.length,
+                        itemBuilder: (context, index) {
+                          final double itemWidth = (constraints.maxWidth + 90) / 2;
+                
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 0),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                              child: SizedBox(
+                                width: itemWidth,
+                                child: CustomCard(imagePath: _imageList[index]),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
