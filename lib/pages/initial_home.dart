@@ -1,5 +1,4 @@
 import 'package:app_leitura/pages/weeks_page.dart';
-import 'package:app_leitura/widgets/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -85,30 +84,30 @@ class InitialHome extends StatelessWidget {
             _buildSectionTitle('Próximas tarefas a serem liberadas'),
             const SizedBox(height: 30),
             CustomButtonDefault(
-                title: 'Lista de Compras', 
-                assetsPath: 'assets/backgrounds/botao1.png',
-                onPressed: () {
+              title: 'Lista de Compras',
+              assetsPath: 'assets/backgrounds/botao1.png',
+              onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => const WeeksPage()));
-                },
+              },
             ),
             const SizedBox(height: 20),
             CustomButtonDefault(
-                title: 'Propósito de Vida',
-                assetsPath: 'assets/backgrounds/botaook.png',
-                onPressed: () {
+              title: 'Propósito de Vida',
+              assetsPath: 'assets/backgrounds/botaook.png',
+              onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => const WeeksPage()));
-                },
+              },
             ),
             const SizedBox(height: 20),
             CustomButtonDefault(
-                title: 'Lista de Compras',
-                assetsPath: 'assets/backgrounds/botao3.png',
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const WeeksPage()));
-                },
+              title: 'Lista de Compras',
+              assetsPath: 'assets/backgrounds/botao3.png',
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const WeeksPage()));
+              },
             ),
             const SizedBox(height: 30),
           ],
@@ -140,6 +139,7 @@ class CustomCarousel extends StatefulWidget {
   const CustomCarousel({required this.imageList, super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CustomCarouselState createState() => _CustomCarouselState();
 }
 

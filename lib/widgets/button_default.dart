@@ -19,39 +19,40 @@ class CustomButtonDefault extends StatefulWidget {
 class _CustomButtonDefaultState extends State<CustomButtonDefault> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: InkWell(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 60),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
+    return InkWell(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(double.infinity, 60),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
             ),
-            onPressed: widget.onPressed,
-            child: widget.assetsPath != null
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Image.asset(widget.assetsPath!, width: 70, height: 40),
-                      ),
-                      Text(
-                        widget.title,
-                        style: GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
-                      ),
-                    ],
-                  )
-                : Center(
-                    child: Text(
-                      widget.title,
-                      style: GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
-                    ),
-                  ),
           ),
+          onPressed: widget.onPressed,
+          child: widget.assetsPath != null
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Image.asset(widget.assetsPath!,
+                          width: 70, height: 40),
+                    ),
+                    Text(
+                      widget.title,
+                      style:
+                          GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+                    ),
+                  ],
+                )
+              : Center(
+                  child: Text(
+                    widget.title,
+                    style:
+                        GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+                  ),
+                ),
         ),
       ),
     );

@@ -17,7 +17,7 @@ class MenuHomeWidget extends StatelessWidget {
               Icon(Icons.emoji_events, color: Colors.white),
               SizedBox(height: 4),
               Text(
-                'conquistas',
+                'Conquistas',
                 style: TextStyle(color: Colors.white, fontSize: 12),
               ),
             ],
@@ -29,7 +29,7 @@ class MenuHomeWidget extends StatelessWidget {
               Icon(Icons.person, color: Colors.white),
               SizedBox(height: 4),
               Text(
-                'perfil',
+                'Perfil',
                 style: TextStyle(color: Colors.white, fontSize: 12),
               ),
             ],
