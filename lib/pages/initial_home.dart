@@ -1,5 +1,10 @@
+import 'package:app_leitura/pages/weeks_page.dart';
+import 'package:app_leitura/widgets/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../widgets/button_default.dart';
+import '../widgets/sub_menu_home_widget.dart';
 
 void main() {
   runApp(InitialHome());
@@ -79,18 +84,36 @@ class InitialHome extends StatelessWidget {
             const SizedBox(height: 30),
             _buildSectionTitle('Próximas tarefas a serem liberadas'),
             const SizedBox(height: 30),
-            _buildElevatedButton(
-                'Lista de Compras', 'assets/backgrounds/botao1.png'),
+            CustomButtonDefault(
+                title: 'Lista de Compras', 
+                assetsPath: 'assets/backgrounds/botao1.png',
+                onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const WeeksPage()));
+                },
+            ),
             const SizedBox(height: 20),
-            _buildElevatedButton(
-                'Propósito de Vida', 'assets/backgrounds/botaook.png'),
+            CustomButtonDefault(
+                title: 'Propósito de Vida',
+                assetsPath: 'assets/backgrounds/botaook.png',
+                onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const WeeksPage()));
+                },
+            ),
             const SizedBox(height: 20),
-            _buildElevatedButton(
-                'Lista de Compras', 'assets/backgrounds/botao3.png'),
+            CustomButtonDefault(
+                title: 'Lista de Compras',
+                assetsPath: 'assets/backgrounds/botao3.png',
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const WeeksPage()));
+                },
+            ),
             const SizedBox(height: 30),
           ],
         ),
-        bottomNavigationBar: const MenuWidget(),
+        bottomNavigationBar: const MenuHomeWidget(),
       ),
     );
   }
@@ -106,29 +129,6 @@ class InitialHome extends StatelessWidget {
             color: Colors.black,
           ),
         ),
-      ),
-    );
-  }
-
-  Padding _buildElevatedButton(String text, String asset) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          minimumSize: const Size(double.infinity, 60),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-        icon: Padding(
-          padding: const EdgeInsets.only(right: 10),
-          child: Image.asset(asset, width: 70, height: 40),
-        ),
-        label: Text(
-          text,
-          style: GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
-        ),
-        onPressed: () {},
       ),
     );
   }
@@ -222,46 +222,6 @@ class _CustomCarouselState extends State<CustomCarousel> {
           ),
         );
       },
-    );
-  }
-}
-
-class MenuWidget extends StatelessWidget {
-  const MenuWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: const Color.fromARGB(255, 1, 35, 99),
-      height: 70,
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.emoji_events, color: Colors.white),
-              SizedBox(height: 4),
-              Text(
-                'conquistas',
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              ),
-            ],
-          ),
-          SizedBox(width: 250),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.person, color: Colors.white),
-              SizedBox(height: 4),
-              Text(
-                'perfil',
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }
