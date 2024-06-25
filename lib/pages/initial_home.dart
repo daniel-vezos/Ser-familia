@@ -14,15 +14,15 @@ class InitialHome extends StatelessWidget {
   InitialHome({super.key});
 
   final List<String> _imageList = [
-    "assets/cards/1.png",
-    "assets/cards/2.png",
-    "assets/cards/3.png",
-    "assets/cards/4.png",
-    "assets/cards/5.png",
-    "assets/cards/6.png",
-    "assets/cards/7.png",
-    "assets/cards/8.png",
-    "assets/cards/9.png",
+    "assets/backgrounds/teste.png",
+    "assets/backgrounds/teste2.png",
+    "assets/backgrounds/teste3.png",
+    "assets/backgrounds/teste4.png",
+    "assets/backgrounds/teste6.png",
+    "assets/backgrounds/teste7.png",
+    "assets/backgrounds/teste8.png",
+    "assets/backgrounds/teste88.png",
+    "assets/backgrounds/teste99.png",
   ];
 
   @override
@@ -36,37 +36,47 @@ class InitialHome extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 4.0),
-              child: RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'Olá, Aluno\n',
-                      style:
-                          GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
-                    ),
-                    const TextSpan(text: '\n'),
-                    TextSpan(
-                      text: 'Você está no nível 1 - Início\n',
-                      style:
-                          GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
-                    ),
-                    const TextSpan(text: '\n'),
-                    TextSpan(
-                      text:
-                          'Esse é o seu primeiro mês de atividades, estamos felizes com seu início',
-                      style:
-                          GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
-                    ),
-                  ],
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Olá, Aluno',
+                          style: GoogleFonts.syne(
+                              fontSize: 20.0, color: Colors.black),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.notifications,
+                            size: 30.0, color: Colors.black),
+                        onPressed: () {
+                          // Ação ao pressionar o ícone de sino
+                        },
+                      ),
+                    ],
+                  ),
+                  Text(
+                    'Você está no nível 1 - Início',
+                    style:
+                        GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Esse é o seu primeiro mês de atividades, estamos felizes com seu início',
+                    style:
+                        GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: SizedBox(
-                height: 200,
-                child: Carousel(imageList: _imageList),
+                height: 250,
+                child: CustomCarousel(imageList: _imageList),
               ),
             ),
             const SizedBox(height: 30),
@@ -122,22 +132,22 @@ class InitialHome extends StatelessWidget {
   }
 }
 
-class Carousel extends StatefulWidget {
+class CustomCarousel extends StatefulWidget {
   final List<String> imageList;
 
-  const Carousel({required this.imageList, super.key});
+  const CustomCarousel({required this.imageList, super.key});
 
   @override
-  _CarouselState createState() => _CarouselState();
+  _CustomCarouselState createState() => _CustomCarouselState();
 }
 
-class _CarouselState extends State<Carousel> {
+class _CustomCarouselState extends State<CustomCarousel> {
   late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(viewportFraction: 0.3);
+    _pageController = PageController(viewportFraction: 0.5);
   }
 
   @override
@@ -156,33 +166,48 @@ class _CarouselState extends State<Carousel> {
             }
             return Center(
               child: SizedBox(
-                height: Curves.easeOut.transform(value) * 200,
-                width: MediaQuery.of(context).size.width *
-                    0.9, // Adjust width here
+                height: Curves.easeOut.transform(value) * 210,
+                width: MediaQuery.of(context).size.width * 0.9,
                 child: child,
               ),
             );
           },
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 10),
-            width: MediaQuery.of(context).size.width * 8, // Adjust width here
+            margin: const EdgeInsets.symmetric(horizontal: 15),
+            width: MediaQuery.of(context).size.width * 20,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               color: const Color.fromARGB(255, 255, 255, 255),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  spreadRadius: 5,
+                  color: Colors.black.withOpacity(0.1),
+                  spreadRadius: 8,
                   blurRadius: 10,
-                  offset: const Offset(0, 3),
                 ),
               ],
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.asset(
-                widget.imageList[index],
-                fit: BoxFit.contain,
+              borderRadius: BorderRadius.circular(18),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Image.asset(
+                      widget.imageList[index],
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Nível ${index + 1} Conquista',
+                      style: GoogleFonts.syne(
+                        fontSize: 16.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
