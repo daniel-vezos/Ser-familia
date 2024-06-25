@@ -31,15 +31,27 @@ class InitialHome extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 4.0),
+              child: Row(
+                children: [
+                  Text(
+                    'Olá, Aluno',
+                    style:
+                        GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.notifications, color: Colors.black),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 4.0),
               child: RichText(
                 text: TextSpan(
                   children: [
-                    TextSpan(
-                      text: 'Olá, Aluno\n',
-                      style:
-                          GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
-                    ),
-                    const TextSpan(text: '\n'),
+                    const TextSpan(text: '\n\n'),
                     TextSpan(
                       text: 'Você está no nível 1 - Início\n',
                       style:
