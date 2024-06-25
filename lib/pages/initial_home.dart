@@ -31,46 +31,36 @@ class InitialHome extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 4.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Olá, Aluno',
-                          style: GoogleFonts.syne(
-                              fontSize: 20.0, color: Colors.black),
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.notifications,
-                            size: 30.0, color: Colors.black),
-                        onPressed: () {
-                          // Ação ao pressionar o ícone de sino
-                        },
-                      ),
-                    ],
-                  ),
-                  Text(
-                    'Você está no nível 1 - Início',
-                    style:
-                        GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Esse é o seu primeiro mês de atividades, estamos felizes com seu início',
-                    style:
-                        GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
-                  ),
-                ],
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'Olá, Aluno\n',
+                      style:
+                          GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+                    ),
+                    const TextSpan(text: '\n'),
+                    TextSpan(
+                      text: 'Você está no nível 1 - Início\n',
+                      style:
+                          GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+                    ),
+                    const TextSpan(text: '\n'),
+                    TextSpan(
+                      text:
+                          'Esse é o seu primeiro mês de atividades, estamos felizes com seu início',
+                      style:
+                          GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: SizedBox(
-                height: 250,
+                height: 250, // Aumentado para 250
                 child: CustomCarousel(imageList: _imageList),
               ),
             ),
@@ -147,7 +137,14 @@ class _CustomCarouselState extends State<CustomCarousel> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(viewportFraction: 0.5);
+    _pageController = PageController(
+      viewportFraction: 0.5,
+      initialPage: 200, // Iniciar na primeira página
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _pageController.jumpToPage(0);
+    });
   }
 
   @override
@@ -173,8 +170,8 @@ class _CustomCarouselState extends State<CustomCarousel> {
             );
           },
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 15),
-            width: MediaQuery.of(context).size.width * 20,
+            margin: const EdgeInsets.symmetric(
+                horizontal: 10), // Remova margens se não forem necessárias
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               color: const Color.fromARGB(255, 255, 255, 255),
@@ -187,7 +184,7 @@ class _CustomCarouselState extends State<CustomCarousel> {
               ],
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(20),
               child: Column(
                 children: [
                   Expanded(
@@ -200,7 +197,7 @@ class _CustomCarouselState extends State<CustomCarousel> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'Nível ${index + 1} Conquista',
+                      'Nível ${index + 1} conquista',
                       style: GoogleFonts.syne(
                         fontSize: 16.0,
                         color: Colors.black,
