@@ -134,8 +134,10 @@ class _InitialPageState extends State<InitialPage> {
             const SizedBox(height: 15),
             CustomButtonNavigation(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => InitialHome()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => InitialHome()),
+                );
               },
               title: 'Acessar',
               width: 175,
