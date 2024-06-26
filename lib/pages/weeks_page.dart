@@ -1,8 +1,9 @@
-import 'package:app_leitura/pages/page_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import '../widgets/button_default.dart'; // Certifique-se de que o caminho esteja correto
+import '../widgets/button_default.dart';
 import '../widgets/sub_menu_home_widget.dart';
+import 'page_theme.dart'; // Certifique-se de que o caminho esteja correto
 
 class WeeksPage extends StatefulWidget {
   const WeeksPage({super.key});
@@ -21,7 +22,6 @@ class _WeeksPageState extends State<WeeksPage> {
     'Semana 5',
     'Semana 6',
     'Semana 7',
-    'Semana 8',
   ];
 
   @override
@@ -52,7 +52,7 @@ class _WeeksPageState extends State<WeeksPage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Olá, $aluno'),
+            const Text(''),
             IconButton(
               icon: const Icon(Icons.notifications),
               onPressed: () {
@@ -69,8 +69,19 @@ class _WeeksPageState extends State<WeeksPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
+              'Olá, Aluno',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
               'ATIVIDADES SEMANAIS',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: GoogleFonts.syne(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
             const SizedBox(height: 20),
             Column(
