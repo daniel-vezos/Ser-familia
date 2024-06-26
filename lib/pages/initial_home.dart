@@ -1,6 +1,6 @@
-import 'package:app_leitura/pages/weeks_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:app_leitura/pages/weeks_page.dart'; // Importe a página WeeksPage
 
 import '../widgets/button_default.dart';
 import '../widgets/sub_menu_home_widget.dart';
@@ -29,7 +29,22 @@ class InitialHome extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(elevation: 0),
+        appBar: AppBar(
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: const Text('', style: TextStyle(color: Colors.black)),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.notifications, color: Colors.black),
+              onPressed: () {},
+            ),
+          ],
+        ),
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 10),
           children: [
@@ -43,19 +58,17 @@ class InitialHome extends StatelessWidget {
                         GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
                   ),
                   const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.notifications, color: Colors.black),
-                    onPressed: () {},
-                  ),
                 ],
               ),
+            ),
+            const SizedBox(
+              height: 20,
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 4.0),
               child: RichText(
                 text: TextSpan(
                   children: [
-                    const TextSpan(text: '\n\n'),
                     TextSpan(
                       text: 'Você está no nível 1 - Início\n',
                       style:
@@ -80,7 +93,7 @@ class InitialHome extends StatelessWidget {
                 child: CustomCarousel(imageList: _imageList),
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
             _buildSectionTitle('Próximas tarefas a serem liberadas'),
             const SizedBox(height: 30),
             CustomButtonDefault(
@@ -109,7 +122,6 @@ class InitialHome extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => const WeeksPage()));
               },
             ),
-            const SizedBox(height: 30),
           ],
         ),
         bottomNavigationBar: const MenuHomeWidget(),
