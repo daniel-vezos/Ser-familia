@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/button_default.dart';
 import '../widgets/sub_menu_home_widget.dart';
+import '../widgets/sub_menu_widget.dart';
 import 'page_theme.dart';
 
 class WeeksPage extends StatefulWidget {
