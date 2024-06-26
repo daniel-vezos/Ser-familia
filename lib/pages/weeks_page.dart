@@ -2,7 +2,7 @@ import 'package:app_leitura/pages/page_theme.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/button_default.dart'; // Certifique-se de que o caminho esteja correto
-import '../widgets/sub_menu_home_widget.dart';
+import '../widgets/sub_menu_widget.dart';
 
 class WeeksPage extends StatefulWidget {
   const WeeksPage({super.key});
@@ -79,7 +79,7 @@ class _WeeksPageState extends State<WeeksPage> {
           ],
         ),
       ),
-      bottomNavigationBar: const MenuHomeWidget(),
+      bottomNavigationBar: const SubMenuDefaultWidget(),
     );
   }
 }
