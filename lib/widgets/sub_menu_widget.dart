@@ -1,36 +1,91 @@
+import 'package:app_leitura/pages/initial_home.dart';
+import 'package:app_leitura/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 
-class MenuHomeWidget extends StatelessWidget {
-  const MenuHomeWidget({super.key});
+class SubMenuDefaultWidget extends StatelessWidget {
+  const SubMenuDefaultWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: const Color.fromARGB(255, 1, 35, 99),
       height: 70,
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.emoji_events, color: Colors.white),
-              SizedBox(height: 4),
-              Text(
-                'conquistas',
-                style: TextStyle(color: Colors.white, fontSize: 12),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => InitialHome())
+                  );
+                },
+                child: const Column(
+                  children: [
+                    Icon(
+                      Icons.home,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      'Home',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-          SizedBox(width: 250),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.person, color: Colors.white),
-              SizedBox(height: 4),
-              Text(
-                'perfil',
-                style: TextStyle(color: Colors.white, fontSize: 12),
+              GestureDetector(
+                onTap: () {},
+                child: const Column(
+                  children: [
+                    Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      'Pesquisar',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ProfilePage())
+                  );
+                },
+                child: const Column(
+                  children: [
+                    Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      'Perfil',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

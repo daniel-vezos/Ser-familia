@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../widgets/button_default.dart';
 import '../widgets/sub_menu_home_widget.dart';
-import 'page_theme.dart'; // Certifique-se de que o caminho esteja correto
+import 'page_theme.dart';
 
 class WeeksPage extends StatefulWidget {
   const WeeksPage({super.key});
@@ -90,7 +89,7 @@ class _WeeksPageState extends State<WeeksPage> {
           ],
         ),
       ),
-      bottomNavigationBar: const MenuHomeWidget(),
+      bottomNavigationBar: const SubMenuDefaultWidget(),
     );
   }
 }
