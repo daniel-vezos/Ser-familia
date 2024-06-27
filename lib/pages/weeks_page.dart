@@ -51,33 +51,35 @@ class _WeeksPageState extends State<WeeksPage> {
       appBar: AppBar(
         actions: const [ButtonNotification()],
       ),
-      body: Padding(
+      body: ListView(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Olá, Aluno',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Text(
-              'ATIVIDADES SEMANAIS',
-              style: GoogleFonts.syne(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Olá, Aluno',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
               ),
-            ),
-            const SizedBox(height: 20),
-            Column(
-              children: buttons,
-            ),
-          ],
-        ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                'ATIVIDADES SEMANAIS',
+                style: GoogleFonts.syne(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Column(
+                children: buttons,
+              ),
+            ],
+          ),
+        ],
       ),
       bottomNavigationBar: const SubMenuDefaultWidget(),
     );
