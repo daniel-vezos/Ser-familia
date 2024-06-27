@@ -1,3 +1,4 @@
+import 'package:app_leitura/pages/level_completed.dart';
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 
@@ -24,7 +25,7 @@ class _CongratsPageState extends State<CongratsPage> {
     _confettiController.dispose();
     super.dispose();
   }
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +58,13 @@ class _CongratsPageState extends State<CongratsPage> {
                   width: 300, // Largura do botão
                   height: 50, // Altura do botão
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LevelCompletedPage()),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue, // Cor de fundo do botão
                     ),

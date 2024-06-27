@@ -1,5 +1,5 @@
 import 'package:app_leitura/widgets/button_notification.dart';
-import 'package:app_leitura/widgets/sub_menu_home_widget.dart';
+import 'package:app_leitura/widgets/sub_menu_widget.dart';
 import 'package:flutter/material.dart';
 import 'page_congrats.dart'; // Importe o arquivo PAGE_CONGRATS.dart aqui
 
@@ -115,7 +115,7 @@ class _PageTasksState extends State<PageTasks> {
           ],
         ),
       ),
-      bottomNavigationBar: const MenuHomeWidget(),
+      bottomNavigationBar: const SubMenuDefaultWidget(),
     );
   }
 }

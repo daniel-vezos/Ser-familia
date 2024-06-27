@@ -1,6 +1,6 @@
 import 'package:app_leitura/widgets/button_notification.dart';
-import 'package:app_leitura/widgets/sub_menu_home_widget.dart';
 import 'package:flutter/material.dart';
+import '../widgets/sub_menu_widget.dart';
 import 'page_tasks.dart';
 
 class PageTheme extends StatelessWidget {
@@ -108,7 +108,7 @@ class PageTheme extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: const MenuHomeWidget(),
+      bottomNavigationBar: const SubMenuDefaultWidget(),
     );
   }
 }
