@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-class CustomButtonNavigation extends StatefulWidget {  
+class CustomButtonNavigation extends StatefulWidget {
   final String title;
   final double width;
   final double height;
@@ -12,7 +12,7 @@ class CustomButtonNavigation extends StatefulWidget {
     required this.width,
     required this.height,
     required this.onPressed,
-    this.color = const Color(0xffF0AE42),
+    this.color = Colors.orange,
   });
 
   @override
@@ -28,29 +28,24 @@ class CustomButtonNavigationState extends State<CustomButtonNavigation> {
       child: InkWell(
         onTap: widget.onPressed,
         child: Container(
-          alignment: Alignment.center,
-          width: widget.width,
-          height: widget.height,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100),
-            boxShadow: [
-              BoxShadow(
-                color: widget.color,
-                blurStyle: BlurStyle.normal,
-                blurRadius: 10, 
-                offset: const Offset(0, 3),
-              )
-            ]
-          ),
-          child: Text(
-            widget.title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.bold
-            )
-          )
-        ),
+            alignment: Alignment.center,
+            width: widget.width,
+            height: widget.height,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                boxShadow: [
+                  BoxShadow(
+                    color: widget.color,
+                    blurStyle: BlurStyle.normal,
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  )
+                ]),
+            child: Text(widget.title,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold))),
       ),
     );
   }
