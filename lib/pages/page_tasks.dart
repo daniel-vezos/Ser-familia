@@ -1,9 +1,10 @@
+import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/sub_menu_home_widget.dart';
 import 'package:flutter/material.dart';
 import 'page_congrats.dart'; // Importe o arquivo PAGE_CONGRATS.dart aqui
 
 class PageTasks extends StatefulWidget {
-  const PageTasks({Key? key}) : super(key: key);
+  const PageTasks({super.key});
 
   @override
   _PageTasksState createState() => _PageTasksState();
@@ -25,14 +26,7 @@ class _PageTasksState extends State<PageTasks> {
           },
         ),
         title: const Text(''), // Título da página
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              // Ação ao clicar no ícone de notificação
-            },
-          ),
-        ],
+        actions: const [ButtonNotification()],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -104,7 +98,7 @@ class _PageTasksState extends State<PageTasks> {
                       // Ação ao clicar no botão abaixo de "Atividade realizada"
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => CongratsPage()), // Substitua CongratsPage pelo nome correto da sua página
+                        MaterialPageRoute(builder: (context) => const CongratsPage()), // Substitua CongratsPage pelo nome correto da sua página
                       );
                     },
                     style: ElevatedButton.styleFrom(

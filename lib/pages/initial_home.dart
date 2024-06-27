@@ -1,3 +1,4 @@
+import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_leitura/pages/weeks_page.dart'; // Importe a página WeeksPage
@@ -38,12 +39,7 @@ class InitialHome extends StatelessWidget {
             },
           ),
           title: const Text('', style: TextStyle(color: Colors.black)),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications, color: Colors.black),
-              onPressed: () {},
-            ),
-          ],
+          actions: const [ButtonNotification()],
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 10),

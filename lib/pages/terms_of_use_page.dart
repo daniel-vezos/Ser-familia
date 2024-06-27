@@ -1,4 +1,5 @@
 
+import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/sub_menu_widget.dart';
@@ -15,17 +16,7 @@ class _TermsOfUsePageState extends State<TermsOfUsePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              onPressed: () {
-                // Ação ao clicar no ícone de notificação
-              },
-            ),
-          ],
-        ),
+        actions: const [ButtonNotification()],
       ),
       body: const Center(
         child: Column(

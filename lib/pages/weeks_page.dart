@@ -1,7 +1,7 @@
+import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/button_default.dart';
-import '../widgets/sub_menu_home_widget.dart';
 import '../widgets/sub_menu_widget.dart';
 import 'page_theme.dart';
 
@@ -49,18 +49,7 @@ class _WeeksPageState extends State<WeeksPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(''),
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              onPressed: () {
-                // Ação ao clicar no ícone de notificação
-              },
-            ),
-          ],
-        ),
+        actions: const [ButtonNotification()],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
