@@ -1,3 +1,4 @@
+import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/sub_menu_home_widget.dart';
 import 'package:flutter/material.dart';
 import 'page_tasks.dart';
@@ -16,14 +17,7 @@ class PageTheme extends StatelessWidget {
           },
         ),
         title: const Text(''), // Título da página
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              // Ação ao clicar no ícone de notificação
-            },
-          ),
-        ],
+        actions: const [ButtonNotification()],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
