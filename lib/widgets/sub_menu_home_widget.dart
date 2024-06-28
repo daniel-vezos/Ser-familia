@@ -1,3 +1,4 @@
+import 'package:app_leitura/pages/ranking_page.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/profile_page.dart';
@@ -15,14 +16,30 @@ class MenuHomeWidget extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Column(
+            Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.emoji_events, color: Colors.white),
-                SizedBox(height: 4),
-                Text(
-                  'Conquistas',
-                  style: TextStyle(color: Colors.white, fontSize: 12),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const RankingPage())
+                    );
+                  },
+                  child: const Column(
+                    children: [
+                      Icon(
+                        Icons.emoji_events,
+                        color: Colors.white,
+                      ),
+                      Text(
+                        'Conquistas',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
