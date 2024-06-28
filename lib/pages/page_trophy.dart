@@ -1,16 +1,14 @@
-import 'package:app_leitura/pages/level_completed.dart';
-import 'package:app_leitura/pages/page_trophy.dart';
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 
-class CongratsPage extends StatefulWidget {
-  const CongratsPage({super.key});
+class PageTrophy extends StatefulWidget {
+  const PageTrophy({super.key});
 
   @override
-  _CongratsPageState createState() => _CongratsPageState();
+  _PageTrophyState createState() => _PageTrophyState();
 }
 
-class _CongratsPageState extends State<CongratsPage> {
+class _PageTrophyState extends State<PageTrophy> {
   late ConfettiController _confettiController;
 
   @override
@@ -39,7 +37,7 @@ class _CongratsPageState extends State<CongratsPage> {
         children: <Widget>[
           Positioned.fill(
             child: Image.asset(
-              'assets/backgrounds/garota.png',
+              'assets/backgrounds/trofeu1.png',
               fit: BoxFit.cover,
             ),
           ),
@@ -48,13 +46,7 @@ class _CongratsPageState extends State<CongratsPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PageTrophy()),
-                    );
-                  },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     shape: const CircleBorder(),
@@ -69,13 +61,7 @@ class _CongratsPageState extends State<CongratsPage> {
                   width: 300, // Largura do botão
                   height: 50, // Altura do botão
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LevelCompletedPage()),
-                      );
-                    },
+                    onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(
                           255, 1, 121, 219), // Cor de fundo do botão
@@ -86,9 +72,9 @@ class _CongratsPageState extends State<CongratsPage> {
                       shadowColor: Colors.black.withOpacity(0.3),
                     ),
                     child: const Text(
-                      'Parabéns!',
+                      'Você conquistou o nível 1 !!!',
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.white, // Cor do texto
                       ),

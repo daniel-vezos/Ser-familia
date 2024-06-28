@@ -38,6 +38,7 @@ dev_dependencies:
 backdrop_filter: ^0.3.0
 audioplayers: ^0.20.1
 
+
 flutter:
   uses-material-design: true
   assets:
