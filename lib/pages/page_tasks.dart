@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'page_congrats.dart'; // Importe o arquivo PAGE_CONGRATS.dart aqui
 
 class PageTasks extends StatefulWidget {
-  const PageTasks({super.key});
+  final String title;
+  final String challenge;
+
+  const PageTasks({super.key, required this.title, required this.challenge});
 
   @override
   _PageTasksState createState() => _PageTasksState();
@@ -28,7 +31,7 @@ class _PageTasksState extends State<PageTasks> {
         title: const Text(''), // Título da página
         actions: const [ButtonNotification()],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,17 +41,16 @@ class _PageTasksState extends State<PageTasks> {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            const Text(
-              'Você conhece sua família?',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
+            Text(
+              widget.title,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Texto de exemplo: Este é um texto de exemplo que pode ser substituído pelo conteúdo real da sua tarefa. ',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
+            Text(
+              widget.challenge,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
             ),
             const SizedBox(height: 20),
-            const Spacer(),
             Row(
               children: [
                 IconButton(
@@ -112,6 +114,7 @@ class _PageTasksState extends State<PageTasks> {
                 ),
               ],
             ),
+            const SizedBox(height: 20), // Adiciona espaço na parte inferior
           ],
         ),
       ),

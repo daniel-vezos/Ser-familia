@@ -4,10 +4,48 @@ import '../widgets/sub_menu_widget.dart';
 import 'page_tasks.dart';
 
 class PageTheme extends StatelessWidget {
-  const PageTheme({super.key});
+  final String weekTitle;
+  final List<Map<String, dynamic>> themes;
+
+  const PageTheme({super.key, required this.weekTitle, required this.themes});
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> themeButtons = themes.map((theme) {
+      return Column(
+        children: [
+          SizedBox(
+            height: 60,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                final title = theme['title'] ?? 'Sem Título';
+                final challenge = theme['challenge'] ?? 'Sem Descrição';
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PageTasks(
+                      title: title,
+                      challenge: challenge,
+                    ),
+                  ),
+                );
+              },
+              icon: Image.asset(
+                'assets/backgrounds/botao1.png',
+                height: 35,
+                width: 100,
+              ),
+              label: Text(
+                theme['title'] ?? 'Sem Título',
+                style: const TextStyle(fontSize: 20, color: Colors.black),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+        ],
+      );
+    }).toList();
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -29,80 +67,14 @@ class PageTheme extends StatelessWidget {
               style: TextStyle(fontSize: 20, color: Colors.black),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Semana 1',
-              style: TextStyle(fontSize: 24, color: Colors.black),
+            Text(
+              weekTitle,
+              style: const TextStyle(fontSize: 24, color: Colors.black),
             ),
             const SizedBox(height: 20),
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(
-                  height: 60, // Altura aumentada dos botões
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const PageTasks()),
-                      );
-                    },
-                    icon: Image.asset(
-                      'assets/backgrounds/botao1.png',
-                      height: 35, // Altura do ícone
-                      width: 100, // Largura do ícone
-                    ),
-                    label: const Text(
-                      'História de Família',
-                      style: TextStyle(fontSize: 20, color: Colors.black),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 60, // Altura aumentada dos botões
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const PageTasks()),
-                      );
-                    },
-                    icon: Image.asset(
-                      'assets/backgrounds/botao1.png',
-                      height: 35, // Altura do ícone
-                      width: 100, // Largura do ícone
-                    ),
-                    label: const Text(
-                      'Esforço e Dedicação',
-                      style: TextStyle(fontSize: 20, color: Colors.black),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 60, // Altura aumentada dos botões
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const PageTasks()),
-                      );
-                    },
-                    icon: Image.asset(
-                      'assets/backgrounds/botao1.png',
-                      height: 35, // Altura do ícone
-                      width: 100, // Largura do ícone
-                    ),
-                    label: const Text(
-                      'Qual é o meu sonho?',
-                      style: TextStyle(fontSize: 20, color: Colors.black),
-                    ),
-                  ),
-                ),
-              ],
+              children: themeButtons,
             ),
             const SizedBox(height: 20),
           ],

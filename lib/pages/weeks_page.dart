@@ -1,9 +1,11 @@
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:convert';
 import '../widgets/button_default.dart';
 import '../widgets/sub_menu_widget.dart';
 import 'page_theme.dart';
+import '../data/weeks_data.dart'; // Import the JSON string
 
 class WeeksPage extends StatefulWidget {
   const WeeksPage({super.key});
@@ -14,15 +16,24 @@ class WeeksPage extends StatefulWidget {
 
 class _WeeksPageState extends State<WeeksPage> {
   final String aluno = "Aluno";
-  final List<String> semanas = [
-    'Semana 1',
-    'Semana 2',
-    'Semana 3',
-    'Semana 4',
-    'Semana 5',
-    'Semana 6',
-    'Semana 7',
-  ];
+  final List<String> semanas = [];
+  late Map<String, List<Map<String, dynamic>>> themesByWeek;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWeeks();
+  }
+
+  void _loadWeeks() {
+    Map<String, dynamic> jsonData = json.decode(weeks);
+    themesByWeek = jsonData.map((key, value) {
+      return MapEntry(key, List<Map<String, dynamic>>.from(value));
+    });
+    setState(() {
+      semanas.addAll(jsonData.keys);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +48,12 @@ class _WeeksPageState extends State<WeeksPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const PageTheme()),
+                  MaterialPageRoute(
+                    builder: (context) => PageTheme(
+                      weekTitle: titulo,
+                      themes: themesByWeek[titulo] ?? [],
+                    ),
+                  ),
                 );
               },
             ),
