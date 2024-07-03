@@ -99,6 +99,7 @@ class InitialHome extends StatelessWidget {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => const WeeksPage()));
               },
+              borderRadius: BorderRadius.circular(10),
             ),
             const SizedBox(height: 20),
             CustomButtonDefault(
@@ -108,6 +109,7 @@ class InitialHome extends StatelessWidget {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => const WeeksPage()));
               },
+              borderRadius: BorderRadius.circular(10),
             ),
             const SizedBox(height: 20),
             CustomButtonDefault(
@@ -117,6 +119,7 @@ class InitialHome extends StatelessWidget {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => const WeeksPage()));
               },
+              borderRadius: BorderRadius.circular(10),
             ),
           ],
         ),

@@ -14,38 +14,49 @@ class PageTheme extends StatelessWidget {
     List<Widget> themeButtons = themes.map((theme) {
       return Column(
         children: [
-          SizedBox(
-            height: 60,
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                final title = theme['title'] ?? 'Sem Título';
-                final challenge = theme['challenge'] ?? 'Sem Descrição';
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PageTasks(
-                      title: title,
-                      challenge: challenge,
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+            ),
+            child: SizedBox(
+              height: 60,
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  final title = theme['title'] ?? 'Sem Título';
+                  final challenge = theme['challenge'] ?? 'Sem Descrição';
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PageTasks(
+                        title: title,
+                        challenge: challenge,
+                      ),
                     ),
-                  ),
-                );
-              },
-              child: Row(
-                children: [
-                  Image.asset(
-                    'assets/backgrounds/botao1.png',
-                    height: 35,
-                    width: 100,
-                  ),
-                  Expanded(
-                    child: Text(
-                      theme['title'] ?? 'Sem Título',
-                      style: const TextStyle(fontSize: 20, color: Colors.black),
-                      textAlign: TextAlign.left,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black, backgroundColor: Colors.white, shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // Match the Container borderRadius
+                  ), // Text color
+                ),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      'assets/backgrounds/botao1.png',
+                      height: 35,
+                      width: 100,
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: Text(
+                        theme['title'] ?? 'Sem Título',
+                        style: const TextStyle(fontSize: 20, color: Colors.black),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -53,6 +64,7 @@ class PageTheme extends StatelessWidget {
         ],
       );
     }).toList();
+
 
     return Scaffold(
       appBar: AppBar(
