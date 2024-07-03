@@ -16,7 +16,8 @@ class PageTheme extends StatelessWidget {
         children: [
           SizedBox(
             height: 60,
-            child: ElevatedButton.icon(
+            width: double.infinity,
+            child: ElevatedButton(
               onPressed: () {
                 final title = theme['title'] ?? 'Sem Título';
                 final challenge = theme['challenge'] ?? 'Sem Descrição';
@@ -30,14 +31,21 @@ class PageTheme extends StatelessWidget {
                   ),
                 );
               },
-              icon: Image.asset(
-                'assets/backgrounds/botao1.png',
-                height: 35,
-                width: 100,
-              ),
-              label: Text(
-                theme['title'] ?? 'Sem Título',
-                style: const TextStyle(fontSize: 20, color: Colors.black),
+              child: Row(
+                children: [
+                  Image.asset(
+                    'assets/backgrounds/botao1.png',
+                    height: 35,
+                    width: 100,
+                  ),
+                  Expanded(
+                    child: Text(
+                      theme['title'] ?? 'Sem Título',
+                      style: const TextStyle(fontSize: 20, color: Colors.black),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
