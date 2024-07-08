@@ -5,7 +5,7 @@ import '../widgets/button_notification.dart';
 import '../widgets/button_default.dart';
 import '../widgets/sub_menu_widget.dart';
 import 'page_theme.dart';
-import '../data/weeks_data_new.dart'; // Import the JSON string
+import '../data/weeks_data.dart'; // Import the JSON string
 
 class WeeksPage extends StatefulWidget {
   final String nivel;

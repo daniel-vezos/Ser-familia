@@ -3,7 +3,7 @@ import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_leitura/pages/weeks_page.dart'; // Importe a página WeeksPage
-import 'package:app_leitura/data/weeks_data_new.dart'; // Importe o JSON
+import 'package:app_leitura/data/weeks_data.dart'; // Importe o JSON
 import '../widgets/button_default.dart';
 import '../widgets/sub_menu_home_widget.dart';
 
