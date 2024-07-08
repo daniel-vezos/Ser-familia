@@ -1,14 +1,16 @@
-import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
+import '../widgets/button_notification.dart';
 import '../widgets/button_default.dart';
 import '../widgets/sub_menu_widget.dart';
 import 'page_theme.dart';
-import '../data/weeks_data.dart'; // Import the JSON string
+import '../data/weeks_data_new.dart'; // Import the JSON string
 
 class WeeksPage extends StatefulWidget {
-  const WeeksPage({super.key});
+  final String nivel;
+
+  const WeeksPage({super.key, required this.nivel});
 
   @override
   State<WeeksPage> createState() => _WeeksPageState();
@@ -16,8 +18,8 @@ class WeeksPage extends StatefulWidget {
 
 class _WeeksPageState extends State<WeeksPage> {
   final String aluno = "Aluno";
-  final List<String> semanas = [];
-  late Map<String, List<Map<String, dynamic>>> themesByWeek;
+  late Map<String, List<Map<String, dynamic>>> themesByWeek = {};
+  List<String> semanas = [];
 
   @override
   void initState() {
@@ -26,43 +28,47 @@ class _WeeksPageState extends State<WeeksPage> {
   }
 
   void _loadWeeks() {
-    Map<String, dynamic> jsonData = json.decode(weeks);
-    themesByWeek = jsonData.map((key, value) {
-      return MapEntry(key, List<Map<String, dynamic>>.from(value));
-    });
-    setState(() {
-      semanas.addAll(jsonData.keys);
-    });
+    try {
+      Map<String, dynamic> jsonData = json.decode(weeks);
+      Map<String, dynamic> selectedLevel = jsonData[widget.nivel];
+
+      themesByWeek = selectedLevel.map((key, value) {
+        return MapEntry(key, List<Map<String, dynamic>>.from(value));
+      });
+
+      setState(() {
+        semanas = selectedLevel.keys.toList();
+      });
+    } catch (e) {
+      print('Erro ao carregar semanas: $e');
+      // Handle JSON parsing error
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> buttons = [];
-
-    for (String titulo in semanas) {
-      buttons.add(
-        Column(
-          children: [
-            CustomButtonDefault(
-              title: titulo,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PageTheme(
-                      weekTitle: titulo,
-                      themes: themesByWeek[titulo] ?? [],
-                    ),
+    List<Widget> buttons = semanas.map((titulo) {
+      return Column(
+        children: [
+          CustomButtonDefault(
+            title: titulo,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PageTheme(
+                    weekTitle: titulo,
+                    themes: themesByWeek[titulo] ?? [],
                   ),
-                );
-              },
-              borderRadius: BorderRadius.circular(10),
-            ),
-            const SizedBox(height: 20),
-          ],
-        ),
+                ),
+              );
+            },
+            borderRadius: BorderRadius.circular(10),
+          ),
+          const SizedBox(height: 20),
+        ],
       );
-    }
+    }).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -79,9 +85,7 @@ class _WeeksPageState extends State<WeeksPage> {
                 'Olá, Aluno',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               Text(
                 'ATIVIDADES SEMANAIS',
                 style: GoogleFonts.syne(

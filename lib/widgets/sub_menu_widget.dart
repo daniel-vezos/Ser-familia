@@ -18,9 +18,10 @@ class SubMenuDefaultWidget extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
+                  String nomeDoUsuario = "Nome do Usuário"; // Substitua pelo nome real do usuário
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => InitialHome())
+                    MaterialPageRoute(builder: (context) => InitialHome(name: nomeDoUsuario))
                   );
                 },
                 child: const Column(
