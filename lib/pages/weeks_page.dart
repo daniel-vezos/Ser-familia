@@ -1,3 +1,4 @@
+import 'package:app_leitura/pages/initial_home.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
@@ -9,15 +10,19 @@ import '../data/weeks_data.dart'; // Import the JSON string
 
 class WeeksPage extends StatefulWidget {
   final String nivel;
+  final String name;
 
-  const WeeksPage({super.key, required this.nivel});
+  const WeeksPage({
+    super.key, 
+    required this.nivel,
+    required this.name,
+  });
 
   @override
   State<WeeksPage> createState() => _WeeksPageState();
 }
 
 class _WeeksPageState extends State<WeeksPage> {
-  final String aluno = "Aluno";
   late Map<String, List<Map<String, dynamic>>> themesByWeek = {};
   List<String> semanas = [];
 
@@ -81,9 +86,9 @@ class _WeeksPageState extends State<WeeksPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Olá, Aluno',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
+              Text(
+                'Olá, ${widget.name}',
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
               ),
               const SizedBox(height: 20),
               Text(

@@ -7,15 +7,13 @@ import 'package:app_leitura/data/weeks_data.dart'; // Importe o JSON
 import '../widgets/button_default.dart';
 import '../widgets/sub_menu_home_widget.dart';
 
-void main() {
-  String nomeDoUsuario = "Nome do Usuário";
-  runApp(InitialHome(name: nomeDoUsuario));
-}
-
 class InitialHome extends StatelessWidget {
   final String name;
 
-  InitialHome({super.key, required this.name});
+  InitialHome({
+    super.key, 
+    required this.name
+  });
 
   final List<String> _imageList = [
     "assets/backgrounds/teste.png",
@@ -100,7 +98,7 @@ class InitialHome extends StatelessWidget {
               padding: const EdgeInsets.all(10.0),
               child: SizedBox(
                 height: 250, // Aumentado para 250
-                child: CustomCarousel(imageList: _imageList, titles: titles),
+                child: CustomCarousel(imageList: _imageList, titles: titles, userName: name,),
               ),
             ),
             const SizedBox(height: 20),
@@ -158,8 +156,14 @@ class InitialHome extends StatelessWidget {
 class CustomCarousel extends StatefulWidget {
   final List<String> imageList;
   final List<String> titles;
+  final String userName;
 
-  const CustomCarousel({required this.imageList, required this.titles, super.key});
+  const CustomCarousel({
+    required this.imageList, 
+    required this.titles,
+    super.key,
+    required this.userName
+  });
 
   @override
   _CustomCarouselState createState() => _CustomCarouselState();
@@ -209,7 +213,7 @@ class _CustomCarouselState extends State<CustomCarousel> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => WeeksPage(
-                    nivel: widget.titles[index], // Passa o título do nível
+                    nivel: widget.titles[index], name: widget.userName // Passa o título do nível
                   ),
                 ),
               );
