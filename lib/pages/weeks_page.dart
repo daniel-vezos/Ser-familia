@@ -56,6 +56,7 @@ class _WeeksPageState extends State<WeeksPage> {
                   ),
                 );
               },
+              borderRadius: BorderRadius.circular(10),
             ),
             const SizedBox(height: 20),
           ],
