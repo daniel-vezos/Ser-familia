@@ -43,12 +43,14 @@ class _PageTasksState extends State<PageTasks> {
             const SizedBox(height: 10),
             Text(
               widget.title,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
+              style:
+                  const TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
             ),
             const SizedBox(height: 20),
             Text(
               widget.challenge,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
+              style:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
             ),
             const SizedBox(height: 20),
             Row(
@@ -100,7 +102,9 @@ class _PageTasksState extends State<PageTasks> {
                       // Ação ao clicar no botão abaixo de "Atividade realizada"
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const CongratsPage()), // Substitua CongratsPage pelo nome correto da sua página
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const CongratsPage()), // Substitua CongratsPage pelo nome correto da sua página
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -108,7 +112,8 @@ class _PageTasksState extends State<PageTasks> {
                     ),
                     child: const Text(
                       'Atividade Realizada',
-                      style: TextStyle(color: Colors.white), // Cor do texto branco
+                      style:
+                          TextStyle(color: Colors.white), // Cor do texto branco
                     ),
                   ),
                 ),

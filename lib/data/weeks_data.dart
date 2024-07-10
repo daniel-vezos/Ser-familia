@@ -3,7 +3,7 @@ const weeks = '''
     "Semana 1": [
         {
             "title": "História de família",
-            "challenge": "Aqui vem o texto do desafio História de família"
+            "challenge": "Aqui vem o texto do desafio História de família Aqui vem o texto do desafio História de família Aqui vem o texto do desafio História de família Aqui vem o texto do desafio História de família Aqui vem o texto do desafio História de família"
         },
         {
             "title": "Esforço e dedicação",
