@@ -64,6 +64,7 @@ class _WeeksPageState extends State<WeeksPage> {
                   builder: (context) => PageTheme(
                     weekTitle: titulo,
                     themes: themesByWeek[titulo] ?? [],
+                    name: widget.name,
                   ),
                 ),
               );

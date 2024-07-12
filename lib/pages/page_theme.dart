@@ -4,10 +4,11 @@ import '../widgets/sub_menu_widget.dart';
 import 'page_tasks.dart';
 
 class PageTheme extends StatelessWidget {
+  final String name;
   final String weekTitle;
   final List<Map<String, dynamic>> themes;
 
-  const PageTheme({super.key, required this.weekTitle, required this.themes});
+  const PageTheme({super.key, required this.weekTitle, required this.themes, required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -82,9 +83,9 @@ class PageTheme extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Olá aluno',
-              style: TextStyle(fontSize: 20, color: Colors.black),
+            Text(
+              'Olá, $name',
+              style: const TextStyle(fontSize: 20, color: Colors.black),
             ),
             const SizedBox(height: 20),
             Text(
