@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "945071928778",
+    "project_id": "app-ser-familia",
+    "storage_bucket": "app-ser-familia.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945071928778:android:065b3bf1efc3a78016cb33",
+        "android_client_info": {
+          "package_name": "com.example.app_leitura"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0JTgXi1MYeZXRm6AbeePAwVtXzHPi6hc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

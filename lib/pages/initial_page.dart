@@ -1,9 +1,9 @@
 import 'dart:ui';
-
-import 'package:app_leitura/widgets/custom_button_navigation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import 'initial_home.dart';
+import 'package:app_leitura/widgets/custom_button_navigation.dart';
+import 'package:flutter/services.dart';
 
 class InitialPage extends StatefulWidget {
   const InitialPage({super.key});
@@ -14,6 +14,41 @@ class InitialPage extends StatefulWidget {
 
 class _InitialPageState extends State<InitialPage> {
   bool _isTextFieldFocused = false;
+  final TextEditingController _matriculaController = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> _authenticate() async {
+    final matricula = _matriculaController.text;
+
+    if (matricula.isEmpty) {
+      // Exibir mensagem se o campo de matrícula estiver vazio
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor, preencha o campo com sua matrícula')),
+      );
+      return;
+    }
+
+    try {
+      final doc = await _firestore.collection('matriculas').doc(matricula).get();
+
+      if (doc.exists) {
+        // Matricula encontrada
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => InitialHome(name: doc['name'])),
+        );
+      } else {
+        // Matricula não encontrada
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Matrícula não encontrada')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +65,7 @@ class _InitialPageState extends State<InitialPage> {
             Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(
-                      "assets/backgrounds/backgroundInitialPage.png"),
+                  image: AssetImage("assets/backgrounds/backgroundInitialPage.png"),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -112,7 +146,12 @@ class _InitialPageState extends State<InitialPage> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 30, right: 30),
                   child: TextField(
+                    controller: _matriculaController,
                     textAlign: TextAlign.center,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
@@ -133,12 +172,7 @@ class _InitialPageState extends State<InitialPage> {
             ),
             const SizedBox(height: 15),
             CustomButtonNavigation(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => InitialHome()),
-                );
-              },
+              onPressed: _authenticate,
               title: 'Acessar',
               width: 175,
               height: 40,
