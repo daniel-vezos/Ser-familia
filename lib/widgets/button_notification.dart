@@ -1,6 +1,5 @@
 import 'package:app_leitura/pages/notification_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ButtonNotification extends StatefulWidget {
   const ButtonNotification({super.key});

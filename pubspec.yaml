@@ -30,6 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   google_fonts: ^6.2.1
   confetti: ^0.7.0
+  flutter_tts: ^3.8.3
   
  
 

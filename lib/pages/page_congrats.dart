@@ -7,6 +7,7 @@ class CongratsPage extends StatefulWidget {
   const CongratsPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CongratsPageState createState() => _CongratsPageState();
 }
 
