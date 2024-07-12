@@ -103,15 +103,12 @@ class InitialHome extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             _buildSectionTitle('Próximas tarefas a serem liberadas'),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             CustomButtonDefault(
-              title: 'Gratidão',
+              title: 'Lista de Compras',
               assetsPath: 'assets/backgrounds/botao1.png',
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const WeeksPage()),
-                );
+                // Implementar ação
               },
               borderRadius: BorderRadius.circular(10),
             ),
