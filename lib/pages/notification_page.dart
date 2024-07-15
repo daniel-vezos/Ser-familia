@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 import '../widgets/sub_menu_widget.dart';
 
-class NotificationPage extends StatefulWidget {
-  const NotificationPage({super.key});
+class NotificationPage extends StatelessWidget {
+  final String nameUser;
+  
+  const NotificationPage({
+    super.key,
+    required this.nameUser,
+  });
 
-  @override
-  State<NotificationPage> createState() => _NotificationPageState();
-}
-
-class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +25,7 @@ class _NotificationPageState extends State<NotificationPage> {
           'Notificações',
           style: TextStyle(color: Colors.black)
         ),
-        actions: const [ButtonNotification()],
+        actions: [ButtonNotification(nameUser: nameUser)],
       ),
       body: const Column(
         children: [
@@ -48,7 +48,7 @@ class _NotificationPageState extends State<NotificationPage> {
           ),
         ],
       ),
-      bottomNavigationBar: const SubMenuDefaultWidget(),
+      bottomNavigationBar: SubMenuDefaultWidget(nameUser: nameUser),
     );
   }
 }

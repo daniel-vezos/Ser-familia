@@ -10,12 +10,12 @@ import '../data/weeks_data.dart'; // Import the JSON string
 
 class WeeksPage extends StatefulWidget {
   final String nivel;
-  final String name;
+  final String nameUser;
 
   const WeeksPage({
     super.key, 
     required this.nivel,
-    required this.name,
+    required this.nameUser,
   });
 
   @override
@@ -64,7 +64,7 @@ class _WeeksPageState extends State<WeeksPage> {
                   builder: (context) => PageTheme(
                     weekTitle: titulo,
                     themes: themesByWeek[titulo] ?? [],
-                    name: widget.name,
+                    nameUser: widget.nameUser,
                   ),
                 ),
               );
@@ -78,7 +78,7 @@ class _WeeksPageState extends State<WeeksPage> {
 
     return Scaffold(
       appBar: AppBar(
-        actions: const [ButtonNotification()],
+        actions: [ButtonNotification(nameUser: widget.nameUser)],
       ),
       body: ListView(
         padding: const EdgeInsets.all(20.0),
@@ -88,7 +88,7 @@ class _WeeksPageState extends State<WeeksPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Olá, ${widget.name}',
+                'Olá, ${widget.nameUser}',
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
               ),
               const SizedBox(height: 20),
@@ -108,7 +108,7 @@ class _WeeksPageState extends State<WeeksPage> {
           ),
         ],
       ),
-      bottomNavigationBar: const SubMenuDefaultWidget(),
+      bottomNavigationBar: SubMenuDefaultWidget(nameUser: widget.nameUser),
     );
   }
 }

@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'page_congrats.dart'; // Importe o arquivo PAGE_CONGRATS.dart aqui
 
 class PageTasks extends StatefulWidget {
+  final String nameUser;
   final String title;
   final String challenge;
 
-  const PageTasks({super.key, required this.title, required this.challenge});
+  const PageTasks({super.key, required this.title, required this.challenge, required this.nameUser});
 
   @override
   _PageTasksState createState() => _PageTasksState();
@@ -29,7 +30,7 @@ class _PageTasksState extends State<PageTasks> {
           },
         ),
         title: const Text(''), // Título da página
-        actions: const [ButtonNotification()],
+        actions: [ButtonNotification(nameUser: widget.nameUser)],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -100,7 +101,7 @@ class _PageTasksState extends State<PageTasks> {
                       // Ação ao clicar no botão abaixo de "Atividade realizada"
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const CongratsPage()), // Substitua CongratsPage pelo nome correto da sua página
+                        MaterialPageRoute(builder: (context) => CongratsPage(nameUser: widget.nameUser)), // Substitua CongratsPage pelo nome correto da sua página
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -118,7 +119,7 @@ class _PageTasksState extends State<PageTasks> {
           ],
         ),
       ),
-      bottomNavigationBar: const SubMenuDefaultWidget(),
+      bottomNavigationBar: SubMenuDefaultWidget(nameUser: widget.nameUser),
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'dart:ui';
+import 'package:app_leitura/auth/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'initial_home.dart';
 import 'package:app_leitura/widgets/custom_button_navigation.dart';
@@ -16,6 +18,7 @@ class _InitialPageState extends State<InitialPage> {
   bool _isTextFieldFocused = false;
   final TextEditingController _matriculaController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final _auth = AuthService();
 
   Future<void> _authenticate() async {
     final matricula = _matriculaController.text;
@@ -35,7 +38,7 @@ class _InitialPageState extends State<InitialPage> {
         // Matricula encontrada
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => InitialHome(name: doc['name'])),
+          MaterialPageRoute(builder: (context) => InitialHome(nameUser: doc['name'])),
         );
       } else {
         // Matricula não encontrada
@@ -174,6 +177,26 @@ class _InitialPageState extends State<InitialPage> {
             CustomButtonNavigation(
               onPressed: _authenticate,
               title: 'Acessar',
+              width: 175,
+              height: 40,
+            ),
+            const SizedBox(height: 15),
+            CustomButtonNavigation(
+              onPressed: () async {
+                User? user = await _auth.loginWithGoogle();
+                if (user != null) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => InitialHome(nameUser: user.displayName ?? 'Usuário'),
+                    ),
+                  );
+                } else {
+                  print('Falha no login');
+                  // Mostrar uma mensagem de erro ou realizar outra ação
+                }
+              },
+              title: 'Conectar com google',
               width: 175,
               height: 40,
             ),

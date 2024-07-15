@@ -35,7 +35,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.app_leitura"
-        minSdk = flutter.minSdkVersion
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName

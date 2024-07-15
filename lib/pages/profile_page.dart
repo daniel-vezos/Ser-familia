@@ -2,22 +2,37 @@ import 'package:app_leitura/pages/initial_page.dart';
 import 'package:app_leitura/pages/privacy_policy_page.dart';
 import 'package:app_leitura/pages/terms_of_use_page.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../widgets/sub_menu_widget.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+class ProfilePage extends StatelessWidget {
+  final String nameUser;
+  const ProfilePage({
+    super.key,
+    required this.nameUser
+  });
 
-  @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
+  Future<void> _signOut(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      // Redireciona para a tela inicial após o logout
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const InitialPage()),
+        (route) => false, // Remove todas as rotas anteriores
+      );
+    } catch (e) {
+      print('Erro ao deslogar: ${e.toString()}');
+      // Aqui você pode mostrar uma mensagem de erro ao usuário se desejar
+    }
+  }
 
-class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: const [ButtonNotification()],
+        actions: [ButtonNotification(nameUser: nameUser)],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 18),
@@ -32,7 +47,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const PrivacyPolicyPage())
+                      MaterialPageRoute(builder: (context) => PrivacyPolicyPage(nameUser: nameUser))
                     );
                   },
                   child: const Row(
@@ -51,7 +66,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const TermsOfUsePage())
+                      MaterialPageRoute(builder: (context) => TermsOfUsePage(nameUser: nameUser))
                     );
                   },
                   child: const Row(
@@ -67,12 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 const SizedBox(height: 32),
                 GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const InitialPage())
-                    );
-                  },
+                  onTap: () => _signOut(context),
                   child: const Row(
                     children: [
                       Text(
@@ -99,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
-      bottomNavigationBar: const SubMenuDefaultWidget(),
+      bottomNavigationBar: SubMenuDefaultWidget(nameUser: nameUser),
     );
   }
 }

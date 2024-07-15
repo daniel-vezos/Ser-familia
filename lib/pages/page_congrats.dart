@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 
 class CongratsPage extends StatefulWidget {
-  const CongratsPage({super.key});
+  final String nameUser;
+  const CongratsPage({
+    super.key,
+    required this.nameUser,
+  });
 
   @override
   _CongratsPageState createState() => _CongratsPageState();
@@ -73,7 +77,7 @@ class _CongratsPageState extends State<CongratsPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const LevelCompletedPage()),
+                            builder: (context) => LevelCompletedPage(nameUser: widget.nameUser)),
                       );
                     },
                     style: ElevatedButton.styleFrom(

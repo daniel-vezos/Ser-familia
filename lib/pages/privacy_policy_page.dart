@@ -4,19 +4,19 @@ import 'package:flutter/material.dart';
 
 import '../widgets/sub_menu_widget.dart';
 
-class PrivacyPolicyPage extends StatefulWidget {
-  const PrivacyPolicyPage({super.key});
+class PrivacyPolicyPage extends StatelessWidget {
+  final String nameUser;
 
-  @override
-  State<PrivacyPolicyPage> createState() => _PrivacyPolicyPageState();
-}
+  const PrivacyPolicyPage({
+    super.key,
+    required this.nameUser,
+   });
 
-class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: const [ButtonNotification()],
+        actions: [ButtonNotification(nameUser: nameUser)],
       ),
       body: const Center(
         child: Column(
@@ -25,7 +25,7 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
           ],
         ),
       ),
-      bottomNavigationBar: const SubMenuDefaultWidget(),
+      bottomNavigationBar: SubMenuDefaultWidget(nameUser: nameUser),
     );
   }
 }

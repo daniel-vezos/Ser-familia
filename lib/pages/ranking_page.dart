@@ -5,7 +5,12 @@ import 'package:flutter/widgets.dart';
 import '../widgets/sub_menu_widget.dart';
 
 class RankingPage extends StatelessWidget {
-  const RankingPage({super.key});
+  final String nameUser;
+  
+  const RankingPage({
+    super.key,
+    required this.nameUser,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +23,7 @@ class RankingPage extends StatelessWidget {
           },
         ),
         title: const Text('Olá, primeiro nome'), // Título da página
-        actions: const [ButtonNotification()],
+        actions: [ButtonNotification(nameUser: nameUser)],
       ),
       body: const Padding(
         padding: EdgeInsets.all(20.0),
@@ -45,7 +50,7 @@ class RankingPage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: const SubMenuDefaultWidget(),
+      bottomNavigationBar: SubMenuDefaultWidget(nameUser: nameUser),
     );
   }
 }

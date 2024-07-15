@@ -3,7 +3,12 @@ import 'package:app_leitura/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 
 class SubMenuDefaultWidget extends StatelessWidget {
-  const SubMenuDefaultWidget({super.key});
+  final String nameUser;
+
+  const SubMenuDefaultWidget({
+    super.key,
+    required this.nameUser,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +23,9 @@ class SubMenuDefaultWidget extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  String nomeDoUsuario = "Nome do Usuário"; // Substitua pelo nome real do usuário
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => InitialHome(name: nomeDoUsuario))
+                    MaterialPageRoute(builder: (context) => InitialHome(nameUser: nameUser))
                   );
                 },
                 child: const Column(
@@ -70,7 +74,7 @@ class SubMenuDefaultWidget extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ProfilePage())
+                    MaterialPageRoute(builder: (context) => ProfilePage(nameUser: nameUser))
                   );
                 },
                 child: const Column(

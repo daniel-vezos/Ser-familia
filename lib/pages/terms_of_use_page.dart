@@ -4,19 +4,19 @@ import 'package:flutter/material.dart';
 
 import '../widgets/sub_menu_widget.dart';
 
-class TermsOfUsePage extends StatefulWidget {
-  const TermsOfUsePage({super.key});
+class TermsOfUsePage extends StatelessWidget {
+  final String nameUser;
 
-  @override
-  State<TermsOfUsePage> createState() => _TermsOfUsePageState();
-}
+  const TermsOfUsePage({
+    super.key, 
+    required this.nameUser,
+  });
 
-class _TermsOfUsePageState extends State<TermsOfUsePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: const [ButtonNotification()],
+        actions: [ButtonNotification(nameUser: nameUser)],
       ),
       body: const Center(
         child: Column(
@@ -25,7 +25,7 @@ class _TermsOfUsePageState extends State<TermsOfUsePage> {
           ],
         ),
       ),
-      bottomNavigationBar: const SubMenuDefaultWidget(),
+      bottomNavigationBar: SubMenuDefaultWidget(nameUser: nameUser),
     );
   }
 }

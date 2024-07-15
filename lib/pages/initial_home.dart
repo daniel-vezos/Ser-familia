@@ -8,11 +8,11 @@ import '../widgets/button_default.dart';
 import '../widgets/sub_menu_home_widget.dart';
 
 class InitialHome extends StatelessWidget {
-  final String name;
+  final String nameUser;
 
   InitialHome({
     super.key, 
-    required this.name
+    required this.nameUser
   });
 
   final List<String> _imageList = [
@@ -54,7 +54,7 @@ class InitialHome extends StatelessWidget {
             },
           ),
           title: const Text('', style: TextStyle(color: Colors.black)),
-          actions: const [ButtonNotification()],
+          actions: [ButtonNotification(nameUser: nameUser)],
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -64,7 +64,7 @@ class InitialHome extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    'Olá, $name', // Exibe o nome dinâmico do usuário aqui
+                    'Olá, $nameUser', // Exibe o nome dinâmico do usuário aqui
                     style: GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
                   ),
                   const Spacer(),
@@ -98,7 +98,7 @@ class InitialHome extends StatelessWidget {
               padding: const EdgeInsets.all(10.0),
               child: SizedBox(
                 height: 250, // Aumentado para 250
-                child: CustomCarousel(imageList: _imageList, titles: titles, userName: name,),
+                child: CustomCarousel(imageList: _imageList, titles: titles, userName: nameUser,),
               ),
             ),
             const SizedBox(height: 20),
@@ -132,7 +132,7 @@ class InitialHome extends StatelessWidget {
             ),
           ],
         ),
-        bottomNavigationBar: const MenuHomeWidget(),
+        bottomNavigationBar: MenuHomeWidget(nameUser: nameUser),
       ),
     );
   }
@@ -213,7 +213,7 @@ class _CustomCarouselState extends State<CustomCarousel> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => WeeksPage(
-                    nivel: widget.titles[index], name: widget.userName // Passa o título do nível
+                    nivel: widget.titles[index], nameUser: widget.userName // Passa o título do nível
                   ),
                 ),
               );
