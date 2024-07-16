@@ -3,6 +3,7 @@ import 'package:app_leitura/auth/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'initial_home.dart';
 import 'package:app_leitura/widgets/custom_button_navigation.dart';
 import 'package:flutter/services.dart';
@@ -15,7 +16,7 @@ class InitialPage extends StatefulWidget {
 }
 
 class _InitialPageState extends State<InitialPage> {
-  bool _isTextFieldFocused = false;
+  final bool _isTextFieldFocused = false;
   final TextEditingController _matriculaController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final _auth = AuthService();
@@ -129,57 +130,10 @@ class _InitialPageState extends State<InitialPage> {
             ),
           ),
         ),
-        const SizedBox(height: 35),
+        const SizedBox(height: 20),
         Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Focus(
-              onFocusChange: (hasFocus) {
-                setState(() {
-                  _isTextFieldFocused = hasFocus;
-                });
-              },
-              child: GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).unfocus();
-                  setState(() {
-                    _isTextFieldFocused = true;
-                  });
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
-                  child: TextField(
-                    controller: _matriculaController,
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      fillColor: Colors.white,
-                      filled: true,
-                      hintText: "Matrícula",
-                      hintStyle: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            CustomButtonNavigation(
-              onPressed: _authenticate,
-              title: 'Acessar',
-              width: 175,
-              height: 40,
-            ),
             const SizedBox(height: 15),
             CustomButtonNavigation(
               onPressed: () async {
@@ -193,13 +147,19 @@ class _InitialPageState extends State<InitialPage> {
                   );
                 } else {
                   print('Falha no login');
-                  // Mostrar uma mensagem de erro ou realizar outra ação
                 }
               },
-              title: 'Conectar com google',
-              width: 175,
-              height: 40,
+              title: 'Conectar com Google',
+              width: 250,
+              height: 45,
+              colorText: Colors.white,
+              icon: Image.asset(
+                'assets/icons/googleIcon1.png',
+                width: 20,
+                height: 20,
+              ),
             ),
+            const SizedBox(height: 120),
           ],
         ),
         const SizedBox(height: 120),
