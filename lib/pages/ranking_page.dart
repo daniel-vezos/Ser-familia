@@ -25,28 +25,36 @@ class RankingPage extends StatelessWidget {
         title: const Text('Olá, primeiro nome'), // Título da página
         actions: [ButtonNotification(nameUser: nameUser)],
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(20.0),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
+            const Center(
               child: Text(
                 'Ranking',
                 style: TextStyle(fontSize: 20, color: Colors.black),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Column(
               
               children: [
-                CardRanking(),
-                CardRanking(),
-                CardRanking(),
-                CardRanking(),
+                CardRanking(
+                  nameUser: nameUser,
+                ),
+                CardRanking(
+                  nameUser: nameUser,
+                ),
+                CardRanking(
+                  nameUser: nameUser,
+                ),
+                CardRanking(
+                  nameUser: nameUser,
+                ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
           ],
         ),
       ),
