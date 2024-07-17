@@ -35,13 +35,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.app_leitura"
-<<<<<<< HEAD
         minSdk = 23
-=======
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdk = 21
->>>>>>> 83ea7edc621db788397a7d93635fbfda50b798be
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName

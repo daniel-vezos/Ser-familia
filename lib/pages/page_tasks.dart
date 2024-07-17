@@ -167,74 +167,81 @@ class _PageTasksState extends State<PageTasks> {
                   const TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
             ),
             const SizedBox(height: 20),
-            Row(
-              children: [
-                IconButton(
-                  icon: _isPlaying
-                      ? const Icon(Icons.pause)
-                      : const Icon(Icons.play_arrow),
-                  onPressed: () {
-                    setState(() {
-                      _isPlaying = !_isPlaying;
-                    });
-                  },
-                ),
-                Expanded(
-                  child: Slider(
-                    value: _currentSliderValue,
-                    min: 0.0,
-                    max: _maxSliderValue,
-                    onChanged: (value) {
-                      setState(() {
-                        _currentSliderValue = value;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '00:00', // Tempo atual
-                  style: TextStyle(fontSize: 12),
-                ),
-                Text(
-                  '02:30', // Duração total (fixa para exemplo)
-                  style: TextStyle(fontSize: 12),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            const SizedBox(height: 10), // Espaço entre os botões
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Ação ao clicar no botão abaixo de "Atividade realizada"
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => CongratsPage(nameUser: widget.nameUser)), // Substitua CongratsPage pelo nome correto da sua página
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange, // Cor de fundo laranja
-                    ),
-                    child: const Text(
-                      'Atividade Realizada',
-                      style: TextStyle(color: Colors.white), // Cor do texto branco
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20), // Adiciona espaço na parte inferior
           ],
         ),
       ),
-      bottomNavigationBar: SubMenuDefaultWidget(nameUser: widget.nameUser),
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      icon: _isPlaying
+                          ? const Icon(Icons.pause)
+                          : const Icon(Icons.play_arrow),
+                      onPressed: () {
+                        if (_isPlaying) {
+                          _pause();
+                        } else {
+                          _speak(widget.challenge);
+                        }
+                      },
+                    ),
+                    Expanded(
+                      child: Slider(
+                        value: _currentSliderValue,
+                        min: 0.0,
+                        max: _maxSliderValue,
+                        onChanged: (value) {
+                          if (_isPlaying) {
+                            setState(() {
+                              _currentSliderValue = value;
+                              _lastPausedPosition = value * _textLength;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _stop();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CongratsPage(nameUser: widget.nameUser,)),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Colors.orange, // Cor de fundo laranja
+                        ),
+                        child: const Text(
+                          'Atividade Realizada',
+                          style: TextStyle(
+                            color: Colors.white, // Cor do texto branco
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          SubMenuDefaultWidget(nameUser: widget.nameUser), // Adicionado o SubMenuDefaultWidget
+        ],
+      ),
     );
   }
 }
