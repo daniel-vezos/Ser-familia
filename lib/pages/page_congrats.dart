@@ -2,12 +2,12 @@ import 'package:app_leitura/pages/level_completed.dart';
 import 'package:app_leitura/pages/page_trophy.dart';
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
+import 'package:lottie/lottie.dart'; // Certifique-se de ter esta dependência no pubspec.yaml
 
 class CongratsPage extends StatefulWidget {
   const CongratsPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _CongratsPageState createState() => _CongratsPageState();
 }
 
@@ -39,9 +39,14 @@ class _CongratsPageState extends State<CongratsPage> {
       body: Stack(
         children: <Widget>[
           Positioned.fill(
-            child: Image.asset(
-              'assets/backgrounds/garota.png',
-              fit: BoxFit.cover,
+            child: Lottie.asset(
+              'assets/animations/trofeu.json',
+              width: double
+                  .infinity, // Use double.infinity para ocupar todo o espaço disponível
+              height: double
+                  .infinity, // Use double.infinity para ocupar todo o espaço disponível
+              fit: BoxFit
+                  .fitWidth, // Ajuste a opção de ajuste (fit) conforme necessário
             ),
           ),
           Center(
@@ -49,13 +54,7 @@ class _CongratsPageState extends State<CongratsPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PageTrophy()),
-                    );
-                  },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     shape: const CircleBorder(),
@@ -65,52 +64,8 @@ class _CongratsPageState extends State<CongratsPage> {
                   ),
                   child: const Icon(Icons.check, color: Colors.white, size: 30),
                 ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: 300, // Largura do botão
-                  height: 50, // Altura do botão
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LevelCompletedPage()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(
-                          255, 1, 121, 219), // Cor de fundo do botão
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      elevation: 8,
-                      shadowColor: Colors.black.withOpacity(0.3),
-                    ),
-                    child: const Text(
-                      'Parabéns!',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white, // Cor do texto
-                      ),
-                    ),
-                  ),
-                ),
               ],
             ),
-          ),
-          ConfettiWidget(
-            confettiController: _confettiController,
-            blastDirectionality: BlastDirectionality.explosive,
-            shouldLoop: true,
-            colors: const [
-              Colors.red,
-              Colors.blue,
-              Colors.green,
-              Colors.yellow,
-              Colors.purple,
-              Colors.orange,
-            ],
           ),
         ],
       ),

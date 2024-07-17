@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _flutterTts.speak(
-              "Descubra uma nova maneira de acompanhar o progresso educacional dos seus filhos com o Ser Familia. Este inovador aplicativo foi projetado para fortalecer a parceria entre escolas, alunos e famílias, oferecendo uma plataforma interativa e informativa.");
+              "Descubra uma nova maneira de acompanhar o progresso educacional dos seus filhos com o Ser Familia.");
         },
         child: const Icon(Icons.speaker_phone),
       ),

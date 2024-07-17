@@ -1,8 +1,8 @@
-import 'package:app_leitura/widgets/button_notification.dart';
+import 'package:app_leitura/pages/page_congrats.dart';
 import 'package:app_leitura/widgets/sub_menu_widget.dart';
 import 'package:flutter/material.dart';
-import 'page_congrats.dart'; // Importe o arquivo PAGE_CONGRATS.dart aqui
-import 'home_page.dart'; // Importe a página home_page
+import 'package:flutter_tts/flutter_tts.dart';
+import 'dart:async';
 
 class PageTasks extends StatefulWidget {
   final String title;
@@ -17,7 +17,118 @@ class PageTasks extends StatefulWidget {
 class _PageTasksState extends State<PageTasks> {
   bool _isPlaying = false;
   double _currentSliderValue = 0.0;
-  final double _maxSliderValue = 100.0; // Valor máximo do Slider
+  final double _maxSliderValue = 1.0; // Slider vai de 0.0 a 1.0
+  late FlutterTts _flutterTts;
+  Timer? _timer;
+  double _lastPausedPosition = 0.0;
+  final double _speechRate = 0.5; // Defina a taxa de fala desejada
+  int _textLength = 0;
+  late Duration _totalDuration;
+
+  @override
+  void initState() {
+    super.initState();
+    _flutterTts = FlutterTts();
+    _initTts();
+  }
+
+  void _initTts() async {
+    await _flutterTts.setLanguage('pt-BR');
+    await _flutterTts.setSpeechRate(_speechRate);
+    await _flutterTts.awaitSpeakCompletion(true); // Esperar a conclusão da fala
+    _flutterTts.setCompletionHandler(() {
+      if (mounted) {
+        setState(() {
+          _isPlaying = false;
+          _currentSliderValue = _maxSliderValue;
+        });
+      }
+      _timer?.cancel();
+    });
+
+    _flutterTts.setCancelHandler(() {
+      if (mounted) {
+        setState(() {
+          _isPlaying = false;
+        });
+      }
+      _timer?.cancel();
+    });
+
+    // Estime o tempo total de fala
+    _textLength = widget.challenge.length;
+    _totalDuration =
+        Duration(seconds: (_textLength / (_speechRate * 200)).round());
+  }
+
+  void _speak(String text) async {
+    setState(() {
+      _isPlaying = true;
+      _currentSliderValue = 0.0; // Reiniciar o slider no início
+      _lastPausedPosition = 0.0; // Reiniciar a posição pausada no início
+    });
+    await _flutterTts.stop();
+    await _flutterTts.speak(text);
+    _startTimer();
+  }
+
+  void _pause() {
+    _flutterTts.stop();
+    _timer?.cancel();
+    if (mounted) {
+      setState(() {
+        _isPlaying = false;
+        _lastPausedPosition = _currentSliderValue * _textLength;
+      });
+    }
+  }
+
+  void _stop() {
+    _timer?.cancel();
+    if (mounted) {
+      setState(() {
+        _isPlaying = false;
+        _currentSliderValue = 0.0; // Resetar slider para o início
+        _lastPausedPosition = 0.0; // Resetar a posição pausada para o início
+      });
+    }
+  }
+
+  void _startTimer() {
+    const updateInterval = Duration(milliseconds: 100);
+
+    DateTime startTime = DateTime.now();
+    _timer = Timer.periodic(updateInterval, (timer) {
+      if (_isPlaying) {
+        DateTime now = DateTime.now();
+        double elapsedSeconds =
+            now.difference(startTime).inMilliseconds / 1000.0;
+        double estimatedProgress = (elapsedSeconds / _totalDuration.inSeconds);
+        if (mounted) {
+          setState(() {
+            _currentSliderValue = estimatedProgress.clamp(0.0, 1.0);
+          });
+        }
+
+        if (_currentSliderValue >= 1.0) {
+          timer.cancel();
+          if (mounted) {
+            setState(() {
+              _isPlaying = false;
+              _currentSliderValue = 1.0;
+            });
+          }
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _flutterTts.stop();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +141,7 @@ class _PageTasksState extends State<PageTasks> {
           },
         ),
         title: const Text(''), // Título da página
-        actions: const [ButtonNotification()],
+        actions: const [], // Adicione os botões necessários
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -71,14 +182,11 @@ class _PageTasksState extends State<PageTasks> {
                           ? const Icon(Icons.pause)
                           : const Icon(Icons.play_arrow),
                       onPressed: () {
-                        setState(() {
-                          _isPlaying = !_isPlaying;
-                        });
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomePage()),
-                        );
+                        if (_isPlaying) {
+                          _pause();
+                        } else {
+                          _speak(widget.challenge);
+                        }
                       },
                     ),
                     Expanded(
@@ -87,24 +195,14 @@ class _PageTasksState extends State<PageTasks> {
                         min: 0.0,
                         max: _maxSliderValue,
                         onChanged: (value) {
-                          setState(() {
-                            _currentSliderValue = value;
-                          });
+                          if (_isPlaying) {
+                            setState(() {
+                              _currentSliderValue = value;
+                              _lastPausedPosition = value * _textLength;
+                            });
+                          }
                         },
                       ),
-                    ),
-                  ],
-                ),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '00:00', // Tempo atual
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    Text(
-                      '02:30', // Duração total (fixa para exemplo)
-                      style: TextStyle(fontSize: 20),
                     ),
                   ],
                 ),
@@ -114,12 +212,11 @@ class _PageTasksState extends State<PageTasks> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          // Ação ao clicar no botão abaixo de "Atividade realizada"
+                          _stop();
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const CongratsPage()), // Substitua CongratsPage pelo nome correto da sua página
+                                builder: (context) => const CongratsPage()),
                           );
                         },
                         style: ElevatedButton.styleFrom(
@@ -129,7 +226,8 @@ class _PageTasksState extends State<PageTasks> {
                         child: const Text(
                           'Atividade Realizada',
                           style: TextStyle(
-                              color: Colors.white), // Cor do texto branco
+                            color: Colors.white, // Cor do texto branco
+                          ),
                         ),
                       ),
                     ),
@@ -138,10 +236,8 @@ class _PageTasksState extends State<PageTasks> {
               ],
             ),
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          const SubMenuDefaultWidget(),
+          const SizedBox(height: 20),
+          const SubMenuDefaultWidget(), // Adicionado o SubMenuDefaultWidget
         ],
       ),
     );
