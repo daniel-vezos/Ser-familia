@@ -2,7 +2,11 @@ import 'package:app_leitura/widgets/sub_menu_home_widget.dart';
 import 'package:flutter/material.dart';
 
 class LevelCompletedPage extends StatelessWidget {
-  const LevelCompletedPage({super.key});
+  final String nameUser;
+  const LevelCompletedPage({
+    super.key,
+    required this.nameUser,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +99,7 @@ class LevelCompletedPage extends StatelessWidget {
           },
         ),
       ),
-      bottomNavigationBar: const MenuHomeWidget(),
+      bottomNavigationBar: MenuHomeWidget(nameUser: nameUser),
     );
   }
 }

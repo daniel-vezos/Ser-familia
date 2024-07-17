@@ -4,10 +4,11 @@ import '../widgets/sub_menu_widget.dart';
 import 'page_tasks.dart';
 
 class PageTheme extends StatelessWidget {
+  final String nameUser;
   final String weekTitle;
   final List<Map<String, dynamic>> themes;
 
-  const PageTheme({super.key, required this.weekTitle, required this.themes});
+  const PageTheme({super.key, required this.weekTitle, required this.themes, required this.nameUser});
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +31,7 @@ class PageTheme extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => PageTasks(
+                        nameUser: nameUser,
                         title: title,
                         challenge: challenge,
                       ),
@@ -75,16 +77,16 @@ class PageTheme extends StatelessWidget {
           },
         ),
         title: const Text(''), // Título da página
-        actions: const [ButtonNotification()],
+        actions: [ButtonNotification(nameUser: nameUser)],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Olá aluno',
-              style: TextStyle(fontSize: 20, color: Colors.black),
+            Text(
+              'Olá, $nameUser',
+              style: const TextStyle(fontSize: 20, color: Colors.black),
             ),
             const SizedBox(height: 20),
             Text(
@@ -100,7 +102,7 @@ class PageTheme extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: const SubMenuDefaultWidget(),
+      bottomNavigationBar: SubMenuDefaultWidget(nameUser: nameUser),
     );
   }
 }

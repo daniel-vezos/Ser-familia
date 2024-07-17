@@ -1,15 +1,13 @@
 import 'package:app_leitura/pages/notification_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-class ButtonNotification extends StatefulWidget {
-  const ButtonNotification({super.key});
+class ButtonNotification extends StatelessWidget {
+  final String nameUser;
+  const ButtonNotification({
+    super.key,
+    required this.nameUser,
+  });
 
-  @override
-  State<ButtonNotification> createState() => _ButtonNotificationState();
-}
-
-class _ButtonNotificationState extends State<ButtonNotification> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
@@ -18,7 +16,7 @@ class _ButtonNotificationState extends State<ButtonNotification> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const NotificationPage(),
+            builder: (context) => NotificationPage(nameUser: nameUser),
           ),
         );
       },

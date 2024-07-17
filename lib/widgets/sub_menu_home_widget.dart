@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import '../pages/profile_page.dart';
 
 class MenuHomeWidget extends StatelessWidget {
-  const MenuHomeWidget({super.key});
+  final String nameUser;
+  const MenuHomeWidget({
+    super.key,
+    required this.nameUser,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +27,7 @@ class MenuHomeWidget extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const RankingPage())
+                      MaterialPageRoute(builder: (context) => RankingPage(nameUser: nameUser))
                     );
                   },
                   child: const Column(
@@ -50,7 +54,7 @@ class MenuHomeWidget extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const ProfilePage())
+                      MaterialPageRoute(builder: (context) => ProfilePage(nameUser: nameUser))
                     );
                   },
                   child: const Column(

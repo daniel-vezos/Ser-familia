@@ -1,27 +1,109 @@
 import 'package:flutter/material.dart';
-import 'package:confetti/confetti.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'dart:async';
 
-class PageTrophy extends StatefulWidget {
-  const PageTrophy({super.key});
+class PageTasks extends StatefulWidget {
+  final String title;
+  final String challenge;
+
+  const PageTasks({super.key, required this.title, required this.challenge});
 
   @override
-  _PageTrophyState createState() => _PageTrophyState();
+  _PageTasksState createState() => _PageTasksState();
 }
 
-class _PageTrophyState extends State<PageTrophy> {
-  late ConfettiController _confettiController;
+class _PageTasksState extends State<PageTasks> {
+  bool _isPlaying = false;
+  double _currentSliderValue = 0.0;
+  final double _maxSliderValue = 1.0; // Slider vai de 0.0 a 1.0
+  late FlutterTts _flutterTts;
+  Timer? _timer;
+  double _lastPausedPosition = 0.0;
+  final double _speechRate = 0.5; // Defina a taxa de fala desejada
+  Duration _totalDuration = Duration.zero;
+  int _textLength = 0;
 
   @override
   void initState() {
     super.initState();
-    _confettiController =
-        ConfettiController(duration: const Duration(seconds: 10));
-    _confettiController.play();
+    _flutterTts = FlutterTts();
+    _initTts();
+  }
+
+  void _initTts() async {
+    await _flutterTts.setLanguage('pt-BR');
+    await _flutterTts.setSpeechRate(_speechRate);
+    await _flutterTts.awaitSpeakCompletion(true); // Esperar a conclusão da fala
+    _flutterTts.setCompletionHandler(() {
+      setState(() {
+        _isPlaying = false;
+        _currentSliderValue = _maxSliderValue;
+      });
+      _timer?.cancel();
+    });
+
+    // Estime o tempo total de fala
+    _textLength = widget.challenge.length;
+    int estimatedDurationMillis = (_textLength / _speechRate * 1000).toInt();
+    _totalDuration = Duration(milliseconds: estimatedDurationMillis);
+  }
+
+  void _speak(String text) async {
+    await _flutterTts.stop();
+    _lastPausedPosition = 0; // Resetar posição pausada
+    await _flutterTts.speak(text);
+    setState(() {
+      _isPlaying = true;
+      _currentSliderValue = 0.0; // Resetar slider para o início
+    });
+    _startTimer();
+  }
+
+  void _pause() {
+    _flutterTts.stop();
+    _timer?.cancel();
+    setState(() {
+      _isPlaying = false;
+      _lastPausedPosition = _currentSliderValue * _textLength;
+    });
+  }
+
+  void _stop() {
+    _flutterTts.stop();
+    _timer?.cancel();
+    setState(() {
+      _isPlaying = false;
+      _currentSliderValue = 0.0; // Resetar slider para o início
+    });
+  }
+
+  void _startTimer() {
+    const updateInterval = Duration(milliseconds: 100);
+
+    _timer = Timer.periodic(updateInterval, (timer) {
+      if (_isPlaying) {
+        setState(() {
+          _currentSliderValue +=
+              updateInterval.inMilliseconds / _totalDuration.inMilliseconds;
+        });
+
+        if (_currentSliderValue >= _maxSliderValue) {
+          timer.cancel();
+          setState(() {
+            _isPlaying = false;
+            _currentSliderValue = _maxSliderValue;
+          });
+        }
+      } else {
+        timer.cancel();
+      }
+    });
   }
 
   @override
   void dispose() {
-    _confettiController.dispose();
+    _timer?.cancel();
+    _flutterTts.stop();
     super.dispose();
   }
 
@@ -29,73 +111,115 @@ class _PageTrophyState extends State<PageTrophy> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        title: const Text(''), // Título da página
+        actions: const [], // Adicione os botões necessários
       ),
-      body: Stack(
-        children: <Widget>[
-          Positioned.fill(
-            child: Image.asset(
-              'assets/backgrounds/trofeu1.png',
-              fit: BoxFit.cover,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Tarefa',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-          ),
-          Center(
+            const SizedBox(height: 10),
+            Text(
+              widget.title,
+              style:
+                  const TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              widget.challenge,
+              style:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: const CircleBorder(),
-                    padding: const EdgeInsets.all(24),
-                    elevation: 8,
-                    shadowColor: Colors.black.withOpacity(0.3),
-                  ),
-                  child: const Icon(Icons.check, color: Colors.white, size: 30),
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      icon: _isPlaying
+                          ? const Icon(Icons.pause)
+                          : const Icon(Icons.play_arrow),
+                      onPressed: () {
+                        if (_isPlaying) {
+                          _pause();
+                        } else {
+                          _speak(widget.challenge);
+                        }
+                      },
+                    ),
+                    Expanded(
+                      child: Slider(
+                        value: _currentSliderValue,
+                        min: 0.0,
+                        max: _maxSliderValue,
+                        onChanged: (value) {
+                          setState(() {
+                            _currentSliderValue = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
-                SizedBox(
-                  width: 300, // Largura do botão
-                  height: 50, // Altura do botão
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(
-                          255, 1, 121, 219), // Cor de fundo do botão
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      elevation: 8,
-                      shadowColor: Colors.black.withOpacity(0.3),
-                    ),
-                    child: const Text(
-                      'Você conquistou o nível 1 !!!',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white, // Cor do texto
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _stop,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Colors.orange, // Cor de fundo laranja
+                        ),
+                        child: const Text(
+                          'Atividade Realizada',
+                          style: TextStyle(
+                              color: Colors.white), // Cor do texto branco
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Ação do botão Parabéns
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue, // Cor de fundo azul
+                        ),
+                        child: const Text(
+                          'Parabéns',
+                          style: TextStyle(
+                              color: Colors.white), // Cor do texto branco
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-          ConfettiWidget(
-            confettiController: _confettiController,
-            blastDirectionality: BlastDirectionality.explosive,
-            shouldLoop: true,
-            colors: const [
-              Colors.red,
-              Colors.blue,
-              Colors.green,
-              Colors.yellow,
-              Colors.purple,
-              Colors.orange,
-            ],
+          const SizedBox(
+            height: 20,
           ),
         ],
       ),

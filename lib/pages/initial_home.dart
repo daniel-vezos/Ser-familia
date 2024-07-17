@@ -1,17 +1,19 @@
+import 'dart:convert';
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_leitura/pages/weeks_page.dart'; // Importe a página WeeksPage
-
+import 'package:app_leitura/data/weeks_data.dart'; // Importe o JSON
 import '../widgets/button_default.dart';
 import '../widgets/sub_menu_home_widget.dart';
 
-void main() {
-  runApp(InitialHome());
-}
-
 class InitialHome extends StatelessWidget {
-  InitialHome({super.key});
+  final String nameUser;
+
+  InitialHome({
+    super.key, 
+    required this.nameUser
+  });
 
   final List<String> _imageList = [
     "assets/backgrounds/teste.png",
@@ -25,8 +27,21 @@ class InitialHome extends StatelessWidget {
     "assets/backgrounds/teste99.png",
   ];
 
+  List<String> _extractTitles(String jsonString) {
+    Map<String, dynamic> jsonData = json.decode(jsonString);
+    List<String> titles = [];
+
+    jsonData.forEach((nivel, semanas) {
+      titles.add(nivel);
+    });
+
+    return titles;
+  }
+
   @override
   Widget build(BuildContext context) {
+    List<String> titles = _extractTitles(weeks);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -39,7 +54,7 @@ class InitialHome extends StatelessWidget {
             },
           ),
           title: const Text('', style: TextStyle(color: Colors.black)),
-          actions: const [ButtonNotification()],
+          actions: [ButtonNotification(nameUser: nameUser)],
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -49,9 +64,8 @@ class InitialHome extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    'Olá, Aluno',
-                    style:
-                        GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+                    'Olá, $nameUser', // Exibe o nome dinâmico do usuário aqui
+                    style: GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
                   ),
                   const Spacer(),
                 ],
@@ -86,7 +100,7 @@ class InitialHome extends StatelessWidget {
               padding: const EdgeInsets.all(10.0),
               child: SizedBox(
                 height: 250, // Aumentado para 250
-                child: CustomCarousel(imageList: _imageList),
+                child: CustomCarousel(imageList: _imageList, titles: titles, userName: nameUser,),
               ),
             ),
             const SizedBox(height: 20),
@@ -96,8 +110,7 @@ class InitialHome extends StatelessWidget {
               title: 'Lista de Compras',
               assetsPath: 'assets/backgrounds/botao1.png',
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const WeeksPage()));
+                // Implementar ação
               },
               borderRadius: BorderRadius.circular(10),
             ),
@@ -106,8 +119,7 @@ class InitialHome extends StatelessWidget {
               title: 'Propósito de Vida',
               assetsPath: 'assets/backgrounds/botaook.png',
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const WeeksPage()));
+                // Implementar ação
               },
               borderRadius: BorderRadius.circular(10),
             ),
@@ -116,14 +128,13 @@ class InitialHome extends StatelessWidget {
               title: 'Lista de Compras',
               assetsPath: 'assets/backgrounds/botao3.png',
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const WeeksPage()));
+                // Implementar ação
               },
               borderRadius: BorderRadius.circular(10),
             ),
           ],
         ),
-        bottomNavigationBar: const MenuHomeWidget(),
+        bottomNavigationBar: MenuHomeWidget(nameUser: nameUser),
       ),
     );
   }
@@ -146,11 +157,16 @@ class InitialHome extends StatelessWidget {
 
 class CustomCarousel extends StatefulWidget {
   final List<String> imageList;
+  final List<String> titles;
+  final String userName;
 
-  const CustomCarousel({required this.imageList, super.key});
+  const CustomCarousel(
+      {required this.imageList,
+      required this.titles,
+      super.key,
+      required this.userName});
 
   @override
-  // ignore: library_private_types_in_public_api
   _CustomCarouselState createState() => _CustomCarouselState();
 }
 
@@ -192,42 +208,55 @@ class _CustomCarouselState extends State<CustomCarousel> {
               ),
             );
           },
-          child: Container(
-            margin: const EdgeInsets.symmetric(
-                horizontal: 10), // Remova margens se não forem necessárias
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: const Color.fromARGB(255, 255, 255, 255),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  spreadRadius: 8,
-                  blurRadius: 10,
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Image.asset(
-                      widget.imageList[index],
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                    ),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WeeksPage(
+                    nivel: widget.titles[index], nameUser: widget.userName // Passa o título do nível
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Nível ${index + 1} conquista',
-                      style: GoogleFonts.syne(
-                        fontSize: 16.0,
-                        color: Colors.black,
-                      ),
-                    ),
+                ),
+              );
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: const Color.fromARGB(255, 255, 255, 255),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    spreadRadius: 8,
+                    blurRadius: 10,
                   ),
                 ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Image.asset(
+                        widget.imageList[index],
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        widget.titles.length > index
+                            ? widget.titles[index]
+                            : 'Título não encontrado',
+                        style: GoogleFonts.syne(
+                          fontSize: 16.0,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
