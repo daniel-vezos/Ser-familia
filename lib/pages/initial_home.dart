@@ -81,13 +81,15 @@ class InitialHome extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: 'Você está no nível 1 - Início\n',
-                      style: GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+                      style:
+                          GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
                     ),
                     const TextSpan(text: '\n'),
                     TextSpan(
                       text:
                           'Esse é o seu primeiro mês de atividades, estamos felizes com seu início',
-                      style: GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+                      style:
+                          GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
                     ),
                   ],
                 ),
@@ -158,12 +160,11 @@ class CustomCarousel extends StatefulWidget {
   final List<String> titles;
   final String userName;
 
-  const CustomCarousel({
-    required this.imageList, 
-    required this.titles,
-    super.key,
-    required this.userName
-  });
+  const CustomCarousel(
+      {required this.imageList,
+      required this.titles,
+      super.key,
+      required this.userName});
 
   @override
   _CustomCarouselState createState() => _CustomCarouselState();
@@ -245,7 +246,9 @@ class _CustomCarouselState extends State<CustomCarousel> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        widget.titles.length > index ? widget.titles[index] : 'Título não encontrado',
+                        widget.titles.length > index
+                            ? widget.titles[index]
+                            : 'Título não encontrado',
                         style: GoogleFonts.syne(
                           fontSize: 16.0,
                           color: Colors.black,

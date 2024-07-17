@@ -1,7 +1,7 @@
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/card_ranking.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import '../widgets/sub_menu_widget.dart';
 
 class RankingPage extends StatelessWidget {
@@ -38,7 +38,6 @@ class RankingPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Column(
-              
               children: [
                 CardRanking(
                   nameUser: nameUser,

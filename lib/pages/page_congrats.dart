@@ -2,6 +2,7 @@ import 'package:app_leitura/pages/level_completed.dart';
 import 'package:app_leitura/pages/page_trophy.dart';
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
+import 'package:lottie/lottie.dart'; // Certifique-se de ter esta dependência no pubspec.yaml
 
 class CongratsPage extends StatefulWidget {
   final String nameUser;
@@ -42,9 +43,14 @@ class _CongratsPageState extends State<CongratsPage> {
       body: Stack(
         children: <Widget>[
           Positioned.fill(
-            child: Image.asset(
-              'assets/backgrounds/garota.png',
-              fit: BoxFit.cover,
+            child: Lottie.asset(
+              'assets/animations/trofeu.json',
+              width: double
+                  .infinity, // Use double.infinity para ocupar todo o espaço disponível
+              height: double
+                  .infinity, // Use double.infinity para ocupar todo o espaço disponível
+              fit: BoxFit
+                  .fitWidth, // Ajuste a opção de ajuste (fit) conforme necessário
             ),
           ),
           Center(
@@ -52,13 +58,7 @@ class _CongratsPageState extends State<CongratsPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PageTrophy()),
-                    );
-                  },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     shape: const CircleBorder(),
@@ -101,19 +101,6 @@ class _CongratsPageState extends State<CongratsPage> {
                 ),
               ],
             ),
-          ),
-          ConfettiWidget(
-            confettiController: _confettiController,
-            blastDirectionality: BlastDirectionality.explosive,
-            shouldLoop: true,
-            colors: const [
-              Colors.red,
-              Colors.blue,
-              Colors.green,
-              Colors.yellow,
-              Colors.purple,
-              Colors.orange,
-            ],
           ),
         ],
       ),

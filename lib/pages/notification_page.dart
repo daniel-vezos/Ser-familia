@@ -29,23 +29,18 @@ class NotificationPage extends StatelessWidget {
       ),
       body: const Column(
         children: [
-          Divider(
-            height: 1,
-            color: Color(0xfffb7bac9)
-          ),
+          // ignore: use_full_hex_values_for_flutter_colors
+          Divider(height: 1, color: Color(0xfffb7bac9)),
           SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Text('Você recebeu uma nova tarefa'),
-              Text('01/01')
-            ],
+            children: [Text('Você recebeu uma nova tarefa'), Text('01/01')],
           ),
           SizedBox(height: 10),
           Divider(
-            height: 1,
-            color: Color(0xfffb7bac9)
-          ),
+              height: 1,
+              // ignore: use_full_hex_values_for_flutter_colors
+              color: Color(0xfffb7bac9)),
         ],
       ),
       bottomNavigationBar: SubMenuDefaultWidget(nameUser: nameUser),
