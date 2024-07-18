@@ -1,5 +1,7 @@
+import 'package:app_leitura/pages/level_completed.dart';
 import 'package:app_leitura/pages/ranking_page.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../pages/profile_page.dart';
 
@@ -18,16 +20,16 @@ class MenuHomeWidget extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => RankingPage(nameUser: nameUser))
+                      MaterialPageRoute(builder: (context) => LevelCompletedPage(nameUser: nameUser))
                     );
                   },
                   child: const Column(
@@ -40,6 +42,7 @@ class MenuHomeWidget extends StatelessWidget {
                         'Conquistas',
                         style: TextStyle(
                           color: Colors.white,
+                          fontSize: 13
                         ),
                       ),
                     ],
@@ -47,8 +50,40 @@ class MenuHomeWidget extends StatelessWidget {
                 ),
               ],
             ),
+            const Spacer(),
             Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RankingPage(nameUser: nameUser))
+                    );
+                  },
+                  child: const Column(
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.rankingStar,
+                        color: Colors.white,
+                      ),
+                      Text(
+                        'Ranking',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 13
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const Spacer(),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 GestureDetector(
                   onTap: () {
@@ -67,6 +102,7 @@ class MenuHomeWidget extends StatelessWidget {
                         'Perfil',
                         style: TextStyle(
                           color: Colors.white,
+                          fontSize: 13
                         ),
                       ),
                     ],

@@ -2,8 +2,10 @@ import 'package:app_leitura/pages/initial_page.dart';
 import 'package:app_leitura/pages/privacy_policy_page.dart';
 import 'package:app_leitura/pages/terms_of_use_page.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
+import 'package:app_leitura/widgets/points_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../widgets/sub_menu_widget.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -14,17 +16,19 @@ class ProfilePage extends StatelessWidget {
   });
 
   Future<void> _signOut(BuildContext context) async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    
     try {
+      await googleSignIn.signOut();
       await FirebaseAuth.instance.signOut();
       // Redireciona para a tela inicial após o logout
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const InitialPage()),
-        (route) => false, // Remove todas as rotas anteriores
+        (route) => false,
       );
     } catch (e) {
       print('Erro ao deslogar: ${e.toString()}');
-      // Aqui você pode mostrar uma mensagem de erro ao usuário se desejar
     }
   }
 
@@ -32,7 +36,11 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [ButtonNotification(nameUser: nameUser)],
+        actions: [
+          const PointsCard(amount: 0),
+          const SizedBox(width: 16),
+          ButtonNotification(nameUser: nameUser),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 18),

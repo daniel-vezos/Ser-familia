@@ -1,4 +1,5 @@
 import 'package:app_leitura/pages/initial_home.dart';
+import 'package:app_leitura/widgets/points_card.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
@@ -78,7 +79,11 @@ class _WeeksPageState extends State<WeeksPage> {
 
     return Scaffold(
       appBar: AppBar(
-        actions: [ButtonNotification(nameUser: widget.nameUser)],
+        actions: [
+            const PointsCard(amount: 0),
+            const SizedBox(width: 16),
+            ButtonNotification(nameUser: widget.nameUser),
+          ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(20.0),

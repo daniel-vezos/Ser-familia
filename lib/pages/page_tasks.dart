@@ -1,5 +1,6 @@
 import 'package:app_leitura/pages/page_congrats.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
+import 'package:app_leitura/widgets/points_card.dart';
 import 'package:app_leitura/widgets/sub_menu_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -142,8 +143,11 @@ class _PageTasksState extends State<PageTasks> {
             Navigator.of(context).pop();
           },
         ),
-        title: const Text(''), // Título da página
-        actions: [ButtonNotification(nameUser: widget.nameUser)],
+        actions: [
+            const PointsCard(amount: 0),
+            const SizedBox(width: 16),
+            ButtonNotification(nameUser: widget.nameUser),
+          ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),

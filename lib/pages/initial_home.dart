@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:app_leitura/widgets/button_notification.dart';
+import 'package:app_leitura/widgets/points_card.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_leitura/pages/weeks_page.dart'; // Importe a página WeeksPage
@@ -53,8 +54,11 @@ class InitialHome extends StatelessWidget {
               Navigator.pop(context);
             },
           ),
-          title: const Text('', style: TextStyle(color: Colors.black)),
-          actions: [ButtonNotification(nameUser: nameUser)],
+          actions: [
+            const PointsCard(amount: 0),
+            const SizedBox(width: 16),
+            ButtonNotification(nameUser: nameUser),
+          ],
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 10),

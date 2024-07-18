@@ -34,7 +34,7 @@ dependencies:
   provider: ^6.1.2
   flutter_tts: ^3.8.3
   lottie: ^3.1.2
-  
+  font_awesome_flutter: ^10.7.0
  
 
 dev_dependencies:

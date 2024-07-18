@@ -1,4 +1,5 @@
 import 'package:app_leitura/widgets/button_notification.dart';
+import 'package:app_leitura/widgets/points_card.dart';
 import 'package:flutter/material.dart';
 import '../widgets/sub_menu_widget.dart';
 import 'page_tasks.dart';
@@ -76,8 +77,11 @@ class PageTheme extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
-        title: const Text(''), // Título da página
-        actions: [ButtonNotification(nameUser: nameUser)],
+        actions: [
+          const PointsCard(amount: 0),
+          const SizedBox(width: 16),
+          ButtonNotification(nameUser: nameUser),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
