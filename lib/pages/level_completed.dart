@@ -1,5 +1,4 @@
 import 'package:app_leitura/widgets/sub_menu_widget.dart';
-import 'package:app_leitura/widgets/sub_menu_widget.dart';
 import 'package:flutter/material.dart';
 
 class LevelCompletedPage extends StatelessWidget {

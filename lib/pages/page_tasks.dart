@@ -23,6 +23,7 @@ class _PageTasksState extends State<PageTasks> {
   final double _maxSliderValue = 1.0; // Slider vai de 0.0 a 1.0
   late FlutterTts _flutterTts;
   Timer? _timer;
+  // ignore: unused_field
   double _lastPausedPosition = 0.0;
   final double _speechRate = 0.5; // Defina a taxa de fala desejada
   int _textLength = 0;

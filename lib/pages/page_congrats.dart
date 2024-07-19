@@ -1,5 +1,4 @@
 import 'package:app_leitura/pages/level_completed.dart';
-import 'package:app_leitura/pages/page_trophy.dart';
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 import 'package:lottie/lottie.dart'; // Certifique-se de ter esta dependência no pubspec.yaml

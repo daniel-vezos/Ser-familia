@@ -1,4 +1,3 @@
-import 'package:app_leitura/pages/initial_home.dart';
 import 'package:app_leitura/widgets/points_card.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
