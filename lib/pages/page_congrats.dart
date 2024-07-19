@@ -46,11 +46,11 @@ class _CongratsPageState extends State<CongratsPage> {
             child: Lottie.asset(
               'assets/animations/trofeu.json',
               width: double
-                  .infinity, // Use double.infinity para ocupar todo o espaço disponível
+                  .infinity,
               height: double
-                  .infinity, // Use double.infinity para ocupar todo o espaço disponível
+                  .infinity,
               fit: BoxFit
-                  .fitWidth, // Ajuste a opção de ajuste (fit) conforme necessário
+                  .fitWidth,
             ),
           ),
           Center(
@@ -70,8 +70,8 @@ class _CongratsPageState extends State<CongratsPage> {
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
-                  width: 300, // Largura do botão
-                  height: 50, // Altura do botão
+                  width: 300,
+                  height: 50,
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.push(
@@ -82,7 +82,7 @@ class _CongratsPageState extends State<CongratsPage> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(
-                          255, 1, 121, 219), // Cor de fundo do botão
+                          255, 1, 121, 219),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),
@@ -94,7 +94,7 @@ class _CongratsPageState extends State<CongratsPage> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white, // Cor do texto
+                        color: Colors.white,
                       ),
                     ),
                   ),

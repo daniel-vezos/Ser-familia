@@ -113,7 +113,7 @@ class _WeeksPageState extends State<WeeksPage> {
           ),
         ],
       ),
-      bottomNavigationBar: SubMenuDefaultWidget(nameUser: widget.nameUser),
+      bottomNavigationBar: SubMenuWidget(nameUser: widget.nameUser),
     );
   }
 }

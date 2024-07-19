@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:app_leitura/pages/weeks_page.dart'; // Importe a página WeeksPage
 import 'package:app_leitura/data/weeks_data.dart'; // Importe o JSON
 import '../widgets/button_default.dart';
-import '../widgets/sub_menu_home_widget.dart';
+import '../widgets/sub_menu_widget.dart';
 
 class InitialHome extends StatelessWidget {
   final String nameUser;
@@ -48,12 +48,6 @@ class InitialHome extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
           actions: [
             const PointsCard(amount: 0),
             const SizedBox(width: 16),
@@ -138,7 +132,7 @@ class InitialHome extends StatelessWidget {
             ),
           ],
         ),
-        bottomNavigationBar: MenuHomeWidget(nameUser: nameUser),
+        bottomNavigationBar: SubMenuWidget(nameUser: nameUser),
       ),
     );
   }

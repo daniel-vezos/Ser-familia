@@ -25,7 +25,7 @@ class TermsOfUsePage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: SubMenuDefaultWidget(nameUser: nameUser),
+      bottomNavigationBar: SubMenuWidget(nameUser: nameUser),
     );
   }
 }

@@ -243,7 +243,7 @@ class _PageTasksState extends State<PageTasks> {
             ),
           ),
           const SizedBox(height: 20),
-          SubMenuDefaultWidget(nameUser: widget.nameUser), // Adicionado o SubMenuDefaultWidget
+          SubMenuWidget(nameUser: widget.nameUser), // Adicionado o SubMenuDefaultWidget
         ],
       ),
     );

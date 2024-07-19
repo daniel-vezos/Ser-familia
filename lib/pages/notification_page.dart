@@ -43,7 +43,7 @@ class NotificationPage extends StatelessWidget {
               color: Color(0xfffb7bac9)),
         ],
       ),
-      bottomNavigationBar: SubMenuDefaultWidget(nameUser: nameUser),
+      bottomNavigationBar: SubMenuWidget(nameUser: nameUser),
     );
   }
 }
