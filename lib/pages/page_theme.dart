@@ -1,3 +1,4 @@
+import 'package:app_leitura/pages/audio_test.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:flutter/material.dart';
 import '../widgets/sub_menu_widget.dart';
@@ -8,7 +9,11 @@ class PageTheme extends StatelessWidget {
   final String weekTitle;
   final List<Map<String, dynamic>> themes;
 
-  const PageTheme({super.key, required this.weekTitle, required this.themes, required this.nameUser});
+  const PageTheme(
+      {super.key,
+      required this.weekTitle,
+      required this.themes,
+      required this.nameUser});
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +36,19 @@ class PageTheme extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => PageTasks(
-                        nameUser: nameUser,
                         title: title,
                         challenge: challenge,
+                        nameUser: '',
                       ),
                     ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black, backgroundColor: Colors.white, shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Match the Container borderRadius
+                  foregroundColor: Colors.black,
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                        10), // Match the Container borderRadius
                   ), // Text color
                 ),
                 child: Row(
@@ -53,7 +61,8 @@ class PageTheme extends StatelessWidget {
                     Expanded(
                       child: Text(
                         theme['title'] ?? 'Sem Título',
-                        style: const TextStyle(fontSize: 20, color: Colors.black),
+                        style:
+                            const TextStyle(fontSize: 20, color: Colors.black),
                         textAlign: TextAlign.left,
                       ),
                     ),
@@ -66,7 +75,6 @@ class PageTheme extends StatelessWidget {
         ],
       );
     }).toList();
-
 
     return Scaffold(
       appBar: AppBar(

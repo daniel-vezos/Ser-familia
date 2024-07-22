@@ -10,7 +10,12 @@ class PageTasks extends StatefulWidget {
   final String title;
   final String challenge;
 
-  const PageTasks({super.key, required this.title, required this.challenge, required this.nameUser});
+  const PageTasks({
+    super.key,
+    required this.title,
+    required this.challenge,
+    required this.nameUser,
+  });
 
   @override
   _PageTasksState createState() => _PageTasksState();
@@ -75,7 +80,7 @@ class _PageTasksState extends State<PageTasks> {
   }
 
   void _pause() {
-    _flutterTts.stop();
+    _flutterTts.pause();
     _timer?.cancel();
     if (mounted) {
       setState(() {
@@ -86,6 +91,7 @@ class _PageTasksState extends State<PageTasks> {
   }
 
   void _stop() {
+    _flutterTts.stop();
     _timer?.cancel();
     if (mounted) {
       setState(() {
@@ -105,10 +111,11 @@ class _PageTasksState extends State<PageTasks> {
         DateTime now = DateTime.now();
         double elapsedSeconds =
             now.difference(startTime).inMilliseconds / 1000.0;
-        double estimatedProgress = (elapsedSeconds / _totalDuration.inSeconds);
+        double estimatedProgress =
+            (elapsedSeconds / _totalDuration.inSeconds).clamp(0.0, 1.0);
         if (mounted) {
           setState(() {
-            _currentSliderValue = estimatedProgress.clamp(0.0, 1.0);
+            _currentSliderValue = estimatedProgress;
           });
         }
 
@@ -157,14 +164,18 @@ class _PageTasksState extends State<PageTasks> {
             const SizedBox(height: 10),
             Text(
               widget.title,
-              style:
-                  const TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.normal,
+              ),
             ),
             const SizedBox(height: 20),
             Text(
               widget.challenge,
-              style:
-                  const TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.normal,
+              ),
             ),
             const SizedBox(height: 20),
           ],
@@ -178,31 +189,33 @@ class _PageTasksState extends State<PageTasks> {
             child: Column(
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(
-                      icon: _isPlaying
-                          ? const Icon(Icons.pause)
-                          : const Icon(Icons.play_arrow),
-                      onPressed: () {
-                        if (_isPlaying) {
-                          _pause();
-                        } else {
-                          _speak(widget.challenge);
-                        }
-                      },
-                    ),
-                    Expanded(
-                      child: Slider(
-                        value: _currentSliderValue,
-                        min: 0.0,
-                        max: _maxSliderValue,
-                        onChanged: (value) {
+                    CircleAvatar(
+                      radius: 25,
+                      backgroundColor: const Color.fromARGB(255, 226, 124, 22),
+                      child: IconButton(
+                        icon: Icon(
+                          _isPlaying ? Icons.pause : Icons.play_arrow,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
                           if (_isPlaying) {
-                            setState(() {
-                              _currentSliderValue = value;
-                              _lastPausedPosition = value * _textLength;
-                            });
+                            _pause();
+                          } else {
+                            _speak(widget.challenge);
                           }
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    CircleAvatar(
+                      radius: 25,
+                      backgroundColor: const Color.fromARGB(255, 226, 124, 22),
+                      child: IconButton(
+                        icon: const Icon(Icons.stop, color: Colors.white),
+                        onPressed: () {
+                          _stop();
                         },
                       ),
                     ),
@@ -218,17 +231,19 @@ class _PageTasksState extends State<PageTasks> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CongratsPage(nameUser: widget.nameUser,)),
+                              builder: (context) => CongratsPage(
+                                nameUser: widget.nameUser,
+                              ),
+                            ),
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Colors.orange, // Cor de fundo laranja
+                          backgroundColor: Colors.orange,
                         ),
                         child: const Text(
                           'Atividade Realizada',
                           style: TextStyle(
-                            color: Colors.white, // Cor do texto branco
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -239,7 +254,7 @@ class _PageTasksState extends State<PageTasks> {
             ),
           ),
           const SizedBox(height: 20),
-          SubMenuDefaultWidget(nameUser: widget.nameUser), // Adicionado o SubMenuDefaultWidget
+          SubMenuDefaultWidget(nameUser: widget.nameUser),
         ],
       ),
     );

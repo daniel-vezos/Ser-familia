@@ -9,7 +9,8 @@ class CustomButtonDefault extends StatefulWidget {
     super.key,
     required this.title,
     this.assetsPath, // Parâmetro opcional
-    required this.onPressed, required BorderRadius borderRadius,
+    required this.onPressed,
+    required BorderRadius borderRadius, required TextStyle textStyle,
   });
 
   @override

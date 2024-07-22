@@ -25,24 +25,25 @@ class _InitialPageState extends State<InitialPage> {
     final matricula = _matriculaController.text;
 
     if (matricula.isEmpty) {
-      // Exibir mensagem se o campo de matrícula estiver vazio
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, preencha o campo com sua matrícula')),
+        const SnackBar(
+            content: Text('Por favor, preencha o campo com sua matrícula')),
       );
       return;
     }
 
     try {
-      final doc = await _firestore.collection('matriculas').doc(matricula).get();
+      final doc =
+          await _firestore.collection('matriculas').doc(matricula).get();
 
       if (doc.exists) {
-        // Matricula encontrada
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => InitialHome(nameUser: doc['name'])),
+          MaterialPageRoute(
+            builder: (context) => InitialHome(nameUser: doc['name']),
+          ),
         );
       } else {
-        // Matricula não encontrada
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Matrícula não encontrada')),
         );
@@ -69,7 +70,8 @@ class _InitialPageState extends State<InitialPage> {
             Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage("assets/backgrounds/backgroundInitialPage.png"),
+                  image: AssetImage(
+                      "assets/backgrounds/backgroundInitialPage.png"),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -142,7 +144,8 @@ class _InitialPageState extends State<InitialPage> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => InitialHome(nameUser: user.displayName ?? 'Usuário'),
+                      builder: (context) =>
+                          InitialHome(nameUser: user.displayName ?? 'Usuário'),
                     ),
                   );
                 } else {

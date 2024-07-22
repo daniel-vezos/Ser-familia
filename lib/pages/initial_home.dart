@@ -1,137 +1,43 @@
-import 'dart:convert';
-import 'package:app_leitura/widgets/button_notification.dart';
+import 'package:app_leitura/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app_leitura/pages/weeks_page.dart'; // Importe a página WeeksPage
-import 'package:app_leitura/data/weeks_data.dart'; // Importe o JSON
-import '../widgets/button_default.dart';
-import '../widgets/sub_menu_home_widget.dart';
+import 'package:app_leitura/pages/weeks_page.dart';
+import 'package:app_leitura/pages/card_teste.dart'; // Adicione a importação da página CardTeste
+import 'package:app_leitura/widgets/button_notification.dart';
+import 'package:app_leitura/widgets/button_default.dart';
+import 'package:app_leitura/widgets/sub_menu_home_widget.dart';
 
 class InitialHome extends StatelessWidget {
   final String nameUser;
+  final HomeController _controller = HomeController();
 
-  InitialHome({
-    super.key, 
-    required this.nameUser
-  });
-
-  final List<String> _imageList = [
-    "assets/backgrounds/teste.png",
-    "assets/backgrounds/teste2.png",
-    "assets/backgrounds/teste3.png",
-    "assets/backgrounds/teste4.png",
-    "assets/backgrounds/teste6.png",
-    "assets/backgrounds/teste7.png",
-    "assets/backgrounds/teste8.png",
-    "assets/backgrounds/teste88.png",
-    "assets/backgrounds/teste99.png",
-  ];
-
-  List<String> _extractTitles(String jsonString) {
-    Map<String, dynamic> jsonData = json.decode(jsonString);
-    List<String> titles = [];
-
-    jsonData.forEach((nivel, semanas) {
-      titles.add(nivel);
-    });
-
-    return titles;
-  }
+  InitialHome({super.key, required this.nameUser});
 
   @override
   Widget build(BuildContext context) {
-    List<String> titles = _extractTitles(weeks);
+    final titles = _controller.extractTitles();
+    final imageList = _controller.getImageList();
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
           title: const Text('', style: TextStyle(color: Colors.black)),
           actions: [ButtonNotification(nameUser: nameUser)],
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 10),
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 4.0),
-              child: Row(
-                children: [
-                  Text(
-                    'Olá, $nameUser', // Exibe o nome dinâmico do usuário aqui
-                    style: GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
-                  ),
-                  const Spacer(),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 4.0),
-              child: RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'Você está no nível 1 - Início\n',
-                      style:
-                          GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
-                    ),
-                    const TextSpan(text: '\n'),
-                    TextSpan(
-                      text:
-                          'Esse é o seu primeiro mês de atividades, estamos felizes com seu início',
-                      style:
-                          GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            _buildUserGreeting(),
+            const SizedBox(height: 20),
+            _buildIntroText(),
             const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: SizedBox(
-                height: 250, // Aumentado para 250
-                child: CustomCarousel(imageList: _imageList, titles: titles, userName: nameUser,),
-              ),
-            ),
+            _buildCarousel(imageList, titles),
             const SizedBox(height: 20),
             _buildSectionTitle('Próximas tarefas a serem liberadas'),
             const SizedBox(height: 30),
-            CustomButtonDefault(
-              title: 'Lista de Compras',
-              assetsPath: 'assets/backgrounds/botao1.png',
-              onPressed: () {
-                // Implementar ação
-              },
-              borderRadius: BorderRadius.circular(10),
-            ),
-            const SizedBox(height: 20),
-            CustomButtonDefault(
-              title: 'Propósito de Vida',
-              assetsPath: 'assets/backgrounds/botaook.png',
-              onPressed: () {
-                // Implementar ação
-              },
-              borderRadius: BorderRadius.circular(10),
-            ),
-            const SizedBox(height: 20),
-            CustomButtonDefault(
-              title: 'Lista de Compras',
-              assetsPath: 'assets/backgrounds/botao3.png',
-              onPressed: () {
-                // Implementar ação
-              },
-              borderRadius: BorderRadius.circular(10),
-            ),
+            ..._buildTaskButtons(context),
           ],
         ),
         bottomNavigationBar: MenuHomeWidget(nameUser: nameUser),
@@ -139,7 +45,58 @@ class InitialHome extends StatelessWidget {
     );
   }
 
-  Padding _buildSectionTitle(String title) {
+  Widget _buildUserGreeting() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+      child: Row(
+        children: [
+          Text(
+            'Olá, $nameUser',
+            style: GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+          ),
+          const Spacer(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIntroText() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+      child: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: 'Você está no nível 1 - Início\n',
+              style: GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+            ),
+            const TextSpan(text: '\n'),
+            TextSpan(
+              text:
+                  'Esse é o seu primeiro mês de atividades, estamos felizes com seu início',
+              style: GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCarousel(List<String> imageList, List<String> titles) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: SizedBox(
+        height: 250,
+        child: CustomCarousel(
+          imageList: imageList,
+          titles: titles,
+          userName: nameUser,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Center(
@@ -153,6 +110,41 @@ class InitialHome extends StatelessWidget {
       ),
     );
   }
+
+  List<Widget> _buildTaskButtons(BuildContext context) {
+    const tasks = [
+      {'title': 'Lista de Compras', 'asset': 'assets/backgrounds/botao1.png'},
+      {'title': 'Propósito de Vida', 'asset': 'assets/backgrounds/botaook.png'},
+      {'title': 'Lista de Compras', 'asset': 'assets/backgrounds/botao3.png'},
+    ];
+
+    return tasks
+        .map((task) => Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: CustomButtonDefault(
+                title: task['title']!,
+                assetsPath: task['asset']!,
+                onPressed: () {
+                  if (task['title'] == 'Lista de Compras') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CardTeste(
+                          nameUser: '',
+                          titles: [],
+                        ), // Navega para a página CardTeste
+                      ),
+                    );
+                  } else {
+                    // Adicione outras navegações aqui, se necessário
+                  }
+                },
+                borderRadius: BorderRadius.circular(10),
+                textStyle: TextStyle(color: Colors.white),
+              ),
+            ))
+        .toList();
+  }
 }
 
 class CustomCarousel extends StatefulWidget {
@@ -160,11 +152,12 @@ class CustomCarousel extends StatefulWidget {
   final List<String> titles;
   final String userName;
 
-  const CustomCarousel(
-      {required this.imageList,
-      required this.titles,
-      super.key,
-      required this.userName});
+  const CustomCarousel({
+    required this.imageList,
+    required this.titles,
+    super.key,
+    required this.userName,
+  });
 
   @override
   _CustomCarouselState createState() => _CustomCarouselState();
@@ -176,11 +169,7 @@ class _CustomCarouselState extends State<CustomCarousel> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(
-      viewportFraction: 0.5,
-      initialPage: 200, // Iniciar na primeira página
-    );
-
+    _pageController = PageController(viewportFraction: 0.5, initialPage: 200);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _pageController.jumpToPage(0);
     });
@@ -214,7 +203,10 @@ class _CustomCarouselState extends State<CustomCarousel> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => WeeksPage(
-                    nivel: widget.titles[index], nameUser: widget.userName // Passa o título do nível
+                    nivel: widget.titles[index],
+                    nameUser: widget.userName,
+                    userName: '',
+                    titles: null,
                   ),
                 ),
               );
@@ -223,7 +215,7 @@ class _CustomCarouselState extends State<CustomCarousel> {
               margin: const EdgeInsets.symmetric(horizontal: 10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: const Color.fromARGB(255, 255, 255, 255),
+                color: Colors.white,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),

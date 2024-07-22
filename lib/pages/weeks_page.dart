@@ -13,9 +13,9 @@ class WeeksPage extends StatefulWidget {
   final String nameUser;
 
   const WeeksPage({
-    super.key, 
+    super.key,
     required this.nivel,
-    required this.nameUser,
+    required this.nameUser, required String userName, required titles,
   });
 
   @override
@@ -70,6 +70,7 @@ class _WeeksPageState extends State<WeeksPage> {
               );
             },
             borderRadius: BorderRadius.circular(10),
+            textStyle: const TextStyle(color: Colors.black), // Adiciona o parâmetro textStyle
           ),
           const SizedBox(height: 20),
         ],
