@@ -1,12 +1,10 @@
 import 'dart:ui';
 import 'package:app_leitura/auth/auth_service.dart';
+import 'package:app_leitura/pages/card_teste.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'initial_home.dart';
-import 'package:app_leitura/widgets/custom_button_navigation.dart';
-import 'package:flutter/services.dart';
 
 class InitialPage extends StatefulWidget {
   const InitialPage({super.key});
@@ -40,7 +38,10 @@ class _InitialPageState extends State<InitialPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => InitialHome(nameUser: doc['name']),
+            builder: (context) =>  CardTeste(
+              nameUser: '',
+              titles: [],
+            ),
           ),
         );
       } else {
@@ -70,8 +71,7 @@ class _InitialPageState extends State<InitialPage> {
             Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(
-                      "assets/backgrounds/backgroundInitialPage.png"),
+                  image: AssetImage("assets/backgrounds/LoginUsuario.png"),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -95,57 +95,36 @@ class _InitialPageState extends State<InitialPage> {
 
   Column _contentInitialPage(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 12, right: 12),
-              child: Row(
-                children: [
-                  Text(
-                    "Sua família conectada!",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+        const Spacer(),
+        const SizedBox(
+          height: 150,
         ),
-        const SizedBox(height: 15),
-        const Center(
-          child: Padding(
-            padding: EdgeInsets.only(left: 12, right: 12),
-            child: Text(
-              "Aqui tem disponível conteúdos para você e sua família",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 13,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          child: Column(
+            children: [
+              SizedBox(height: 15),
+            ],
           ),
         ),
-        const SizedBox(height: 20),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const SizedBox(height: 15),
-            CustomButtonNavigation(
+        const Spacer(),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 150.0),
+            child: CustomButtonNavigation(
               onPressed: () async {
                 User? user = await _auth.loginWithGoogle();
                 if (user != null) {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          InitialHome(nameUser: user.displayName ?? 'Usuário'),
+                      builder: (context) => CardTeste(
+                        nameUser: user.displayName ?? 'Usuário',
+                        titles: const [],
+                      ),
                     ),
                   );
                 } else {
@@ -162,11 +141,68 @@ class _InitialPageState extends State<InitialPage> {
                 height: 20,
               ),
             ),
-            const SizedBox(height: 120),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class CustomButtonNavigation extends StatelessWidget {
+  final VoidCallback onPressed;
+  final String title;
+  final double width;
+  final double height;
+  final Color colorText;
+  final Widget icon;
+
+  const CustomButtonNavigation({
+    super.key,
+    required this.onPressed,
+    required this.title,
+    required this.width,
+    required this.height,
+    required this.colorText,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(
+            255, 6, 48, 81), // Define a cor azul para o botão
+        borderRadius: BorderRadius.circular(8),
+        // Remova a sombra
+      ),
+      child: TextButton(
+        onPressed: onPressed,
+        style: TextButton.styleFrom(
+          foregroundColor: colorText, // Cor do texto
+          padding: EdgeInsets.zero,
+          backgroundColor:
+              const Color.fromARGB(255, 17, 47, 73), // Define a cor azul
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            icon,
+            const SizedBox(width: 8),
+            Text(
+              title,
+              style: TextStyle(
+                color: colorText,
+                fontSize: 16,
+              ),
+            ),
           ],
         ),
-        const SizedBox(height: 120),
-      ],
+      ),
     );
   }
 }

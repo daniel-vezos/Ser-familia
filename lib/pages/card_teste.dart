@@ -92,7 +92,7 @@ class _CardTesteState extends State<CardTeste> {
                   controller: _controller,
                   children: [
                     MyCard(
-                      imagePath: 'assets/backgrounds/teste2.png',
+                      imagePath: 'assets/backgrounds/trofeu1.png',
                       title: 'Nível 1',
                       onPressed: () {
                         Navigator.push(
@@ -109,7 +109,7 @@ class _CardTesteState extends State<CardTeste> {
                       },
                     ),
                     MyCard(
-                      imagePath: 'assets/backgrounds/teste2.png',
+                      imagePath: 'assets/backgrounds/trofeu1.png',
                       title: 'Nível 2',
                       onPressed: () {
                         Navigator.push(
@@ -126,7 +126,7 @@ class _CardTesteState extends State<CardTeste> {
                       },
                     ),
                     MyCard(
-                      imagePath: 'assets/backgrounds/teste2.png',
+                      imagePath: 'assets/backgrounds/trofeu1.png',
                       title: 'Nível 3',
                       onPressed: () {
                         Navigator.push(
@@ -143,7 +143,7 @@ class _CardTesteState extends State<CardTeste> {
                       },
                     ),
                     MyCard(
-                      imagePath: 'assets/backgrounds/teste2.png',
+                      imagePath: 'assets/backgrounds/trofeu1.png',
                       title: 'Nível 4',
                       onPressed: () {
                         Navigator.push(
@@ -160,7 +160,7 @@ class _CardTesteState extends State<CardTeste> {
                       },
                     ),
                     MyCard(
-                      imagePath: 'assets/backgrounds/teste2.png',
+                      imagePath: 'assets/backgrounds/trofeu1.png',
                       title: 'Nível 5',
                       onPressed: () {
                         Navigator.push(
@@ -177,7 +177,7 @@ class _CardTesteState extends State<CardTeste> {
                       },
                     ),
                     MyCard(
-                      imagePath: 'assets/backgrounds/teste2.png',
+                      imagePath: 'assets/backgrounds/trofeu1.png',
                       title: 'Nível 6',
                       onPressed: () {
                         Navigator.push(
@@ -194,7 +194,7 @@ class _CardTesteState extends State<CardTeste> {
                       },
                     ),
                     MyCard(
-                      imagePath: 'assets/backgrounds/teste2.png',
+                      imagePath: 'assets/backgrounds/trofeu1.png',
                       title: 'Nível 7',
                       onPressed: () {
                         Navigator.push(
@@ -211,7 +211,7 @@ class _CardTesteState extends State<CardTeste> {
                       },
                     ),
                     MyCard(
-                      imagePath: 'assets/backgrounds/teste2.png',
+                      imagePath: 'assets/backgrounds/trofeu1.png',
                       title: 'Nível 8',
                       onPressed: () {
                         Navigator.push(
@@ -228,7 +228,7 @@ class _CardTesteState extends State<CardTeste> {
                       },
                     ),
                     MyCard(
-                      imagePath: 'assets/backgrounds/teste2.png',
+                      imagePath: 'assets/backgrounds/trofeu1.png',
                       title: 'Nível 9',
                       onPressed: () {
                         Navigator.push(

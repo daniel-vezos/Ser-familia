@@ -129,7 +129,7 @@ class InitialHome extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const CardTeste(
+                        builder: (context) =>  CardTeste(
                           nameUser: '',
                           titles: [],
                         ), // Navega para a página CardTeste
