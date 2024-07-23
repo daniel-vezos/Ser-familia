@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../widgets/sub_menu_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfilePage extends StatelessWidget {
   final String nameUser;
@@ -34,10 +35,16 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return const Center(child: Text('Usuário não autenticado.'));
+    }
+
     return Scaffold(
       appBar: AppBar(
         actions: [
-          const PointsCard(amount: 0),
+          PointsCard(userId: user.uid),
           const SizedBox(width: 16),
           ButtonNotification(nameUser: nameUser),
         ],
@@ -88,32 +95,20 @@ class ProfilePage extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 32),
-                GestureDetector(
-                  onTap: () => _signOut(context),
-                  child: const Row(
-                    children: [
-                      Text(
-                        'Sair da conta',
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Email de contato para suporte:',
-                  style: TextStyle(fontSize: 15),
+            Center(
+              child: ElevatedButton(
+                onPressed: () => _signOut(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
                 ),
-                Text('contato@contato.com')
-              ],
-            )
+                child: const Text(
+                  'Sair',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
           ],
         ),
       ),

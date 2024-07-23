@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/points_card.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_leitura/pages/weeks_page.dart'; // Importe a página WeeksPage
@@ -42,6 +43,11 @@ class InitialHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<String> titles = _extractTitles(weeks);
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return const Center(child: Text('Usuário não autenticado.'));
+    }
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -49,7 +55,7 @@ class InitialHome extends StatelessWidget {
         appBar: AppBar(
           elevation: 0,
           actions: [
-            const PointsCard(amount: 0),
+            PointsCard(userId: user.uid),
             const SizedBox(width: 16),
             ButtonNotification(nameUser: nameUser),
           ],

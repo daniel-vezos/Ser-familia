@@ -1,5 +1,6 @@
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/points_card.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../widgets/sub_menu_widget.dart';
 import 'page_tasks.dart';
@@ -13,6 +14,12 @@ class PageTheme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return const Center(child: Text('Usuário não autenticado.'));
+    }
+
     List<Widget> themeButtons = themes.map((theme) {
       return Column(
         children: [
@@ -78,7 +85,7 @@ class PageTheme extends StatelessWidget {
           },
         ),
         actions: [
-          const PointsCard(amount: 0),
+          PointsCard(userId: user.uid),
           const SizedBox(width: 16),
           ButtonNotification(nameUser: nameUser),
         ],

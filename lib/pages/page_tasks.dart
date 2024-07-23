@@ -2,8 +2,10 @@ import 'package:app_leitura/pages/page_congrats.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/points_card.dart';
 import 'package:app_leitura/widgets/sub_menu_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:app_leitura/auth/auth_service.dart';
 import 'dart:async';
 
 class PageTasks extends StatefulWidget {
@@ -134,8 +136,33 @@ class _PageTasksState extends State<PageTasks> {
     super.dispose();
   }
 
+  final AuthService _authService = AuthService();
+  
+  void _completeActivity() async {
+    try {
+      await _authService.updatePoints(6); // Adiciona 6 pontos
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CongratsPage(nameUser: widget.nameUser),
+        ),
+      );
+    } catch (e) {
+      print('Erro ao completar a atividade: ${e.toString()}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao completar a atividade: ${e.toString()}')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return const Center(child: Text('Usuário não autenticado.'));
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -145,7 +172,7 @@ class _PageTasksState extends State<PageTasks> {
           },
         ),
         actions: [
-            const PointsCard(amount: 0),
+            PointsCard(userId: user.uid),
             const SizedBox(width: 16),
             ButtonNotification(nameUser: widget.nameUser),
           ],
@@ -220,21 +247,14 @@ class _PageTasksState extends State<PageTasks> {
                       child: ElevatedButton(
                         onPressed: () {
                           _stop();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CongratsPage(nameUser: widget.nameUser,)),
-                          );
+                          _completeActivity();
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Colors.orange, // Cor de fundo laranja
+                          backgroundColor: Colors.orange,
                         ),
                         child: const Text(
                           'Atividade Realizada',
-                          style: TextStyle(
-                            color: Colors.white, // Cor do texto branco
-                          ),
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
                     ),

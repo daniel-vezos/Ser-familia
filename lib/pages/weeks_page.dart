@@ -1,4 +1,5 @@
 import 'package:app_leitura/widgets/points_card.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
@@ -76,10 +77,16 @@ class _WeeksPageState extends State<WeeksPage> {
       );
     }).toList();
 
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return const Center(child: Text('Usuário não autenticado.'));
+    }
+
     return Scaffold(
       appBar: AppBar(
         actions: [
-            const PointsCard(amount: 0),
+            PointsCard(userId: user.uid),
             const SizedBox(width: 16),
             ButtonNotification(nameUser: widget.nameUser),
           ],
