@@ -9,7 +9,7 @@ class PointsCard extends StatelessWidget {
 
   Future<int> _fetchPoints() async {
     try {
-      final userDoc = FirebaseFirestore.instance.collection('user').doc(userId);
+      final userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
       final snapshot = await userDoc.get();
       return snapshot.data()?['points'] ?? 0;
     } catch (e) {

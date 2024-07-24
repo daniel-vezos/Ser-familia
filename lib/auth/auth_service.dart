@@ -7,7 +7,7 @@ class AuthService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> createUserDocument(User user) async {
-    final userDoc = _firestore.collection('user').doc(user.uid);
+    final userDoc = _firestore.collection('users').doc(user.uid);
 
     final docSnapshot = await userDoc.get();
     if (!docSnapshot.exists) {
@@ -60,7 +60,7 @@ class AuthService {
     print('UID do usuário: ${user.uid}'); // Adicione esta linha para depuração
 
     try {
-      final userDoc = _firestore.collection('user').doc(user.uid);
+      final userDoc = _firestore.collection('users').doc(user.uid);
 
       await _firestore.runTransaction((transaction) async {
         final snapshot = await transaction.get(userDoc);

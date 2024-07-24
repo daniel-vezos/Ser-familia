@@ -1,5 +1,8 @@
+import 'package:app_leitura/models/userList.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/card_ranking.dart';
+import 'package:app_leitura/widgets/points_card.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/sub_menu_widget.dart';
@@ -14,6 +17,16 @@ class RankingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return const Center(child: Text('Usuário não autenticado.'));
+    }
+
+    List<String> nameParts = nameUser.split(' ');
+    String firstName = nameParts.first;
+    String lastName = nameParts.last;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -22,38 +35,29 @@ class RankingPage extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
-        title: const Text('Olá, primeiro nome'), // Título da página
-        actions: [ButtonNotification(nameUser: nameUser)],
+        title: Text('Olá, ${nameUser.split(' ')[0]}'), // Título da página
+        actions: [
+            PointsCard(userId: user.uid),
+            const SizedBox(width: 16),
+            ButtonNotification(nameUser: nameUser),
+          ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
+      body: const Padding(
+        padding: EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Center(
+            Center(
               child: Text(
                 'Ranking',
                 style: TextStyle(fontSize: 20, color: Colors.black),
               ),
             ),
-            const SizedBox(height: 20),
-            Column(
-              children: [
-                CardRanking(
-                  nameUser: nameUser,
-                ),
-                CardRanking(
-                  nameUser: nameUser,
-                ),
-                CardRanking(
-                  nameUser: nameUser,
-                ),
-                CardRanking(
-                  nameUser: nameUser,
-                ),
-              ],
+            SizedBox(height: 20),
+            Expanded(
+              child: UsersList()
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
           ],
         ),
       ),
