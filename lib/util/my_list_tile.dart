@@ -18,9 +18,23 @@ class MyListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: Image.asset(inconImagePath),
-      title: Center(child: Text(tileTile)), // Centraliza o texto do título
-      subtitle:
-          Center(child: Text(tilesubTile)), // Centraliza o texto do subtítulo
+      title: Center(
+        child: Text(
+          tileTile,
+          style: const TextStyle(
+            fontSize: 20, // Aumenta o tamanho da fonte do título
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+      ),
+      subtitle: Center(
+        child: Text(
+          tilesubTile,
+          style: const TextStyle(
+            fontSize: 20, // Aumenta o tamanho da fonte do subtítulo
+          ),
+        ),
+      ),
       onTap: onTap,
     );
   }

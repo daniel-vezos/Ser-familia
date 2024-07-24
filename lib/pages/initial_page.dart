@@ -38,7 +38,7 @@ class _InitialPageState extends State<InitialPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>  CardTeste(
+            builder: (context) => const CardTeste(
               nameUser: '',
               titles: [],
             ),
@@ -71,7 +71,7 @@ class _InitialPageState extends State<InitialPage> {
             Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage("assets/backgrounds/LoginUsuario.png"),
+                  image: AssetImage("assets/backgrounds/logincerto.png"),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -183,7 +183,7 @@ class CustomButtonNavigation extends StatelessWidget {
           foregroundColor: colorText, // Cor do texto
           padding: EdgeInsets.zero,
           backgroundColor:
-              const Color.fromARGB(255, 17, 47, 73), // Define a cor azul
+              const Color.fromARGB(255, 0, 0, 0), // Define a cor azul
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),

@@ -142,7 +142,9 @@ class _PageTasksState extends State<PageTasks> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300], // Cor de fundo do Scaffold
       appBar: AppBar(
+        backgroundColor: Colors.grey[300],
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -154,31 +156,34 @@ class _PageTasksState extends State<PageTasks> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Tarefa',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              widget.title,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.normal,
+        child: Container(
+          color: Colors.grey[300], // Cor de fundo do corpo da página
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Tarefa',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              widget.challenge,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.normal,
+              const SizedBox(height: 10),
+              Text(
+                widget.title,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-          ],
+              const SizedBox(height: 20),
+              Text(
+                widget.challenge,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Column(
@@ -193,7 +198,7 @@ class _PageTasksState extends State<PageTasks> {
                   children: [
                     CircleAvatar(
                       radius: 25,
-                      backgroundColor: const Color.fromARGB(255, 226, 124, 22),
+                      backgroundColor: Colors.grey[400],
                       child: IconButton(
                         icon: Icon(
                           _isPlaying ? Icons.pause : Icons.play_arrow,
@@ -211,7 +216,7 @@ class _PageTasksState extends State<PageTasks> {
                     const SizedBox(width: 20),
                     CircleAvatar(
                       radius: 25,
-                      backgroundColor: const Color.fromARGB(255, 226, 124, 22),
+                      backgroundColor: Colors.grey[400],
                       child: IconButton(
                         icon: const Icon(Icons.stop, color: Colors.white),
                         onPressed: () {
@@ -225,29 +230,31 @@ class _PageTasksState extends State<PageTasks> {
                 Row(
                   children: [
                     Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _stop();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CongratsPage(
-                                nameUser: widget.nameUser,
-                              ),
+                        child: ElevatedButton(
+                      onPressed: () {
+                        _stop();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CongratsPage(
+                              nameUser: widget.nameUser,
                             ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                        ),
-                        child: const Text(
-                          'Atividade Realizada',
-                          style: TextStyle(
-                            color: Colors.white,
                           ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 6, 48, 81),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 15.0), // Aumenta a altura do botão
+                      ),
+                      child: const Text(
+                        'Atividade Realizada',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0, // Aumenta o tamanho da fonte
                         ),
                       ),
-                    ),
+                    )),
                   ],
                 ),
               ],

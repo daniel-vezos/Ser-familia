@@ -15,7 +15,9 @@ class WeeksPage extends StatefulWidget {
   const WeeksPage({
     super.key,
     required this.nivel,
-    required this.nameUser, required String userName, required titles,
+    required this.nameUser,
+    required String userName,
+    required titles,
   });
 
   @override
@@ -52,6 +54,19 @@ class _WeeksPageState extends State<WeeksPage> {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle buttonStyle = GoogleFonts.syne(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      color: Colors.black,
+    );
+
+    TextStyle headerStyle = GoogleFonts.syne(
+      fontSize: 24, // Aumenta o tamanho da fonte para 24
+      fontWeight: FontWeight.w800,
+
+      color: Colors.black,
+    );
+
     List<Widget> buttons = semanas.map((titulo) {
       return Column(
         children: [
@@ -69,8 +84,8 @@ class _WeeksPageState extends State<WeeksPage> {
                 ),
               );
             },
-            borderRadius: BorderRadius.circular(10),
-            textStyle: const TextStyle(color: Colors.black), // Adiciona o parâmetro textStyle
+            borderRadius: BorderRadius.circular(15),
+            textStyle: buttonStyle, // Aplica o estilo do texto ao botão
           ),
           const SizedBox(height: 20),
         ],
@@ -78,36 +93,64 @@ class _WeeksPageState extends State<WeeksPage> {
     }).toList();
 
     return Scaffold(
+      backgroundColor: Colors.grey[300], // Define a cor de fundo
       appBar: AppBar(
-        actions: [ButtonNotification(nameUser: widget.nameUser)],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(20.0),
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Olá, ${widget.nameUser}',
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
+        backgroundColor: Colors.grey[300],
+        actions: [
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.grey[400],
+                shape: BoxShape.circle,
               ),
-              const SizedBox(height: 20),
-              Text(
-                'ATIVIDADES SEMANAIS',
-                style: GoogleFonts.syne(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Column(
-                children: buttons,
-              ),
-            ],
+              child: const Icon(Icons.notifications),
+            ),
           ),
+          const SizedBox(
+              width: 16), // Adiciona um espaçamento entre os itens do AppBar
         ],
+      ),
+
+      body: Container(
+        color:
+            Colors.grey[300], // Garante que toda a área de rolagem esteja cinza
+        child: ListView(
+          padding: const EdgeInsets.all(20.0),
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Text(
+                      "Olá ",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      widget.nameUser,
+                      style: const TextStyle(fontSize: 28),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'ATIVIDADES SEMANAIS',
+                  style: TextStyle(fontSize: 20),
+                ),
+                const SizedBox(height: 20),
+                Column(
+                  children: buttons,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: SubMenuDefaultWidget(nameUser: widget.nameUser),
     );

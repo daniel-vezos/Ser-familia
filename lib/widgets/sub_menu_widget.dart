@@ -13,7 +13,7 @@ class SubMenuDefaultWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color.fromARGB(255, 1, 35, 99),
+      color: const Color.fromARGB(255, 6, 48, 81),
       height: 70,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -24,9 +24,10 @@ class SubMenuDefaultWidget extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => InitialHome(nameUser: nameUser))
-                  );
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              InitialHome(nameUser: nameUser)));
                 },
                 child: const Column(
                   children: [
@@ -73,9 +74,10 @@ class SubMenuDefaultWidget extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProfilePage(nameUser: nameUser))
-                  );
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ProfilePage(nameUser: nameUser)));
                 },
                 child: const Column(
                   children: [

@@ -269,7 +269,7 @@ class _CardTesteState extends State<CardTeste> {
                   style: buttonStyle,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
               Expanded(
                 child: ListView(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),

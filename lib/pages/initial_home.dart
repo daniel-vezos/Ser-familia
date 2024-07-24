@@ -129,7 +129,7 @@ class InitialHome extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>  CardTeste(
+                        builder: (context) => const CardTeste(
                           nameUser: '',
                           titles: [],
                         ), // Navega para a página CardTeste
@@ -140,7 +140,7 @@ class InitialHome extends StatelessWidget {
                   }
                 },
                 borderRadius: BorderRadius.circular(10),
-                textStyle: TextStyle(color: Colors.white),
+                textStyle: const TextStyle(color: Colors.white),
               ),
             ))
         .toList();
