@@ -1,3 +1,4 @@
+import 'package:app_leitura/pages/audio_test.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/points_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +11,11 @@ class PageTheme extends StatelessWidget {
   final String weekTitle;
   final List<Map<String, dynamic>> themes;
 
-  const PageTheme({super.key, required this.weekTitle, required this.themes, required this.nameUser});
+  const PageTheme(
+      {super.key,
+      required this.weekTitle,
+      required this.themes,
+      required this.nameUser});
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +30,13 @@ class PageTheme extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              color: Colors.grey[200],
             ),
             child: SizedBox(
               height: 60,
-              width: double.infinity,
+              width: MediaQuery.of(context).size.height *
+                  0.9, // 90% da largura da tela
               child: ElevatedButton(
                 onPressed: () {
                   final title = theme['title'] ?? 'Sem Título';
@@ -39,45 +45,39 @@ class PageTheme extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => PageTasks(
-                        nameUser: nameUser,
                         title: title,
                         challenge: challenge,
+                        nameUser: '',
                       ),
                     ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black, backgroundColor: Colors.white, shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Match the Container borderRadius
-                  ), // Text color
+                  foregroundColor: Colors.black,
+                  backgroundColor: Colors.grey[200],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      'assets/backgrounds/botao1.png',
-                      height: 35,
-                      width: 100,
-                    ),
-                    Expanded(
-                      child: Text(
-                        theme['title'] ?? 'Sem Título',
-                        style: const TextStyle(fontSize: 20, color: Colors.black),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                  ],
+                child: Center(
+                  child: Text(
+                    theme['title'] ?? 'Sem Título',
+                    style: const TextStyle(fontSize: 20, color: Colors.black),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 15),
         ],
       );
     }).toList();
 
-
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
+        backgroundColor: Colors.grey[300],
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -95,9 +95,20 @@ class PageTheme extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Olá, $nameUser',
-              style: const TextStyle(fontSize: 20, color: Colors.black),
+            Row(
+              children: [
+                const Text(
+                  "Olá ",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  nameUser,
+                  style: const TextStyle(fontSize: 28),
+                ),
+              ],
             ),
             const SizedBox(height: 20),
             Text(
@@ -106,7 +117,7 @@ class PageTheme extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              // crossAxisAlignment: CrossAxisAlignment.stretch,
               children: themeButtons,
             ),
             const SizedBox(height: 20),

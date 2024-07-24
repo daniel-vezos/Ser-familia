@@ -52,55 +52,25 @@ class _CongratsPageState extends State<CongratsPage> {
                   .fitWidth,
             ),
           ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: const CircleBorder(),
-                    padding: const EdgeInsets.all(24),
-                    elevation: 8,
-                    shadowColor: Colors.black.withOpacity(0.3),
-                  ),
-                  child: const Icon(Icons.check, color: Colors.white, size: 30),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: 300,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => LevelCompletedPage(nameUser: widget.nameUser)),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(
-                          255, 1, 121, 219),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      elevation: 8,
-                      shadowColor: Colors.black.withOpacity(0.3),
-                    ),
-                    child: const Text(
-                      'Parabéns!',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Center(
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.end,
+          //     children: <Widget>[
+          //       ElevatedButton(
+          //         onPressed: () {},
+          //         style: ElevatedButton.styleFrom(
+          //           backgroundColor: Colors.green,
+          //           shape: const CircleBorder(),
+          //           padding: const EdgeInsets.all(24),
+          //           elevation: 2,
+          //           shadowColor: Colors.black.withOpacity(0.3),
+          //         ),
+          //         child: const Icon(Icons.check, color: Colors.white, size: 30),
+          //       ),
+          //       const SizedBox(height: 20),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );
