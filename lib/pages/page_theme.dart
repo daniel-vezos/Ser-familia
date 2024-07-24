@@ -97,16 +97,12 @@ class PageTheme extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Text(
-                  "Olá ",
-                  style: TextStyle(
-                    fontSize: 30,
+                 Text(
+                  "Olá ${nameUser.split(' ')[0]}",
+                  style: const TextStyle(
+                    fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
-                ),
-                Text(
-                  nameUser,
-                  style: const TextStyle(fontSize: 28),
                 ),
               ],
             ),

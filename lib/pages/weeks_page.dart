@@ -133,15 +133,11 @@ class _WeeksPageState extends State<WeeksPage> {
                 Row(
                   children: [
                     Text(
-                      "Olá ${widget.nameUser}",
+                      "Olá ${widget.nameUser.split(' ')[0]}",
                       style: const TextStyle(
-                        fontSize: 30,
+                        fontSize: 25,
                         fontWeight: FontWeight.bold,
                       ),
-                    ),
-                    Text(
-                      widget.nameUser,
-                      style: const TextStyle(fontSize: 28),
                     ),
                   ],
                 ),

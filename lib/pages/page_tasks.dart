@@ -268,7 +268,8 @@ class _PageTasksState extends State<PageTasks> {
                           _completeActivity();
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
+                          backgroundColor: const Color.fromARGB(255, 6, 48, 81),
+                          padding: const EdgeInsets.symmetric(vertical: 15.0)
                         ),
                         child: const Text(
                           'Atividade Realizada',
@@ -282,7 +283,7 @@ class _PageTasksState extends State<PageTasks> {
             ),
           ),
           const SizedBox(height: 20),
-          SubMenuWidget(nameUser: widget.nameUser), // Adicionado o SubMenuDefaultWidget
+          SubMenuWidget(nameUser: widget.nameUser.split(' ')[0]), // Adicionado o SubMenuDefaultWidget
         ],
       ),
     );

@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:app_leitura/auth/auth_service.dart';
-import 'package:app_leitura/pages/card_teste.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -38,9 +37,8 @@ class _InitialPageState extends State<InitialPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const CardTeste(
-              nameUser: '',
-              titles: [],
+            builder: (context) => InitialHome(
+              nameUser: matricula,
             ),
           ),
         );
@@ -121,9 +119,8 @@ class _InitialPageState extends State<InitialPage> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => CardTeste(
+                      builder: (context) => InitialHome(
                         nameUser: user.displayName ?? 'Usuário',
-                        titles: const [],
                       ),
                     ),
                   );

@@ -35,7 +35,7 @@ class RankingPage extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
-        title: Text('Olá, ${nameUser.split(' ')[0]}'), // Título da página
+        title: Text('Olá, $nameUser'), // Título da página
         actions: [
             PointsCard(userId: user.uid),
             const SizedBox(width: 16),
