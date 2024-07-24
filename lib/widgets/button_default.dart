@@ -9,7 +9,9 @@ class CustomButtonDefault extends StatefulWidget {
     super.key,
     required this.title,
     this.assetsPath, // Parâmetro opcional
-    required this.onPressed, required BorderRadius borderRadius,
+    required this.onPressed,
+    required BorderRadius borderRadius,
+    required TextStyle textStyle,
   });
 
   @override
@@ -28,6 +30,7 @@ class _CustomButtonDefaultState extends State<CustomButtonDefault> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
             ),
+            backgroundColor: Colors.grey[200], // Cor de fundo do botão
           ),
           onPressed: widget.onPressed,
           child: widget.assetsPath != null
@@ -41,16 +44,20 @@ class _CustomButtonDefaultState extends State<CustomButtonDefault> {
                     ),
                     Text(
                       widget.title,
-                      style:
-                          GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+                      style: GoogleFonts.syne(
+                        fontSize: 20.0,
+                        color: Colors.black, // Cor do texto
+                      ),
                     ),
                   ],
                 )
               : Center(
                   child: Text(
                     widget.title,
-                    style:
-                        GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
+                    style: GoogleFonts.syne(
+                      fontSize: 25.0,
+                      color: Colors.black, // Cor do texto
+                    ),
                   ),
                 ),
         ),

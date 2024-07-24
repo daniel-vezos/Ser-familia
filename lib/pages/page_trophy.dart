@@ -6,7 +6,7 @@ class PageTasks extends StatefulWidget {
   final String title;
   final String challenge;
 
-  const PageTasks({super.key, required this.title, required this.challenge});
+  const PageTasks({super.key, required this.title, required this.challenge, required String nameUser});
 
   @override
   _PageTasksState createState() => _PageTasksState();
@@ -18,6 +18,7 @@ class _PageTasksState extends State<PageTasks> {
   final double _maxSliderValue = 1.0; // Slider vai de 0.0 a 1.0
   late FlutterTts _flutterTts;
   Timer? _timer;
+  // ignore: unused_field
   double _lastPausedPosition = 0.0;
   final double _speechRate = 0.5; // Defina a taxa de fala desejada
   Duration _totalDuration = Duration.zero;

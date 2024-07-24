@@ -1,11 +1,11 @@
-import 'package:app_leitura/widgets/sub_menu_home_widget.dart';
+import 'package:app_leitura/widgets/sub_menu_widget.dart';
 import 'package:flutter/material.dart';
 
 class LevelCompletedPage extends StatelessWidget {
   final String nameUser;
   const LevelCompletedPage({
     super.key,
-    required this.nameUser,
+    this.nameUser = '',
   });
 
   @override
@@ -73,7 +73,7 @@ class LevelCompletedPage extends StatelessWidget {
                             'Nível ${index + 1}',
                             style: const TextStyle(
                               fontSize: 15,
-                              color: Color.fromARGB(255, 5, 5, 5),
+                              color: Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
                             textAlign: TextAlign.center,
@@ -99,7 +99,7 @@ class LevelCompletedPage extends StatelessWidget {
           },
         ),
       ),
-      bottomNavigationBar: MenuHomeWidget(nameUser: nameUser),
+      bottomNavigationBar: SubMenuWidget(nameUser: nameUser),
     );
   }
 }

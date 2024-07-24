@@ -1,267 +1,299 @@
-import 'dart:convert';
-import 'package:app_leitura/widgets/button_notification.dart';
+import 'package:app_leitura/util/my_card.dart';
+import 'package:app_leitura/util/my_list_tile.dart';
+import 'package:app_leitura/widgets/sub_menu_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:app_leitura/pages/weeks_page.dart'; // Importe a página WeeksPage
-import 'package:app_leitura/data/weeks_data.dart'; // Importe o JSON
-import '../widgets/button_default.dart';
-import '../widgets/sub_menu_home_widget.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class InitialHome extends StatelessWidget {
-  final String nameUser;
+import 'weeks_page.dart'; // Certifique-se de que o caminho está correto
 
-  InitialHome({
-    super.key, 
-    required this.nameUser
-  });
+class InitialHome extends StatefulWidget {
+  final String nameUser; // Garantir que nameUser seja obrigatório
 
-  final List<String> _imageList = [
-    "assets/backgrounds/teste.png",
-    "assets/backgrounds/teste2.png",
-    "assets/backgrounds/teste3.png",
-    "assets/backgrounds/teste4.png",
-    "assets/backgrounds/teste6.png",
-    "assets/backgrounds/teste7.png",
-    "assets/backgrounds/teste8.png",
-    "assets/backgrounds/teste88.png",
-    "assets/backgrounds/teste99.png",
-  ];
+  const InitialHome({
+    super.key,
+    required this.nameUser,
+  }); // Use required aqui
 
-  List<String> _extractTitles(String jsonString) {
-    Map<String, dynamic> jsonData = json.decode(jsonString);
-    List<String> titles = [];
+  @override
+  InitialHomeState createState() => InitialHomeState();
+}
 
-    jsonData.forEach((nivel, semanas) {
-      titles.add(nivel);
-    });
-
-    return titles;
-  }
+class InitialHomeState extends State<InitialHome> {
+  final PageController _controller = PageController();
 
   @override
   Widget build(BuildContext context) {
-    List<String> titles = _extractTitles(weeks);
+    const TextStyle buttonStyle = TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.w600,
+      color: Colors.black,
+    );
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          title: const Text('', style: TextStyle(color: Colors.black)),
-          actions: [ButtonNotification(nameUser: nameUser)],
-        ),
-        body: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 4.0),
-              child: Row(
-                children: [
-                  Text(
-                    'Olá, $nameUser', // Exibe o nome dinâmico do usuário aqui
-                    style: GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
-                  ),
-                  const Spacer(),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 4.0),
-              child: RichText(
-                text: TextSpan(
+    return Scaffold(
+      backgroundColor: Colors.grey[300],
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 25.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    TextSpan(
-                      text: 'Você está no nível 1 - Início\n',
-                      style:
-                          GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
-                    ),
-                    const TextSpan(text: '\n'),
-                    TextSpan(
-                      text:
-                          'Esse é o seu primeiro mês de atividades, estamos felizes com seu início',
-                      style:
-                          GoogleFonts.syne(fontSize: 20.0, color: Colors.black),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: SizedBox(
-                height: 250, // Aumentado para 250
-                child: CustomCarousel(imageList: _imageList, titles: titles, userName: nameUser,),
-              ),
-            ),
-            const SizedBox(height: 20),
-            _buildSectionTitle('Próximas tarefas a serem liberadas'),
-            const SizedBox(height: 30),
-            CustomButtonDefault(
-              title: 'Lista de Compras',
-              assetsPath: 'assets/backgrounds/botao1.png',
-              onPressed: () {
-                // Implementar ação
-              },
-              borderRadius: BorderRadius.circular(10),
-            ),
-            const SizedBox(height: 20),
-            CustomButtonDefault(
-              title: 'Propósito de Vida',
-              assetsPath: 'assets/backgrounds/botaook.png',
-              onPressed: () {
-                // Implementar ação
-              },
-              borderRadius: BorderRadius.circular(10),
-            ),
-            const SizedBox(height: 20),
-            CustomButtonDefault(
-              title: 'Lista de Compras',
-              assetsPath: 'assets/backgrounds/botao3.png',
-              onPressed: () {
-                // Implementar ação
-              },
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ],
-        ),
-        bottomNavigationBar: MenuHomeWidget(nameUser: nameUser),
-      ),
-    );
-  }
-
-  Padding _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: Center(
-        child: Text(
-          title,
-          style: GoogleFonts.syne(
-            fontSize: 20.0,
-            color: Colors.black,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class CustomCarousel extends StatefulWidget {
-  final List<String> imageList;
-  final List<String> titles;
-  final String userName;
-
-  const CustomCarousel(
-      {required this.imageList,
-      required this.titles,
-      super.key,
-      required this.userName});
-
-  @override
-  _CustomCarouselState createState() => _CustomCarouselState();
-}
-
-class _CustomCarouselState extends State<CustomCarousel> {
-  late final PageController _pageController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(
-      viewportFraction: 0.5,
-      initialPage: 200, // Iniciar na primeira página
-    );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _pageController.jumpToPage(0);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return PageView.builder(
-      controller: _pageController,
-      itemCount: widget.imageList.length,
-      itemBuilder: (context, index) {
-        return AnimatedBuilder(
-          animation: _pageController,
-          builder: (context, child) {
-            double value = 0.0;
-            if (_pageController.position.haveDimensions) {
-              value = _pageController.page! - index;
-              value = (1 - (value.abs() * 0.5)).clamp(0.0, 1.0);
-            }
-            return Center(
-              child: SizedBox(
-                height: Curves.easeOut.transform(value) * 210,
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: child,
-              ),
-            );
-          },
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => WeeksPage(
-                    nivel: widget.titles[index], nameUser: widget.userName // Passa o título do nível
-                  ),
-                ),
-              );
-            },
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: const Color.fromARGB(255, 255, 255, 255),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    spreadRadius: 8,
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Image.asset(
-                        widget.imageList[index],
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        widget.titles.length > index
-                            ? widget.titles[index]
-                            : 'Título não encontrado',
-                        style: GoogleFonts.syne(
-                          fontSize: 16.0,
-                          color: Colors.black,
+                    Row(
+                      children: [
+                        Text(
+                          "Olá ${widget.nameUser.split(' ')[0]}",
+                          style: const TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        shape: BoxShape.circle,
                       ),
+                      child: const Icon(Icons.notifications),
                     ),
                   ],
                 ),
               ),
-            ),
+              const SizedBox(height: 20),
+              const Text(
+                "Você está no nível 1 - inicio.",
+                style: buttonStyle,
+              ),
+              const SizedBox(height: 15),
+              const Text(
+                "Esse é o seu primeiro mês de atividades, estamos felizes com seu início!",
+                style: buttonStyle,
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                height: 200,
+                child: PageView(
+                  scrollDirection: Axis.horizontal,
+                  controller: _controller,
+                  children: [
+                    MyCard(
+                      imagePath: 'assets/backgrounds/trofeu1.png',
+                      title: 'Nível 1',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WeeksPage(
+                              nameUser: widget.nameUser,
+                              nivel: 'Nível 1 Conquista',
+                              userName: widget.nameUser,
+                              titles: null,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    MyCard(
+                      imagePath: 'assets/backgrounds/trofeu1.png',
+                      title: 'Nível 2',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WeeksPage(
+                              nameUser: widget.nameUser,
+                              nivel: 'Nível 2 Conquista',
+                              userName: widget.nameUser,
+                              titles: null,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    MyCard(
+                      imagePath: 'assets/backgrounds/trofeu1.png',
+                      title: 'Nível 3',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WeeksPage(
+                              nameUser: widget.nameUser,
+                              nivel: 'Nível 3 Conquista',
+                              userName: widget.nameUser,
+                              titles: null,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    MyCard(
+                      imagePath: 'assets/backgrounds/trofeu1.png',
+                      title: 'Nível 4',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WeeksPage(
+                              nameUser: widget.nameUser,
+                              nivel: 'Nível 4 Conquista',
+                              userName: widget.nameUser,
+                              titles: null,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    MyCard(
+                      imagePath: 'assets/backgrounds/trofeu1.png',
+                      title: 'Nível 5',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WeeksPage(
+                              nameUser: widget.nameUser,
+                              nivel: 'Nível 5 Conquista',
+                              userName: widget.nameUser,
+                              titles: null,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    MyCard(
+                      imagePath: 'assets/backgrounds/trofeu1.png',
+                      title: 'Nível 6',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WeeksPage(
+                              nameUser: widget.nameUser,
+                              nivel: 'Nível 6 Conquista',
+                              userName: widget.nameUser,
+                              titles: null,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    MyCard(
+                      imagePath: 'assets/backgrounds/trofeu1.png',
+                      title: 'Nível 7',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WeeksPage(
+                              nameUser: widget.nameUser,
+                              nivel: 'Nível 7 Conquista',
+                              userName: widget.nameUser,
+                              titles: null,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    MyCard(
+                      imagePath: 'assets/backgrounds/trofeu1.png',
+                      title: 'Nível 8',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WeeksPage(
+                              nameUser: widget.nameUser,
+                              nivel: 'Nível 8 Conquista',
+                              userName: widget.nameUser,
+                              titles: null,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    MyCard(
+                      imagePath: 'assets/backgrounds/trofeu1.png',
+                      title: 'Nível 9',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WeeksPage(
+                              nameUser: widget.nameUser,
+                              nivel: 'Nível 9 Conquista',
+                              userName: widget.nameUser,
+                              titles: null,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    // Adicione mais MyCard com imagens e títulos diferentes conforme necessário
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30),
+              Center(
+                child: SmoothPageIndicator(
+                  controller: _controller,
+                  count: 9,
+                  effect: const ExpandingDotsEffect(
+                    dotColor: Colors.grey,
+                    activeDotColor: Color.fromARGB(255, 13, 61, 144),
+                    dotHeight: 8,
+                    dotWidth: 8,
+                    spacing: 10,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 40),
+              const Center(
+                child: Text(
+                  "Próximas tarefas a serem liberadas",
+                  style: buttonStyle,
+                ),
+              ),
+              const SizedBox(height: 30),
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  children: const [
+                    MyListTile(
+                      inconImagePath: "assets/backgrounds/botao1.png",
+                      tileTile: "Gratidão",
+                      onTap: null,
+                      tilesubTile: '', // Remove a função de clique
+                    ),
+                    SizedBox(height: 20),
+                    MyListTile(
+                      inconImagePath: "assets/backgrounds/botao1.png",
+                      tileTile: "Propósito de Vida",
+                      tilesubTile: "",
+                      onTap: null, // Remove a função de clique
+                    ),
+                    SizedBox(height: 20),
+                    MyListTile(
+                      inconImagePath: "assets/backgrounds/botao1.png",
+                      tileTile: "Lista de Compras",
+                      tilesubTile: "",
+                      onTap: null, // Remove a função de clique
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
+      bottomNavigationBar: SubMenuWidget(nameUser: widget.nameUser),
     );
   }
 }
