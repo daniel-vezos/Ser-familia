@@ -57,8 +57,6 @@ class AuthService {
       return;
     }
 
-    print('UID do usuário: ${user.uid}'); // Adicione esta linha para depuração
-
     try {
       final userDoc = _firestore.collection('users').doc(user.uid);
 

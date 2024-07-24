@@ -26,7 +26,6 @@ class UsersList extends StatelessWidget {
             final userData = users[index].data() as Map<String, dynamic>;
             final userName = userData['name'] ?? 'Nome desconhecido'; // Coloque o campo correto do nome do usuário
             final userPoints = userData['points'] ?? 0; // Coloque o campo correto dos pontos do usuário
-            print(userData);
             return CardRanking(
               nameUser: userName.split(' ')[0], // Passar apenas o primeiro nome
               points: userPoints,
