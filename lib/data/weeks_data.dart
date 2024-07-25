@@ -5,6 +5,7 @@ const weeks = '''
         {
             "title": "História de família",
             "challenge": " Você conhece a sua família? As vezes estamos pertinho uns dos outros mas não nos conhecemos.A sugestão de hoje é que você separe algumas fotos da família. Cada um pode falar um pouquinho  sobre a história da foto, como: Quem são as pessoas na foto? o que aconteceu ali? que sentimentos a foto lhe traz? Se não encontrar fotos da sua família, conversem juntos sobre algumas histórias de seus pais, avós, ou mesmo sobre a história do sobrenome de vocês. Projeto Viver"
+            
         },
         {
             "title": "Esforço e dedicação",
