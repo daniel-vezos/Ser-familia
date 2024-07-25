@@ -37,6 +37,7 @@ dependencies:
   audioplayers: ^6.0.0
   smooth_page_indicator: ^1.2.0
   font_awesome_flutter: ^10.7.0
+  flutter_screenutil: ^5.9.3
   
  
 

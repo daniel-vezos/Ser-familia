@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MyListTile extends StatelessWidget {
   final String inconImagePath;
@@ -21,8 +22,8 @@ class MyListTile extends StatelessWidget {
       title: Center(
         child: Text(
           tileTile,
-          style: const TextStyle(
-            fontSize: 20, // Aumenta o tamanho da fonte do título
+          style: TextStyle(
+            fontSize: 20.sp, // Utiliza o ScreenUtil para o tamanho da fonte do título
             fontWeight: FontWeight.normal,
           ),
         ),
@@ -30,8 +31,8 @@ class MyListTile extends StatelessWidget {
       subtitle: Center(
         child: Text(
           tilesubTile,
-          style: const TextStyle(
-            fontSize: 20, // Aumenta o tamanho da fonte do subtítulo
+          style: TextStyle(
+            fontSize: 16.sp, // Utiliza o ScreenUtil para o tamanho da fonte do subtítulo
           ),
         ),
       ),

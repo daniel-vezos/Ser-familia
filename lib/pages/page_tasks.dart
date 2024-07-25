@@ -144,7 +144,7 @@ class _PageTasksState extends State<PageTasks> {
   }
 
   final AuthService _authService = AuthService();
-  
+
   void _completeActivity() async {
     try {
       await _authService.updatePoints(6); // Adiciona 6 pontos
@@ -157,7 +157,8 @@ class _PageTasksState extends State<PageTasks> {
     } catch (e) {
       print('Erro ao completar a atividade: ${e.toString()}');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao completar a atividade: ${e.toString()}')),
+        SnackBar(
+            content: Text('Erro ao completar a atividade: ${e.toString()}')),
       );
     }
   }
@@ -181,10 +182,10 @@ class _PageTasksState extends State<PageTasks> {
           },
         ),
         actions: [
-            PointsCard(userId: user.uid),
-            const SizedBox(width: 16),
-            ButtonNotification(nameUser: widget.nameUser),
-          ],
+          PointsCard(userId: user.uid),
+          const SizedBox(width: 16),
+          ButtonNotification(nameUser: widget.nameUser),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -268,9 +269,9 @@ class _PageTasksState extends State<PageTasks> {
                           _completeActivity();
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 6, 48, 81),
-                          padding: const EdgeInsets.symmetric(vertical: 15.0)
-                        ),
+                            backgroundColor: const Color(0xff012363),
+                            padding:
+                                const EdgeInsets.symmetric(vertical: 15.0)),
                         child: const Text(
                           'Atividade Realizada',
                           style: TextStyle(color: Colors.white),
@@ -283,7 +284,9 @@ class _PageTasksState extends State<PageTasks> {
             ),
           ),
           const SizedBox(height: 20),
-          SubMenuWidget(nameUser: widget.nameUser.split(' ')[0]), // Adicionado o SubMenuDefaultWidget
+          SubMenuWidget(
+              nameUser: widget.nameUser
+                  .split(' ')[0]), // Adicionado o SubMenuDefaultWidget
         ],
       ),
     );

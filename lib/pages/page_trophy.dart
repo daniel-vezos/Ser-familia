@@ -6,7 +6,11 @@ class PageTasks extends StatefulWidget {
   final String title;
   final String challenge;
 
-  const PageTasks({super.key, required this.title, required this.challenge, required String nameUser});
+  const PageTasks(
+      {super.key,
+      required this.title,
+      required this.challenge,
+      required String nameUser});
 
   @override
   _PageTasksState createState() => _PageTasksState();
