@@ -1,21 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="$FLUTTER_BASE_HREF">
-
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">
@@ -33,6 +18,29 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <!-- Firebase as modules -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
+    import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics.js';
+
+    // Sua configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAlWaHprhUGhIY-Kdi1P4QOGkr5pKWc_Nk",
+      authDomain: "app-ser-familia.firebaseapp.com",
+      databaseURL: "https://app-ser-familia-default-rtdb.firebaseio.com",
+      projectId: "app-ser-familia",
+      storageBucket: "app-ser-familia.appspot.com",
+      messagingSenderId: "945071928778",
+      appId: "1:945071928778:web:2597620f2f5ab4f316cb33",
+      measurementId: "G-R7503RXG1F"
+    };
+
+    // Inicialize o Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
+
+  <!-- Flutter -->
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

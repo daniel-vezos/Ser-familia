@@ -33,9 +33,10 @@ class SubMenuWidget extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => InitialHome(nameUser: nameUser))
-                    );
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                InitialHome(nameUser: nameUser)));
                   },
                   child: const Column(
                     children: [
@@ -45,10 +46,7 @@ class SubMenuWidget extends StatelessWidget {
                       ),
                       Text(
                         'Home',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13
-                        ),
+                        style: TextStyle(color: Colors.white, fontSize: 13),
                       ),
                     ],
                   ),
@@ -63,9 +61,10 @@ class SubMenuWidget extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LevelCompletedPage(nameUser: nameUser))
-                    );
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                LevelCompletedPage(nameUser: nameUser)));
                   },
                   child: const Column(
                     children: [
@@ -75,10 +74,7 @@ class SubMenuWidget extends StatelessWidget {
                       ),
                       Text(
                         'Conquistas',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13
-                        ),
+                        style: TextStyle(color: Colors.white, fontSize: 13),
                       ),
                     ],
                   ),
@@ -93,9 +89,10 @@ class SubMenuWidget extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => RankingPage(nameUser: nameUser))
-                    );
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                RankingPage(nameUser: nameUser)));
                   },
                   child: const Column(
                     children: [
@@ -105,10 +102,7 @@ class SubMenuWidget extends StatelessWidget {
                       ),
                       Text(
                         'Ranking',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13
-                        ),
+                        style: TextStyle(color: Colors.white, fontSize: 13),
                       ),
                     ],
                   ),
@@ -123,9 +117,10 @@ class SubMenuWidget extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ProfilePage(nameUser: nameUser))
-                    );
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ProfilePage(nameUser: nameUser)));
                   },
                   child: const Column(
                     children: [
@@ -135,10 +130,7 @@ class SubMenuWidget extends StatelessWidget {
                       ),
                       Text(
                         'Perfil',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13
-                        ),
+                        style: TextStyle(color: Colors.white, fontSize: 13),
                       ),
                     ],
                   ),

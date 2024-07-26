@@ -34,6 +34,8 @@ class _CongratsPageState extends State<CongratsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          Colors.grey[300], // Define a cor de fundo para o Scaffold
       appBar: AppBar(
         title: const Text(''),
         backgroundColor: Colors.transparent,
@@ -42,35 +44,16 @@ class _CongratsPageState extends State<CongratsPage> {
       body: Stack(
         children: <Widget>[
           Positioned.fill(
-            child: Lottie.asset(
-              'assets/animations/trofeu.json',
-              width: double
-                  .infinity,
-              height: double
-                  .infinity,
-              fit: BoxFit
-                  .fitWidth,
+            child: Container(
+              color: Colors.grey[300], // Define a cor de fundo para o Container
+              child: Lottie.asset(
+                'assets/animations/trofeu.json',
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.fitWidth,
+              ),
             ),
           ),
-          // Center(
-          //   child: Column(
-          //     mainAxisAlignment: MainAxisAlignment.end,
-          //     children: <Widget>[
-          //       ElevatedButton(
-          //         onPressed: () {},
-          //         style: ElevatedButton.styleFrom(
-          //           backgroundColor: Colors.green,
-          //           shape: const CircleBorder(),
-          //           padding: const EdgeInsets.all(24),
-          //           elevation: 2,
-          //           shadowColor: Colors.black.withOpacity(0.3),
-          //         ),
-          //         child: const Icon(Icons.check, color: Colors.white, size: 30),
-          //       ),
-          //       const SizedBox(height: 20),
-          //     ],
-          //   ),
-          // ),
         ],
       ),
     );

@@ -21,9 +21,9 @@ class _CardRankingState extends State<CardRanking> {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: const Color(0xff4068B0),
+            color: const Color(0xff012363),
           ),
-          height: 50,
+          height: 60,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(

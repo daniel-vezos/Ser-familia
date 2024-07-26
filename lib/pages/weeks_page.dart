@@ -1,13 +1,13 @@
 import 'package:app_leitura/widgets/points_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import '../widgets/button_notification.dart';
 import '../widgets/button_default.dart';
 import '../widgets/sub_menu_widget.dart';
 import 'page_theme.dart';
 import '../data/weeks_data.dart'; // Import the JSON string
+import 'package:flutter_screenutil/flutter_screenutil.dart'; // Import ScreenUtil
 
 class WeeksPage extends StatefulWidget {
   final String nivel;
@@ -55,17 +55,25 @@ class _WeeksPageState extends State<WeeksPage> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle buttonStyle = GoogleFonts.syne(
-      fontSize: 16,
+    // Configuração do ScreenUtil
+    ScreenUtil.init(
+      context,
+      designSize:
+          const Size(375, 820), // Tamanho base para as resoluções móveis
+      minTextAdapt: true,
+    );
+
+    final TextStyle buttonStyle = TextStyle(
+      fontSize: 18.sp,
       fontWeight: FontWeight.w600,
       color: Colors.black,
     );
 
-    TextStyle headerStyle = GoogleFonts.syne(
-      fontSize: 24, // Aumenta o tamanho da fonte para 24
-      fontWeight: FontWeight.w800,
-
+    final TextStyle headerStyle = TextStyle(
+      fontSize: 19.sp,
+      fontWeight: FontWeight.normal,
       color: Colors.black,
+      fontFamily: 'Roboto',
     );
 
     List<Widget> buttons = semanas.map((titulo) {
@@ -88,7 +96,7 @@ class _WeeksPageState extends State<WeeksPage> {
             borderRadius: BorderRadius.circular(15),
             textStyle: buttonStyle, // Aplica o estilo do texto ao botão
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
         ],
       );
     }).toList();
@@ -104,27 +112,27 @@ class _WeeksPageState extends State<WeeksPage> {
       appBar: AppBar(
         backgroundColor: Colors.grey[300],
         actions: [
-            PointsCard(userId: user.uid),
-            const SizedBox(width: 16),
-            ButtonNotification(nameUser: widget.nameUser),
-            GestureDetector(
-              onTap: () {},
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.notifications),
+          PointsCard(userId: user.uid),
+          SizedBox(width: 16.w),
+          ButtonNotification(nameUser: widget.nameUser),
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              padding: EdgeInsets.all(8.w),
+              decoration: BoxDecoration(
+                color: Colors.grey[400],
+                shape: BoxShape.circle,
               ),
+              child: const Icon(Icons.notifications),
             ),
-          ],
+          ),
+        ],
       ),
       body: Container(
         color:
             Colors.grey[300], // Garante que toda a área de rolagem esteja cinza
         child: ListView(
-          padding: const EdgeInsets.all(20.0),
+          padding: EdgeInsets.all(20.w),
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -134,19 +142,18 @@ class _WeeksPageState extends State<WeeksPage> {
                   children: [
                     Text(
                       "Olá ${widget.nameUser.split(' ')[0]}",
-                      style: const TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: headerStyle,
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                const Text(
+                SizedBox(height: 20.h),
+                Text(
                   'ATIVIDADES SEMANAIS',
-                  style: TextStyle(fontSize: 20),
+                  style: headerStyle.copyWith(
+                      fontSize: 20
+                          .sp), // Ajuste o tamanho da fonte para responsividade
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 Column(
                   children: buttons,
                 ),
