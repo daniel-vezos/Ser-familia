@@ -8,8 +8,8 @@ class UsersList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('users').snapshots(),
-      builder: (context, snapshot) {
+      stream: FirebaseFirestore.instance.collection('users').orderBy('points', descending: true).snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Center(
               child: Text('Erro ao carregar os usuários: ${snapshot.error}'));
@@ -25,13 +25,12 @@ class UsersList extends StatelessWidget {
           itemCount: users.length - 1,
           itemBuilder: (context, index) {
             final userData = users[index].data() as Map<String, dynamic>;
-            final userName = userData['name'] ??
-                'Nome desconhecido'; // Coloque o campo correto do nome do usuário
-            final userPoints = userData['points'] ??
-                0; // Coloque o campo correto dos pontos do usuário
+            final userName = userData['name'] ?? 'Nome desconhecido'; // Verifique se o campo do nome está correto
+            final userPoints = userData['points'] ?? 0; // Verifique se o campo dos pontos está correto
             return CardRanking(
-              nameUser: userName.split(' ')[0], // Passar apenas o primeiro nome
+              nameUser: userName,
               points: userPoints,
+              rank: index + 1, // Posição no ranking (começando do 1)
             );
           },
         );
