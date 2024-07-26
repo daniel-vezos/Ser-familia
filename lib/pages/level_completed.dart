@@ -1,4 +1,7 @@
+import 'package:app_leitura/widgets/button_notification.dart';
+import 'package:app_leitura/widgets/points_card.dart';
 import 'package:app_leitura/widgets/sub_menu_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LevelCompletedPage extends StatelessWidget {
@@ -26,9 +29,20 @@ class LevelCompletedPage extends StatelessWidget {
     const int maxUnlockedLevel =
         1; // Apenas nível 1 está desbloqueado inicialmente
 
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return const Center(child: Text('Usuário não autenticado.'));
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
+        automaticallyImplyLeading: false,
+        actions: [
+          PointsCard(userId: user.uid),
+          const SizedBox(width: 16),
+          ButtonNotification(nameUser: nameUser),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(30.0),

@@ -7,18 +7,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../widgets/sub_menu_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfilePage extends StatelessWidget {
   final String nameUser;
+
   const ProfilePage({
     super.key,
-    required this.nameUser
+    required this.nameUser,
   });
 
   Future<void> _signOut(BuildContext context) async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
-    
+
     try {
       await googleSignIn.signOut();
       await FirebaseAuth.instance.signOut();
@@ -43,13 +43,21 @@ class ProfilePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back,
+              color: Colors.grey[600]), // Um cinza mais escuro
+          onPressed: () => Navigator.pop(context),
+        ),
         actions: [
           PointsCard(userId: user.uid),
           const SizedBox(width: 16),
           ButtonNotification(nameUser: nameUser),
         ],
+        backgroundColor: Colors.grey[300], // Cor de fundo da AppBar
+        elevation: 0, // Remove a sombra da AppBar
       ),
-      body: Padding(
+      body: Container(
+        color: Colors.grey[300], // Define a cor de fundo
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +70,9 @@ class ProfilePage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => PrivacyPolicyPage(nameUser: nameUser))
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              PrivacyPolicyPage(nameUser: nameUser)),
                     );
                   },
                   child: const Row(
@@ -81,7 +91,9 @@ class ProfilePage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => TermsOfUsePage(nameUser: nameUser))
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              TermsOfUsePage(nameUser: nameUser)),
                     );
                   },
                   child: const Row(
@@ -101,7 +113,12 @@ class ProfilePage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () => _signOut(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  backgroundColor: const Color(0xff012363),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                      horizontal: 32), // Ajusta o padding do botão
+                  textStyle: const TextStyle(
+                      fontSize: 18), // Ajusta o tamanho do texto
                 ),
                 child: const Text(
                   'Sair',

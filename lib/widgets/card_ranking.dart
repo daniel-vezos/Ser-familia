@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 
 class CardRanking extends StatefulWidget {
   final String nameUser;
-  final int points; // Adicionamos um novo campo para os pontos
+  final int points;
+  final int rank; // Adicionamos o parâmetro rank aqui
+
   const CardRanking({
     super.key,
     required this.nameUser,
-    required this.points, // Recebe os pontos como parâmetro
+    required this.points,
+    required this.rank, // Recebe o rank como parâmetro
   });
 
   @override
@@ -21,17 +24,17 @@ class _CardRankingState extends State<CardRanking> {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: const Color(0xff4068B0),
+            color: const Color(0xff012363),
           ),
-          height: 50,
+          height: 60,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  '#1',
-                  style: TextStyle(color: Colors.white),
+                Text(
+                  '#${widget.rank}', // Mostra o número do ranking dinamicamente
+                  style: const TextStyle(color: Colors.white),
                 ),
                 Text(
                   widget.nameUser,

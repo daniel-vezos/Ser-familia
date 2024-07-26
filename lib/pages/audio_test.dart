@@ -208,7 +208,7 @@
 //                         },
 //                       ),
 //                     ),
-//                     const SizedBox(width: 20),
+//                     const SizedBox(width: 20),eali
 //                     CircleAvatar(
 //                       radius: 25,
 //                       backgroundColor: Colors.blue,
