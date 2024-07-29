@@ -85,62 +85,14 @@ class InitialHomeState extends State<InitialHome> {
                 ),
                 SizedBox(height: 30.h),
                 SizedBox(
-                  height: 230.h,
+                  height: 268.h, // Ajuste a altura mínima conforme necessário
                   child: PageView(
                     scrollDirection: Axis.horizontal,
                     controller: _controller,
                     children: [
-                      MyCard(
-                        imagePath: 'assets/backgrounds/trofeu1.png',
-                        title: 'Nível 1',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WeeksPage(
-                                nameUser: widget.nameUser,
-                                nivel: 'Nível 1 Conquista',
-                                userName: widget.nameUser,
-                                titles: null,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      MyCard(
-                        imagePath: 'assets/backgrounds/trofeu1.png',
-                        title: 'Nível 2',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WeeksPage(
-                                nameUser: widget.nameUser,
-                                nivel: 'Nível 2 Conquista',
-                                userName: widget.nameUser,
-                                titles: null,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      MyCard(
-                        imagePath: 'assets/backgrounds/trofeu1.png',
-                        title: 'Nível 3',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WeeksPage(
-                                nameUser: widget.nameUser,
-                                nivel: 'Nível 3 Conquista',
-                                userName: widget.nameUser,
-                                titles: null,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                      _buildCard('Nível 1', 'assets/backgrounds/trofeu1.png'),
+                      _buildCard('Nível 2', 'assets/backgrounds/trofeu1.png'),
+                      _buildCard('Nível 3', 'assets/backgrounds/trofeu1.png'),
                     ],
                   ),
                 ),
@@ -197,6 +149,30 @@ class InitialHomeState extends State<InitialHome> {
         ),
       ),
       bottomNavigationBar: SubMenuWidget(nameUser: widget.nameUser),
+    );
+  }
+
+  // Helper method to create a card
+  Widget _buildCard(String title, String imagePath) {
+    return AspectRatio(
+      aspectRatio: 100 / 100, // Ajuste o aspecto conforme necessário
+      child: MyCard(
+        imagePath: imagePath,
+        title: title,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => WeeksPage(
+                nameUser: widget.nameUser,
+                nivel: '$title Conquista',
+                userName: widget.nameUser,
+                titles: null,
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
