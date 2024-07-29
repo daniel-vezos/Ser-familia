@@ -1,10 +1,12 @@
-import 'package:app_leitura/pages/weeks_page.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:app_leitura/pages/weeks_page.dart';
 import 'package:app_leitura/util/my_card.dart';
 import 'package:app_leitura/util/my_list_tile.dart';
 import 'package:app_leitura/widgets/sub_menu_widget.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'weeks_data.dart';
 
 class InitialHome extends StatefulWidget {
   final String nameUser;
@@ -20,10 +22,52 @@ class InitialHome extends StatefulWidget {
 
 class InitialHomeState extends State<InitialHome> {
   final PageController _controller = PageController();
+  DateTime startDate = DateTime(2024, 07, 29);
+  late DateTime currentDate;
+  late int weekNumber;
+
+  // Carregar dados JSON
+  late Map<String, dynamic> weeksData;
+
+  @override
+  void initState() {
+    super.initState();
+    currentDate = DateTime.now();
+    weekNumber = ((currentDate.difference(startDate).inDays / 7).floor() + 1);
+    weeksData = json.decode(weeks); // Carregar dados JSON aqui
+  }
+
+  bool isCardClickable(int levelNumber) {
+    // Calcula o número mínimo de semanas que precisa para desbloquear o nível
+    int weeksRequired = (levelNumber - 1) * 4;
+    DateTime unlockDate = startDate.add(Duration(days: weeksRequired * 7));
+    return currentDate.isAfter(unlockDate);
+  }
+
+  Widget buildLevelCard(String levelName, int levelNumber) {
+    bool clickable = isCardClickable(levelNumber);
+    return MyCard(
+      imagePath: 'assets/backgrounds/trofeu1.png',
+      title: levelName,
+      onPressed: clickable ? () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WeeksPage(
+              nameUser: widget.nameUser,
+              nivel: levelName,
+              userName: widget.nameUser,
+              titles: weeksData[levelName],
+            ),
+          ),
+        );
+      } : null,
+      color: clickable ? Colors.white : Colors.grey.withOpacity(0.5), // Torna o card mais transparente se não clicável
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Configuração do ScreenUtil
     ScreenUtil.init(
       context,
       designSize: const Size(375, 820),
@@ -90,57 +134,10 @@ class InitialHomeState extends State<InitialHome> {
                     scrollDirection: Axis.horizontal,
                     controller: _controller,
                     children: [
-                      MyCard(
-                        imagePath: 'assets/backgrounds/trofeu1.png',
-                        title: 'Nível 1',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WeeksPage(
-                                nameUser: widget.nameUser,
-                                nivel: 'Nível 1 Conquista',
-                                userName: widget.nameUser,
-                                titles: null,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      MyCard(
-                        imagePath: 'assets/backgrounds/trofeu1.png',
-                        title: 'Nível 2',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WeeksPage(
-                                nameUser: widget.nameUser,
-                                nivel: 'Nível 2 Conquista',
-                                userName: widget.nameUser,
-                                titles: null,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      MyCard(
-                        imagePath: 'assets/backgrounds/trofeu1.png',
-                        title: 'Nível 3',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WeeksPage(
-                                nameUser: widget.nameUser,
-                                nivel: 'Nível 3 Conquista',
-                                userName: widget.nameUser,
-                                titles: null,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                      buildLevelCard('Nível 1 Conquista', 1),
+                      buildLevelCard('Nível 2 Conquista', 2),
+                      buildLevelCard('Nível 3 Conquista', 3),
+                      // Adicione mais níveis conforme necessário
                     ],
                   ),
                 ),

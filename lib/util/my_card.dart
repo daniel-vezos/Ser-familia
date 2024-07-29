@@ -9,7 +9,7 @@ class MyCard extends StatelessWidget {
     super.key,
     required this.imagePath,
     this.title, // Permite título nulo
-    this.onPressed, // Permite função opcional
+    this.onPressed, Color? backgroundColor, Color? textColor, required Color color, // Permite função opcional
   });
 
   @override
