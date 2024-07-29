@@ -74,16 +74,15 @@ class _InitialPageState extends State<InitialPage> {
                 ),
               ),
             ),
-            _isTextFieldFocused == true
-                ? Positioned.fill(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                      child: Container(
-                        color: Colors.black.withOpacity(0.5),
-                      ),
-                    ),
-                  )
-                : Container(),
+            if (_isTextFieldFocused)
+              Positioned.fill(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                  child: Container(
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                ),
+              ),
             _contentInitialPage(context),
           ],
         ),
@@ -111,7 +110,7 @@ class _InitialPageState extends State<InitialPage> {
         Align(
           alignment: Alignment.bottomCenter,
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 150.0),
+            padding: const EdgeInsets.only(bottom: 200.0),
             child: CustomButtonNavigation(
               onPressed: () async {
                 User? user = await _auth.loginWithGoogle();
@@ -172,15 +171,12 @@ class CustomButtonNavigation extends StatelessWidget {
         color: const Color.fromARGB(
             255, 6, 48, 81), // Define a cor azul para o botão
         borderRadius: BorderRadius.circular(8),
-        // Remova a sombra
       ),
       child: TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(
           foregroundColor: colorText, // Cor do texto
           padding: EdgeInsets.zero,
-          backgroundColor:
-              const Color.fromARGB(255, 0, 0, 0), // Define a cor azul
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
@@ -190,11 +186,14 @@ class CustomButtonNavigation extends StatelessWidget {
           children: [
             icon,
             const SizedBox(width: 8),
-            Text(
-              title,
-              style: TextStyle(
-                color: colorText,
-                fontSize: 16,
+            Flexible(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: colorText,
+                  fontSize: 10,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
