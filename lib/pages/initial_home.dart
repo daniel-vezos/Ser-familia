@@ -85,7 +85,7 @@ class InitialHomeState extends State<InitialHome> {
                 ),
                 SizedBox(height: 30.h),
                 SizedBox(
-                  height: 268.h, // Ajuste a altura mínima conforme necessário
+                  height: 260.h, // Ajuste a altura mínima conforme necessário
                   child: PageView(
                     scrollDirection: Axis.horizontal,
                     controller: _controller,
