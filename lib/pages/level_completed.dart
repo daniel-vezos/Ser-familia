@@ -36,12 +36,15 @@ class LevelCompletedPage extends StatelessWidget {
     }
 
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
+        backgroundColor: Colors.grey[300],
         automaticallyImplyLeading: false,
         actions: [
           PointsCard(userId: user.uid),
           const SizedBox(width: 16),
           ButtonNotification(nameUser: nameUser),
+          const SizedBox(width: 16),
         ],
       ),
       body: Padding(

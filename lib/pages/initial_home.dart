@@ -1,10 +1,12 @@
-import 'package:app_leitura/pages/weeks_page.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:app_leitura/pages/weeks_page.dart';
 import 'package:app_leitura/util/my_card.dart';
 import 'package:app_leitura/util/my_list_tile.dart';
 import 'package:app_leitura/widgets/sub_menu_widget.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:app_leitura/data/weeks_data.dart';
 
 class InitialHome extends StatefulWidget {
   final String nameUser;
@@ -20,10 +22,56 @@ class InitialHome extends StatefulWidget {
 
 class InitialHomeState extends State<InitialHome> {
   final PageController _controller = PageController();
+  
+  // Carregar dados JSON
+  late Map<String, dynamic> weeksData;
+
+  @override
+  void initState() {
+    super.initState();
+    weeksData = json.decode(weeks); // Carregar dados JSON aqui
+  }
+
+  bool isCardClickable(int levelNumber) {
+    // Simplesmente habilita todos os cartões
+    return true;
+  }
+
+  List<Widget> buildLevelCards() {
+    List<Widget> levelCards = [];
+
+    for (var level in weeksData.keys) {
+      int levelNumber = int.tryParse(level.split(' ')[1]) ?? 0;
+      levelCards.add(buildLevelCard(level, levelNumber));
+    }
+
+    return levelCards;
+  }
+
+  Widget buildLevelCard(String levelName, int levelNumber) {
+    bool clickable = isCardClickable(levelNumber);
+    return MyCard(
+      imagePath: 'assets/backgrounds/trofeu1.png',
+      title: levelName,
+      onPressed: clickable ? () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WeeksPage(
+              nameUser: widget.nameUser,
+              nivel: levelName,
+              userName: widget.nameUser,
+              titles: weeksData[levelName],
+            ),
+          ),
+        );
+      } : null,
+      color: clickable ? Colors.white : Colors.grey.withOpacity(0.5),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Configuração do ScreenUtil
     ScreenUtil.init(
       context,
       designSize: const Size(375, 820),
@@ -85,70 +133,18 @@ class InitialHomeState extends State<InitialHome> {
                 ),
                 SizedBox(height: 30.h),
                 SizedBox(
-                  height: 190.h,
+                  height: 230.h,
                   child: PageView(
                     scrollDirection: Axis.horizontal,
                     controller: _controller,
-                    children: [
-                      MyCard(
-                        imagePath: 'assets/backgrounds/trofeu1.png',
-                        title: 'Nível 1',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WeeksPage(
-                                nameUser: widget.nameUser,
-                                nivel: 'Nível 1 Conquista',
-                                userName: widget.nameUser,
-                                titles: null,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      MyCard(
-                        imagePath: 'assets/backgrounds/trofeu1.png',
-                        title: 'Nível 2',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WeeksPage(
-                                nameUser: widget.nameUser,
-                                nivel: 'Nível 2 Conquista',
-                                userName: widget.nameUser,
-                                titles: null,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      MyCard(
-                        imagePath: 'assets/backgrounds/trofeu1.png',
-                        title: 'Nível 3',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WeeksPage(
-                                nameUser: widget.nameUser,
-                                nivel: 'Nível 3 Conquista',
-                                userName: widget.nameUser,
-                                titles: null,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+                    children: buildLevelCards(),
                   ),
                 ),
                 SizedBox(height: 30.h),
                 Center(
                   child: SmoothPageIndicator(
                     controller: _controller,
-                    count: 3,
+                    count: weeksData.keys.length,
                     effect: ExpandingDotsEffect(
                       dotColor: Colors.grey,
                       activeDotColor: const Color.fromARGB(255, 13, 61, 144),

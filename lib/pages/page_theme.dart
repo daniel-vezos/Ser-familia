@@ -121,6 +121,7 @@ class PageTheme extends StatelessWidget {
           PointsCard(userId: user.uid),
           SizedBox(width: 16.w),
           ButtonNotification(nameUser: nameUser),
+          SizedBox(width: 16.w),
         ],
       ),
       body: Padding(

@@ -6,7 +6,7 @@ import '../widgets/button_notification.dart';
 import '../widgets/button_default.dart';
 import '../widgets/sub_menu_widget.dart';
 import 'page_theme.dart';
-import '../data/weeks_data.dart'; // Import the JSON string
+import 'package:app_leitura/data/weeks_data.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart'; // Import ScreenUtil
 
 class WeeksPage extends StatefulWidget {
@@ -115,17 +115,7 @@ class _WeeksPageState extends State<WeeksPage> {
           PointsCard(userId: user.uid),
           SizedBox(width: 16.w),
           ButtonNotification(nameUser: widget.nameUser),
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              padding: EdgeInsets.all(8.w),
-              decoration: BoxDecoration(
-                color: Colors.grey[400],
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.notifications),
-            ),
-          ),
+          SizedBox(width: 16.w),
         ],
       ),
       body: Container(

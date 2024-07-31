@@ -10,9 +10,8 @@ class ButtonNotification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.notifications),
-      onPressed: () {
+    return GestureDetector(
+      onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -20,6 +19,14 @@ class ButtonNotification extends StatelessWidget {
           ),
         );
       },
+      child: Container(
+        padding: const EdgeInsets.all(8.0), // ajuste o valor conforme necessário
+        decoration: BoxDecoration(
+          color: Colors.grey[400],
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(Icons.notifications),
+      ),
     );
   }
 }
