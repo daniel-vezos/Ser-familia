@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>app_leitura</string>
+	<string>com.example.appleitura</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -29,7 +29,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.945071928778-nsr9mjav2gk15o0d7qs0ei7c3qph0kmg</string>
+				<string>com.googleusercontent.apps.945071928778-9iar3af9ok20b1u0ld90152ei5kis1is</string>
 			</array>
 		</dict>
 	</array>

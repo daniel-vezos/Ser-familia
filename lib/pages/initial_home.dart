@@ -1,4 +1,5 @@
 import 'package:app_leitura/pages/weeks_page.dart';
+import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -68,7 +69,7 @@ class InitialHomeState extends State<InitialHome> {
                           color: Colors.grey[400],
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.notifications),
+                        child: ButtonNotification(nameUser: widget.nameUser),
                       ),
                     ],
                   ),

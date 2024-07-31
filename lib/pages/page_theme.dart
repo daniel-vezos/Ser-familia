@@ -36,7 +36,7 @@ class PageTheme extends StatelessWidget {
     );
 
     final TextStyle buttonStyle = TextStyle(
-      fontSize: 18.sp,
+      fontSize: 20.sp,
       fontWeight: FontWeight.normal, // Ajuste o peso da fonte para normal
       color: Colors.black,
       fontFamily: 'Roboto', // Define a fonte Roboto
@@ -119,8 +119,15 @@ class PageTheme extends StatelessWidget {
         ),
         actions: [
           PointsCard(userId: user.uid),
-          SizedBox(width: 16.w),
-          ButtonNotification(nameUser: nameUser),
+          const SizedBox(width: 16),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.grey[400],
+              shape: BoxShape.circle,
+            ),
+            child: ButtonNotification(nameUser: nameUser),
+          ),
         ],
       ),
       body: Padding(

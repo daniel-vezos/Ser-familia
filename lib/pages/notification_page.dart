@@ -57,7 +57,7 @@ class NotificationPage extends StatelessWidget {
           'Notificações',
           style: titleStyle,
         ),
-        actions: [ButtonNotification(nameUser: nameUser)],
+        // actions: [ButtonNotification(nameUser: nameUser)],
       ),
       body: Container(
         color: Colors.grey[300], // Define a cor de fundo para o Container

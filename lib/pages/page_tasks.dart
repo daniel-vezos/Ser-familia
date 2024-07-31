@@ -184,7 +184,14 @@ class _PageTasksState extends State<PageTasks> {
         actions: [
           PointsCard(userId: user.uid),
           const SizedBox(width: 16),
-          ButtonNotification(nameUser: widget.nameUser),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.grey[400],
+              shape: BoxShape.circle,
+            ),
+            child: ButtonNotification(nameUser: widget.nameUser),
+          ),
         ],
       ),
       body: SingleChildScrollView(

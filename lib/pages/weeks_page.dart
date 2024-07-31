@@ -114,20 +114,20 @@ class _WeeksPageState extends State<WeeksPage> {
         actions: [
           PointsCard(userId: user.uid),
           SizedBox(width: 16.w),
-          ButtonNotification(nameUser: widget.nameUser),
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              padding: EdgeInsets.all(8.w),
-              decoration: BoxDecoration(
-                color: Colors.grey[400],
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.notifications),
+          Container(
+            padding: EdgeInsets.all(8.w),
+            decoration: BoxDecoration(
+              color: Colors.grey[400],
+              shape: BoxShape.circle,
             ),
+            child: ButtonNotification(nameUser: widget.nameUser),
+          ),
+          const SizedBox(
+            height: 20,
           ),
         ],
       ),
+
       body: Container(
         color:
             Colors.grey[300], // Garante que toda a área de rolagem esteja cinza

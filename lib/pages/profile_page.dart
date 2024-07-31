@@ -51,7 +51,14 @@ class ProfilePage extends StatelessWidget {
         actions: [
           PointsCard(userId: user.uid),
           const SizedBox(width: 16),
-          ButtonNotification(nameUser: nameUser),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.grey[400],
+              shape: BoxShape.circle,
+            ),
+            child: ButtonNotification(nameUser: nameUser),
+          ),
         ],
         backgroundColor: Colors.grey[300], // Cor de fundo da AppBar
         elevation: 0, // Remove a sombra da AppBar

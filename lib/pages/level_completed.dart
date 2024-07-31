@@ -1,3 +1,4 @@
+import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/sub_menu_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +30,25 @@ class LevelCompletedPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
+        backgroundColor: Colors.grey[300], // Cor da AppBar
+        actions: [
+          // PointsCard(userId: user.uid),
+          const SizedBox(width: 16),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.grey[400],
+              shape: BoxShape.circle,
+            ),
+            child: ButtonNotification(nameUser: nameUser),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+        ],
       ),
+
+      backgroundColor: Colors.grey[300], // Cor de fundo do Scaffold
       body: Padding(
         padding: const EdgeInsets.all(30.0),
         child: GridView.builder(
