@@ -6,7 +6,7 @@ import 'package:app_leitura/util/my_card.dart';
 import 'package:app_leitura/util/my_list_tile.dart';
 import 'package:app_leitura/widgets/sub_menu_widget.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'weeks_data.dart';
+import 'package:app_leitura/data/weeks_data.dart';
 
 class InitialHome extends StatefulWidget {
   final String nameUser;
@@ -22,26 +22,30 @@ class InitialHome extends StatefulWidget {
 
 class InitialHomeState extends State<InitialHome> {
   final PageController _controller = PageController();
-  DateTime startDate = DateTime(2024, 07, 29);
-  late DateTime currentDate;
-  late int weekNumber;
-
+  
   // Carregar dados JSON
   late Map<String, dynamic> weeksData;
 
   @override
   void initState() {
     super.initState();
-    currentDate = DateTime.now();
-    weekNumber = ((currentDate.difference(startDate).inDays / 7).floor() + 1);
     weeksData = json.decode(weeks); // Carregar dados JSON aqui
   }
 
   bool isCardClickable(int levelNumber) {
-    // Calcula o número mínimo de semanas que precisa para desbloquear o nível
-    int weeksRequired = (levelNumber - 1) * 4;
-    DateTime unlockDate = startDate.add(Duration(days: weeksRequired * 7));
-    return currentDate.isAfter(unlockDate);
+    // Simplesmente habilita todos os cartões
+    return true;
+  }
+
+  List<Widget> buildLevelCards() {
+    List<Widget> levelCards = [];
+
+    for (var level in weeksData.keys) {
+      int levelNumber = int.tryParse(level.split(' ')[1]) ?? 0;
+      levelCards.add(buildLevelCard(level, levelNumber));
+    }
+
+    return levelCards;
   }
 
   Widget buildLevelCard(String levelName, int levelNumber) {
@@ -62,7 +66,7 @@ class InitialHomeState extends State<InitialHome> {
           ),
         );
       } : null,
-      color: clickable ? Colors.white : Colors.grey.withOpacity(0.5), // Torna o card mais transparente se não clicável
+      color: clickable ? Colors.white : Colors.grey.withOpacity(0.5),
     );
   }
 
@@ -133,19 +137,14 @@ class InitialHomeState extends State<InitialHome> {
                   child: PageView(
                     scrollDirection: Axis.horizontal,
                     controller: _controller,
-                    children: [
-                      buildLevelCard('Nível 1 Conquista', 1),
-                      buildLevelCard('Nível 2 Conquista', 2),
-                      buildLevelCard('Nível 3 Conquista', 3),
-                      // Adicione mais níveis conforme necessário
-                    ],
+                    children: buildLevelCards(),
                   ),
                 ),
                 SizedBox(height: 30.h),
                 Center(
                   child: SmoothPageIndicator(
                     controller: _controller,
-                    count: 3,
+                    count: weeksData.keys.length,
                     effect: ExpandingDotsEffect(
                       dotColor: Colors.grey,
                       activeDotColor: const Color.fromARGB(255, 13, 61, 144),

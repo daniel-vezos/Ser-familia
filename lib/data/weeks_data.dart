@@ -1,11 +1,11 @@
 const weeks = '''
 {
-  "Nível 1 Conquista": {
+  "Nível 1": {
     "Semana 1": [
         {
+            "icon": "/assets/icons/weeks/week1/icon1.png",
             "title": "História de família",
-            "challenge": " Você conhece a sua família? As vezes estamos pertinho uns dos outros mas não nos conhecemos.A sugestão de hoje é que você separe algumas fotos da família. Cada um pode falar um pouquinho  sobre a história da foto, como: Quem são as pessoas na foto? o que aconteceu ali? que sentimentos a foto lhe traz? Se não encontrar fotos da sua família, conversem juntos sobre algumas histórias de seus pais, avós, ou mesmo sobre a história do sobrenome de vocês. Projeto Viver"
-            
+            "challenge": "Você conhece a sua família? As vezes estamos pertinho uns dos outros mas não nos conhecemos.A sugestão de hoje é que você separe algumas fotos da família. Cada um pode falar um pouquinho  sobre a história da foto, como: Quem são as pessoas na foto? o que aconteceu ali? que sentimentos a foto lhe traz? Se não encontrar fotos da sua família, conversem juntos sobre algumas histórias de seus pais, avós, ou mesmo sobre a história do sobrenome de vocês. Projeto Viver"
         },
         {
             "title": "Esforço e dedicação",
@@ -64,7 +64,7 @@ const weeks = '''
 
 
 
-  "Nível 2 Conquista": {
+  "Nível 2": {
     "Semana 5": [
       {
         "title": "Educação alimentar",
@@ -127,7 +127,7 @@ const weeks = '''
 
 
 
-  "Nível 3 Conquista": {
+  "Nível 3": {
     "Semana 9": [
       {
         "title": "A saúde do sono",
@@ -190,7 +190,7 @@ const weeks = '''
 
 
 
-  "Nível 4 Conquista": {
+  "Nível 4": {
     "Semana 13": [
       {
         "title": "Falar sem machucar",
@@ -253,7 +253,7 @@ const weeks = '''
 
 
 
-  "Nível 5 Conquista": {
+  "Nível 5": {
     "Semana 17": [
       {
         "title": "Lazer em família",
@@ -316,7 +316,7 @@ const weeks = '''
 
 
 
-  "Nível 6 Conquista": {
+  "Nível 6": {
     "Semana 21": [
       {
         "title": "Reuniões em família",
@@ -379,7 +379,7 @@ const weeks = '''
 
 
 
-  "Nível 7 Conquista": {
+  "Nível 7": {
     "Semana 25": [
       {
         "title": "Propósito",
@@ -442,7 +442,7 @@ const weeks = '''
 
 
 
-  "Nível 8 Conquista": {
+  "Nível 8": {
     "Semana 29": [
       {
         "title": "Respeito",
@@ -505,7 +505,7 @@ const weeks = '''
 
 
 
-  "Nível 9 Conquista": {
+  "Nível 9": {
     "Semana 33": [
       {
         "title": "Relacionamentos",
