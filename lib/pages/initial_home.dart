@@ -1,7 +1,8 @@
 import 'dart:convert';
+import 'package:app_leitura/pages/weeks_page.dart';
+import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:app_leitura/pages/weeks_page.dart';
 import 'package:app_leitura/util/my_card.dart';
 import 'package:app_leitura/util/my_list_tile.dart';
 import 'package:app_leitura/widgets/sub_menu_widget.dart';
@@ -116,7 +117,7 @@ class InitialHomeState extends State<InitialHome> {
                           color: Colors.grey[400],
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.notifications),
+                        child: ButtonNotification(nameUser: widget.nameUser),
                       ),
                     ],
                   ),
@@ -133,7 +134,7 @@ class InitialHomeState extends State<InitialHome> {
                 ),
                 SizedBox(height: 30.h),
                 SizedBox(
-                  height: 230.h,
+                  height: 260.h, // Ajuste a altura mínima conforme necessário
                   child: PageView(
                     scrollDirection: Axis.horizontal,
                     controller: _controller,

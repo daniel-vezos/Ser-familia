@@ -47,6 +47,7 @@ class LevelCompletedPage extends StatelessWidget {
           const SizedBox(width: 16),
         ],
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(30.0),
         child: GridView.builder(

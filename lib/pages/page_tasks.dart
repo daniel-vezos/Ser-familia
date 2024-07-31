@@ -286,8 +286,8 @@ class _PageTasksState extends State<PageTasks> {
           ),
           const SizedBox(height: 20),
           SubMenuWidget(
-              nameUser: widget.nameUser
-                  .split(' ')[0]), // Adicionado o SubMenuDefaultWidget
+              nameUser: widget.nameUser.split(' ')[0]
+          ), // Adicionado o SubMenuDefaultWidget
         ],
       ),
     );

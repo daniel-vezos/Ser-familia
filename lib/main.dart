@@ -1,6 +1,5 @@
 import 'package:app_leitura/pages/initial_page.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -15,9 +14,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(fontFamily: GoogleFonts.syne().fontFamily),
-      home: const InitialPage(),
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home:
+          const InitialPage(), // Altere aqui para a página que você deseja abrir
     );
   }
 }

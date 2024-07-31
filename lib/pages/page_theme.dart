@@ -1,4 +1,3 @@
-import 'package:app_leitura/pages/audio_test.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/points_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,7 +35,7 @@ class PageTheme extends StatelessWidget {
     );
 
     final TextStyle buttonStyle = TextStyle(
-      fontSize: 18.sp,
+      fontSize: 20.sp,
       fontWeight: FontWeight.normal, // Ajuste o peso da fonte para normal
       color: Colors.black,
       fontFamily: 'Roboto', // Define a fonte Roboto

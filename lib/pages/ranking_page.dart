@@ -44,7 +44,14 @@ class RankingPage extends StatelessWidget {
         actions: [
           PointsCard(userId: user.uid),
           const SizedBox(width: 16),
-          ButtonNotification(nameUser: nameUser),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.grey[400],
+              shape: BoxShape.circle,
+            ),
+            child: ButtonNotification(nameUser: nameUser),
+          ),
         ],
       ),
       body: Container(

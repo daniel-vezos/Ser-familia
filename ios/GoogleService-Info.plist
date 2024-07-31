@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>945071928778-9iar3af9ok20b1u0ld90152ei5kis1is.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.945071928778-9iar3af9ok20b1u0ld90152ei5kis1is</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>945071928778-5057innq7ulpvuccjleblvpb8508sivr.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCOC5JwKXmT1p0S2nuqXAGgZhQ4tKiqBpg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>945071928778</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.builderteste</string>
+	<key>PROJECT_ID</key>
+	<string>app-ser-familia</string>
+	<key>STORAGE_BUCKET</key>
+	<string>app-ser-familia.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:945071928778:ios:410972fe46e96e1516cb33</string>
+	<key>DATABASE_URL</key>
+	<string>https://app-ser-familia-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

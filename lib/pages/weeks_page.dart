@@ -118,6 +118,7 @@ class _WeeksPageState extends State<WeeksPage> {
           SizedBox(width: 16.w),
         ],
       ),
+
       body: Container(
         color:
             Colors.grey[300], // Garante que toda a área de rolagem esteja cinza
