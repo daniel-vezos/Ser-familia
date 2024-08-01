@@ -8,17 +8,19 @@ import '../widgets/sub_menu_widget.dart';
 import 'page_theme.dart';
 import 'package:app_leitura/data/weeks_data.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart'; // Import ScreenUtil
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class WeeksPage extends StatefulWidget {
   final String nivel;
-  final String nameUser;
+  final String userName;
+  final List<dynamic> titles;
 
   const WeeksPage({
     super.key,
     required this.nivel,
-    required this.nameUser,
-    required String userName,
-    required titles,
+    required this.userName,
+    required this.titles,
   });
 
   @override
@@ -35,21 +37,40 @@ class _WeeksPageState extends State<WeeksPage> {
     _loadWeeks();
   }
 
-  void _loadWeeks() {
+  Future<void> _loadWeeks() async {
     try {
-      Map<String, dynamic> jsonData = json.decode(weeks);
-      Map<String, dynamic> selectedLevel = jsonData[widget.nivel];
+      final levelRef = FirebaseFirestore.instance.collection('levels').doc(widget.nivel).collection('weeks');
+      final querySnapshot = await levelRef.get();
+      
+      final Map<String, List<Map<String, dynamic>>> tempThemesByWeek = {};
+      final List<String> tempSemanas = [];
+      
+      for (var doc in querySnapshot.docs) {
+        final weekData = doc.data();
+        final weekTitle = doc.id;
+        
+        tempSemanas.add(weekTitle);
 
-      themesByWeek = selectedLevel.map((key, value) {
-        return MapEntry(key, List<Map<String, dynamic>>.from(value));
-      });
+        final themeCollection = FirebaseFirestore.instance
+            .collection('levels')
+            .doc(widget.nivel)
+            .collection('weeks')
+            .doc(weekTitle)
+            .collection('themes');
+
+        final themeQuerySnapshot = await themeCollection.get();
+        final List<Map<String, dynamic>> themes = themeQuerySnapshot.docs.map((doc) => doc.data()).toList();
+
+        tempThemesByWeek[weekTitle] = themes;
+      }
 
       setState(() {
-        semanas = selectedLevel.keys.toList();
+        themesByWeek = tempThemesByWeek;
+        semanas = tempSemanas;
       });
     } catch (e) {
       print('Erro ao carregar semanas: $e');
-      // Handle JSON parsing error
+      // Handle error appropriately
     }
   }
 
@@ -58,8 +79,7 @@ class _WeeksPageState extends State<WeeksPage> {
     // Configuração do ScreenUtil
     ScreenUtil.init(
       context,
-      designSize:
-          const Size(375, 820), // Tamanho base para as resoluções móveis
+      designSize: const Size(375, 820),
       minTextAdapt: true,
     );
 
@@ -88,13 +108,13 @@ class _WeeksPageState extends State<WeeksPage> {
                   builder: (context) => PageTheme(
                     weekTitle: titulo,
                     themes: themesByWeek[titulo] ?? [],
-                    nameUser: widget.nameUser,
+                    nameUser: widget.userName,
                   ),
                 ),
               );
             },
             borderRadius: BorderRadius.circular(15),
-            textStyle: buttonStyle, // Aplica o estilo do texto ao botão
+            textStyle: buttonStyle,
           ),
           SizedBox(height: 20.h),
         ],
@@ -108,19 +128,18 @@ class _WeeksPageState extends State<WeeksPage> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[300], // Define a cor de fundo
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         backgroundColor: Colors.grey[300],
         actions: [
           PointsCard(userId: user.uid),
           SizedBox(width: 16.w),
-          ButtonNotification(nameUser: widget.nameUser),
+          ButtonNotification(nameUser: widget.userName),
           SizedBox(width: 16.w),
         ],
       ),
       body: Container(
-        color:
-            Colors.grey[300], // Garante que toda a área de rolagem esteja cinza
+        color: Colors.grey[300],
         child: ListView(
           padding: EdgeInsets.all(20.w),
           children: [
@@ -131,7 +150,7 @@ class _WeeksPageState extends State<WeeksPage> {
                 Row(
                   children: [
                     Text(
-                      "Olá ${widget.nameUser.split(' ')[0]}",
+                      "Olá ${widget.userName.split(' ')[0]}",
                       style: headerStyle,
                     ),
                   ],
@@ -140,8 +159,7 @@ class _WeeksPageState extends State<WeeksPage> {
                 Text(
                   'ATIVIDADES SEMANAIS',
                   style: headerStyle.copyWith(
-                      fontSize: 20
-                          .sp), // Ajuste o tamanho da fonte para responsividade
+                      fontSize: 20.sp),
                 ),
                 SizedBox(height: 20.h),
                 Column(
@@ -152,7 +170,7 @@ class _WeeksPageState extends State<WeeksPage> {
           ],
         ),
       ),
-      bottomNavigationBar: SubMenuWidget(nameUser: widget.nameUser),
+      bottomNavigationBar: SubMenuWidget(nameUser: widget.userName),
     );
   }
 }

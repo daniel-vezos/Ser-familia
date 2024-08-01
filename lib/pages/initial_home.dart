@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:app_leitura/pages/weeks_page.dart';
@@ -22,14 +23,28 @@ class InitialHome extends StatefulWidget {
 
 class InitialHomeState extends State<InitialHome> {
   final PageController _controller = PageController();
-  
-  // Carregar dados JSON
-  late Map<String, dynamic> weeksData;
+  late Map<String, dynamic> weeksData = {};
 
   @override
   void initState() {
     super.initState();
-    weeksData = json.decode(weeks); // Carregar dados JSON aqui
+    _loadWeeksData();
+  }
+
+  Future<void> _loadWeeksData() async {
+    try {
+      final snapshot = await FirebaseFirestore.instance.collection('levels').get();
+      final data = snapshot.docs.fold<Map<String, dynamic>>({}, (map, doc) {
+        map[doc.id] = doc.data();
+        return map;
+      });
+
+      setState(() {
+        weeksData = data;
+      });
+    } catch (e) {
+      print('Erro ao carregar dados do Firestore: $e');
+    }
   }
 
   bool isCardClickable(int levelNumber) {
@@ -58,10 +73,9 @@ class InitialHomeState extends State<InitialHome> {
           context,
           MaterialPageRoute(
             builder: (context) => WeeksPage(
-              nameUser: widget.nameUser,
               nivel: levelName,
               userName: widget.nameUser,
-              titles: weeksData[levelName],
+              titles: weeksData[levelName] is List ? weeksData[levelName] : [], // Verifique se é uma lista
             ),
           ),
         );
