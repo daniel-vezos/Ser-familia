@@ -30,6 +30,7 @@ class WeeksPage extends StatefulWidget {
 class _WeeksPageState extends State<WeeksPage> {
   late Map<String, List<Map<String, dynamic>>> themesByWeek = {};
   List<String> semanas = [];
+  bool _hasActiveWeeks = false;
 
   @override
   void initState() {
@@ -97,13 +98,13 @@ class _WeeksPageState extends State<WeeksPage> {
       setState(() {
         themesByWeek = tempThemesByWeek;
         semanas = tempSemanas;
+        _hasActiveWeeks = semanas.isNotEmpty; // Verifica se há semanas ativas
       });
     } catch (e) {
       print('Erro ao carregar semanas: $e');
       // Handle error appropriately
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -193,9 +194,21 @@ class _WeeksPageState extends State<WeeksPage> {
                       fontSize: 20.sp),
                 ),
                 SizedBox(height: 20.h),
-                Column(
-                  children: buttons,
-                ),
+                if (_hasActiveWeeks) 
+                  Column(
+                    children: buttons,
+                  )
+                else
+                  Center(
+                    child: Text(
+                      'Ainda não há semanas neste nível',
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
               ],
             ),
           ],

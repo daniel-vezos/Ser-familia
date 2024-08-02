@@ -13,10 +13,34 @@ class InitialPage extends StatefulWidget {
 }
 
 class _InitialPageState extends State<InitialPage> {
-  final bool _isTextFieldFocused = false;
+  bool _isTextFieldFocused = false;
+  bool _isLoading = false; // Estado para o carregamento
   final TextEditingController _matriculaController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final _auth = AuthService();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _checkIfUserIsLoggedIn();
+    });
+  }
+
+  Future<void> _checkIfUserIsLoggedIn() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // Se o usuário estiver autenticado, navegue para a tela inicial
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => InitialHome(
+            nameUser: user.displayName ?? 'Usuário',
+          ),
+        ),
+      );
+    }
+  }
 
   Future<void> _authenticate() async {
     final matricula = _matriculaController.text;
@@ -61,7 +85,7 @@ class _InitialPageState extends State<InitialPage> {
         onTap: () {
           FocusScope.of(context).unfocus();
           setState(() {
-            _isTextFieldFocused == true ? false : null;
+            _isTextFieldFocused = false;
           });
         },
         child: Stack(
@@ -107,12 +131,19 @@ class _InitialPageState extends State<InitialPage> {
           ),
         ),
         const Spacer(),
+        if (_isLoading) // Exibe o indicador de carregamento se _isLoading for verdadeiro
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
         Align(
           alignment: Alignment.bottomCenter,
           child: Padding(
             padding: const EdgeInsets.only(bottom: 200.0),
             child: CustomButtonNavigation(
               onPressed: () async {
+                setState(() {
+                  _isLoading = true; // Inicia o carregamento
+                });
                 User? user = await _auth.loginWithGoogle();
                 if (user != null) {
                   Navigator.pushReplacement(
@@ -124,8 +155,13 @@ class _InitialPageState extends State<InitialPage> {
                     ),
                   );
                 } else {
-                  print('Falha no login');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Falha no login')),
+                  );
                 }
+                setState(() {
+                  _isLoading = false; // Termina o carregamento
+                });
               },
               title: 'Conectar com Google',
               width: 250,
