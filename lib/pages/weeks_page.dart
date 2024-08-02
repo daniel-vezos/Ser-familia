@@ -41,27 +41,30 @@ class _WeeksPageState extends State<WeeksPage> {
     try {
       final levelRef = FirebaseFirestore.instance.collection('levels').doc(widget.nivel).collection('weeks');
       final querySnapshot = await levelRef.get();
-      
+
       final Map<String, List<Map<String, dynamic>>> tempThemesByWeek = {};
       final List<String> tempSemanas = [];
-      
+
       for (var doc in querySnapshot.docs) {
         final weekData = doc.data();
         final weekTitle = doc.id;
-        
-        tempSemanas.add(weekTitle);
 
-        final themeCollection = FirebaseFirestore.instance
-            .collection('levels')
-            .doc(widget.nivel)
-            .collection('weeks')
-            .doc(weekTitle)
-            .collection('themes');
+        // Verifica se a semana está ativa
+        if (weekData['active'] == true) {
+          tempSemanas.add(weekTitle);
 
-        final themeQuerySnapshot = await themeCollection.get();
-        final List<Map<String, dynamic>> themes = themeQuerySnapshot.docs.map((doc) => doc.data()).toList();
+          final themeCollection = FirebaseFirestore.instance
+              .collection('levels')
+              .doc(widget.nivel)
+              .collection('weeks')
+              .doc(weekTitle)
+              .collection('themes');
 
-        tempThemesByWeek[weekTitle] = themes;
+          final themeQuerySnapshot = await themeCollection.get();
+          final List<Map<String, dynamic>> themes = themeQuerySnapshot.docs.map((doc) => doc.data()).toList();
+
+          tempThemesByWeek[weekTitle] = themes;
+        }
       }
 
       setState(() {
