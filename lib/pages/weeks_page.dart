@@ -44,13 +44,40 @@ class _WeeksPageState extends State<WeeksPage> {
 
       final Map<String, List<Map<String, dynamic>>> tempThemesByWeek = {};
       final List<String> tempSemanas = [];
+      final DateTime now = DateTime.now();
+      final DateTime today = DateTime(now.year, now.month, now.day); // Apenas o dia atual sem a parte da hora
 
       for (var doc in querySnapshot.docs) {
         final weekData = doc.data();
         final weekTitle = doc.id;
 
-        // Verifica se a semana está ativa
-        if (weekData['active'] == true) {
+        // Converte a data de ativação para DateTime
+        final activedataString = weekData['activedata'] as String?;
+        DateTime? activedata;
+
+        if (activedataString != null) {
+          try {
+            final activedataComponents = activedataString.split('-');
+            if (activedataComponents.length == 3) {
+              activedata = DateTime(
+                int.parse(activedataComponents[0]), // Ano
+                int.parse(activedataComponents[1]), // Mês
+                int.parse(activedataComponents[2]), // Dia
+              );
+            }
+          } catch (e) {
+            print('Erro ao analisar activedata: $e');
+            continue; // Pule para o próximo documento se houver um erro na análise
+          }
+        }
+
+        if (activedata != null && (today.isAfter(activedata) || today.isAtSameMomentAs(activedata))) {
+          // Atualiza o campo 'active' para true se a data atual for igual ou após a data de ativação
+          if (weekData['active'] != true) {
+            await levelRef.doc(weekTitle).update({'active': true});
+          }
+
+          // Só adicione a semana se estiver ativa
           tempSemanas.add(weekTitle);
 
           final themeCollection = FirebaseFirestore.instance
@@ -76,6 +103,7 @@ class _WeeksPageState extends State<WeeksPage> {
       // Handle error appropriately
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
