@@ -1,13 +1,16 @@
 import 'dart:convert';
 import 'package:app_leitura/pages/weeks_page.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
+import 'package:app_leitura/widgets/button_notification.dart';
+import 'package:app_leitura/widgets/points_card.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:app_leitura/util/my_card.dart';
 import 'package:app_leitura/util/my_list_tile.dart';
 import 'package:app_leitura/widgets/sub_menu_widget.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:app_leitura/data/weeks_data.dart';
 
 class InitialHome extends StatefulWidget {
   final String nameUser;
@@ -23,14 +26,90 @@ class InitialHome extends StatefulWidget {
 
 class InitialHomeState extends State<InitialHome> {
   final PageController _controller = PageController();
-  
-  // Carregar dados JSON
-  late Map<String, dynamic> weeksData;
+  late Map<String, dynamic> weeksData = {};
+  List<Map<String, String>> currentWeekThemes = []; // Lista de mapas com ícone e título
 
   @override
   void initState() {
     super.initState();
-    weeksData = json.decode(weeks); // Carregar dados JSON aqui
+    _loadWeeksData();
+  }
+
+  Future<void> _loadWeeksData() async {
+    try {
+      final snapshot = await FirebaseFirestore.instance.collection('levels').get();
+      final data = snapshot.docs.fold<Map<String, dynamic>>({}, (map, doc) {
+        map[doc.id] = doc.data();
+        return map;
+      });
+
+      setState(() {
+        weeksData = data;
+      });
+
+      // Load current week themes
+      await _loadCurrentWeekThemes();
+    } catch (e) {
+      print('Erro ao carregar dados do Firestore: $e');
+    }
+  }
+
+  Future<void> _loadCurrentWeekThemes() async {
+    try {
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+
+      List<Map<String, String>> themesList = [];
+
+      // Find the current active week
+      for (var levelName in weeksData.keys) {
+        final levelRef = FirebaseFirestore.instance.collection('levels').doc(levelName).collection('weeks');
+        final querySnapshot = await levelRef.get();
+
+        for (var doc in querySnapshot.docs) {
+          final weekData = doc.data();
+          final activedataString = weekData['activedata'] as String?;
+          DateTime? activedata;
+
+          if (activedataString != null) {
+            final activedataComponents = activedataString.split('-');
+            if (activedataComponents.length == 3) {
+              activedata = DateTime(
+                int.parse(activedataComponents[0]),
+                int.parse(activedataComponents[1]),
+                int.parse(activedataComponents[2]),
+              );
+            }
+          }
+
+          if (activedata != null && (today.isAfter(activedata) || today.isAtSameMomentAs(activedata))) {
+            // Update the active status
+            if (weekData['active'] != true) {
+              await levelRef.doc(doc.id).update({'active': true});
+            }
+
+            // Load themes for the active week
+            final themeCollection = levelRef.doc(doc.id).collection('themes');
+            final themeQuerySnapshot = await themeCollection.get();
+            final List<Map<String, String>> themes = themeQuerySnapshot.docs.map((doc) {
+              final data = doc.data();
+              return {
+                'title': data['title'] as String? ?? 'Sem título',
+                'iconPath': data['iconPath'] as String? ?? 'assets/backgrounds/botao1.png',
+              };
+            }).toList();
+
+            setState(() {
+              currentWeekThemes = themes;
+            });
+
+            return; // Exit the loop once we find the current week
+          }
+        }
+      }
+    } catch (e) {
+      print('Erro ao carregar temas da semana atual: $e');
+    }
   }
 
   bool isCardClickable(int levelNumber) {
@@ -59,10 +138,9 @@ class InitialHomeState extends State<InitialHome> {
           context,
           MaterialPageRoute(
             builder: (context) => WeeksPage(
-              nameUser: widget.nameUser,
               nivel: levelName,
               userName: widget.nameUser,
-              titles: weeksData[levelName],
+              titles: weeksData[levelName] is List ? weeksData[levelName] : [],
             ),
           ),
         );
@@ -86,9 +164,32 @@ class InitialHomeState extends State<InitialHome> {
       fontFamily: 'Roboto',
     );
 
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return const Center(child: Text('Usuário não autenticado.'));
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey[300],
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      appBar: AppBar(
+        title: Text("Olá ${widget.nameUser.split(' ')[0]}", 
+          style: TextStyle(fontSize: 25.sp,
+          fontWeight: FontWeight.w500,
+          fontFamily: 'Roboto',
+          ),
+        ),
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          PointsCard(userId: user.uid),
+          const SizedBox(width: 16),
+          ButtonNotification(nameUser: widget.nameUser),
+          const SizedBox(width: 16),
+        ],
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -164,28 +265,12 @@ class InitialHomeState extends State<InitialHome> {
                 ),
                 SizedBox(height: 20.h),
                 Column(
-                  children: [
-                    const MyListTile(
-                      inconImagePath: "assets/backgrounds/botao1.png",
-                      tileTile: "Gratidão",
-                      onTap: null,
-                      tilesubTile: '',
-                    ),
-                    SizedBox(height: 20.h),
-                    const MyListTile(
-                      inconImagePath: "assets/backgrounds/botao1.png",
-                      tileTile: "Propósito de Vida",
-                      tilesubTile: "",
-                      onTap: null,
-                    ),
-                    SizedBox(height: 20.h),
-                    const MyListTile(
-                      inconImagePath: "assets/backgrounds/botao1.png",
-                      tileTile: "Lista de Compras",
-                      tilesubTile: "",
-                      onTap: null,
-                    ),
-                  ],
+                  children: currentWeekThemes.map((theme) {
+                    return MyListTile(
+                      inconImagePath: theme['iconPath'] ?? "assets/backgrounds/botao3.png", // Usa o caminho do ícone
+                      tileTile: theme['title'] ?? 'Sem título',
+                    );
+                  }).toList(),
                 ),
                 SizedBox(height: 50.h),
               ],

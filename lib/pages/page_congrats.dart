@@ -48,6 +48,7 @@ class _CongratsPageState extends State<CongratsPage> {
       appBar: AppBar(
         title: const Text(''),
         backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
         elevation: 0,
       ),
       body: Stack(

@@ -4,14 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class MyListTile extends StatelessWidget {
   final String inconImagePath;
   final String tileTile;
-  final String tilesubTile;
   final VoidCallback? onTap;
 
   const MyListTile({
     super.key,
     required this.inconImagePath,
     required this.tileTile,
-    required this.tilesubTile,
     this.onTap,
   });
 
@@ -25,14 +23,6 @@ class MyListTile extends StatelessWidget {
           style: TextStyle(
             fontSize: 20.sp, // Utiliza o ScreenUtil para o tamanho da fonte do título
             fontWeight: FontWeight.normal,
-          ),
-        ),
-      ),
-      subtitle: Center(
-        child: Text(
-          tilesubTile,
-          style: TextStyle(
-            fontSize: 16.sp, // Utiliza o ScreenUtil para o tamanho da fonte do subtítulo
           ),
         ),
       ),

@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:app_leitura/pages/page_tasks.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/points_card.dart';
+import 'package:app_leitura/widgets/sub_menu_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import '../widgets/sub_menu_widget.dart';
-import 'page_tasks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart'; // Import ScreenUtil
 
 class PageTheme extends StatelessWidget {
@@ -55,6 +55,8 @@ class PageTheme extends StatelessWidget {
     );
 
     List<Widget> themeButtons = themes.map((theme) {
+      final iconPath = theme['iconpath'] ?? ''; // Obtém o caminho da imagem
+
       return Column(
         children: [
           Center(
@@ -77,7 +79,7 @@ class PageTheme extends StatelessWidget {
                         builder: (context) => PageTasks(
                           title: title,
                           challenge: challenge,
-                          nameUser: '',
+                          nameUser: nameUser,
                         ),
                       ),
                     );
@@ -90,11 +92,25 @@ class PageTheme extends StatelessWidget {
                     ),
                     textStyle: buttonStyle,
                   ),
-                  child: Center(
-                    child: Text(
-                      theme['title'] ?? 'Sem Título',
-                      style: buttonStyle,
-                      textAlign: TextAlign.center,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        iconPath.isNotEmpty
+                            ? Image.asset(
+                                iconPath,
+                              )
+                            : Container(),
+                            const SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            theme['title'] ?? 'Sem Título',
+                            style:
+                                const TextStyle(fontSize: 20, color: Colors.black),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

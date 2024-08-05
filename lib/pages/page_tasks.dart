@@ -147,7 +147,7 @@ class _PageTasksState extends State<PageTasks> {
 
   void _completeActivity() async {
     try {
-      await _authService.updatePoints(6); // Adiciona 6 pontos
+      await _authService.updatePoints(10); // Adiciona 6 pontos
       Navigator.push(
         context,
         MaterialPageRoute(
