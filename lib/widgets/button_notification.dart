@@ -1,9 +1,10 @@
-import 'package:app_leitura/pages/notification_page.dart';
+import 'package:app_leitura/pages/notification_page.dart'; // Verifique o caminho
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
 class ButtonNotification extends StatelessWidget {
   final String nameUser;
+
   const ButtonNotification({
     super.key,
     required this.nameUser,
@@ -14,7 +15,10 @@ class ButtonNotification extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => NotificationPage(nameUser: nameUser),
+        builder: (context) => NotificationPage(
+          nameUser: nameUser,
+          showMessage: false, // Passe true ou false conforme necessário
+        ),
       ),
     );
 
@@ -27,7 +31,8 @@ class ButtonNotification extends StatelessWidget {
         id: 1,
         channelKey: "basic_channel",
         title: 'Semana Liberada',
-        body: 'Uau! Mais uma semana está liberada. Continue brilhando!',
+        body:
+            'A semana seguinte foi liberada! Continue avançando e alcançando seus objetivos!',
         payload: {'page': 'notification_page'},
       ),
     );

@@ -1,6 +1,7 @@
 import 'dart:async'; // Adicione esta importação
 import 'package:app_leitura/pages/initial_page.dart';
 import 'package:app_leitura/widgets/notification_controller.dart';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,7 +24,6 @@ void main() async {
         playSound: true,
         enableLights: true,
         enableVibration: true,
-        // Use o novo parâmetro ou método para definir o ícone se disponível
       )
     ],
   );
@@ -50,7 +50,8 @@ void startNotificationTimer() {
             1000, // Gera um ID único para a notificação
         channelKey: 'basic_channel',
         title: 'Semana Liberada',
-        body: 'Uau! Mais uma semana está liberada. Continue brilhando!',
+        body:
+            'A semana seguinte foi liberada! Continue avançando e alcançando seus objetivos!',
         payload: {'page': 'notification_page'},
       ),
     );
@@ -83,6 +84,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey, // Adicione esta linha
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
