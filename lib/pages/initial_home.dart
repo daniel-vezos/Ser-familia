@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'package:app_leitura/widgets/button_notification.dart';
+import 'package:app_leitura/widgets/points_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:app_leitura/pages/weeks_page.dart';
@@ -160,9 +163,32 @@ class InitialHomeState extends State<InitialHome> {
       fontFamily: 'Roboto',
     );
 
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return const Center(child: Text('Usuário não autenticado.'));
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey[300],
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      appBar: AppBar(
+        title: Text("Olá ${widget.nameUser.split(' ')[0]}", 
+          style: TextStyle(fontSize: 25.sp,
+          fontWeight: FontWeight.w500,
+          fontFamily: 'Roboto',
+          ),
+        ),
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          PointsCard(userId: user.uid),
+          const SizedBox(width: 16),
+          ButtonNotification(nameUser: widget.nameUser),
+          const SizedBox(width: 16),
+        ],
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -170,32 +196,6 @@ class InitialHomeState extends State<InitialHome> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 25.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "Olá ${widget.nameUser.split(' ')[0]}",
-                          style: TextStyle(
-                            fontSize: 25.sp,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Roboto',
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(8.w),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[400],
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(Icons.notifications),
-                      ),
-                    ],
-                  ),
-                ),
                 SizedBox(height: 20.h),
                 Text(
                   "Você está no nível 1 - início.",
