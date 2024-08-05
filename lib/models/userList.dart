@@ -22,7 +22,7 @@ class UsersList extends StatelessWidget {
         final users = snapshot.data!.docs;
 
         return ListView.builder(
-          itemCount: users.length - 1,
+          itemCount: users.length ,
           itemBuilder: (context, index) {
             final userData = users[index].data() as Map<String, dynamic>;
             final userName = userData['name'] ?? 'Nome desconhecido'; // Verifique se o campo do nome está correto
