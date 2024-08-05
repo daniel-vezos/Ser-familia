@@ -33,10 +33,9 @@ class NotificationController {
       // Navegar para NotificationPage com a mensagem visível
       Navigator.of(navigatorKey.currentContext!).push(
         MaterialPageRoute(
-          builder: (context) => const NotificationPage(
+          builder: (context) => NotificationPage(
             nameUser: 'UserName',
-            showMessage:
-                true, // Mostrar a mensagem quando a notificação é clicada
+            showMessage: true, // Mostrar a mensagem quando a notificação é clicada
           ),
         ),
       );
