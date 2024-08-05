@@ -22,17 +22,15 @@ class ButtonNotification extends StatelessWidget {
     await Future.delayed(const Duration(milliseconds: 300));
 
     // Cria e exibe a notificação
-   AwesomeNotifications().createNotification(
-  content: NotificationContent(
-    id: 1,
-    channelKey: "basic_channel",
-    title: 'Notification Title',
-    body: 'Notification Body',
-    // Configure a ação de notificação com um payload
-    payload: {'page': 'notification_page'},
-  ),
-);
-
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 1,
+        channelKey: "basic_channel",
+        title: 'Notification Title',
+        body: 'Notification Body',
+        payload: {'page': 'notification_page'},
+      ),
+    );
   }
 
   @override
