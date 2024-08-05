@@ -158,7 +158,7 @@ class InitialHomeState extends State<InitialHome> {
     );
 
     final TextStyle regularTextStyle = TextStyle(
-      fontSize: 18.sp,
+      fontSize: 14.sp,
       fontWeight: FontWeight.normal,
       color: Colors.black,
       fontFamily: 'Roboto',
@@ -225,12 +225,12 @@ class InitialHomeState extends State<InitialHome> {
                 ),
                 SizedBox(height: 20.h),
                 Text(
-                  "Você está no nível 1 - início.",
+                  "Seja bem-vindo ao seu desafio.",
                   style: regularTextStyle,
                 ),
                 SizedBox(height: 15.h),
                 Text(
-                  "Esse é o seu primeiro mês de atividades, estamos felizes com seu início!",
+                  "Celebre suas vitórias e continue avançando!",
                   style: regularTextStyle,
                 ),
                 SizedBox(height: 30.h),
