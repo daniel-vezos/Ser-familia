@@ -73,7 +73,7 @@ class NotificationPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text(
-                  'Você recebeu uma nova tarefa',
+                  'Você recebeu uma nova ',
                   style: bodyStyle,
                 ),
                 Text(
