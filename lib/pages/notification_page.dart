@@ -1,50 +1,76 @@
-import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart'; // Import ScreenUtil
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/sub_menu_widget.dart';
 
-class NotificationPage extends StatelessWidget {
+class NotificationPage extends StatefulWidget {
   final String nameUser;
+  final bool showMessage; // Adicione um parâmetro para controle inicial
 
   const NotificationPage({
     super.key,
     required this.nameUser,
+    this.showMessage = false, // Valor padrão é false
   });
+
+  @override
+  _NotificationPageState createState() => _NotificationPageState();
+}
+
+class _NotificationPageState extends State<NotificationPage> {
+  bool _showMessage = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Configura a visibilidade da mensagem
+    if (widget.showMessage) {
+      setState(() {
+        _showMessage = true;
+      });
+
+      // Remove a mensagem após um período
+      Future.delayed(const Duration(seconds: 5), () {
+        if (mounted) {
+          setState(() {
+            _showMessage = false;
+          });
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     // Configuração do ScreenUtil
     ScreenUtil.init(
       context,
-      designSize:
-          const Size(375, 820), // Tamanho base para as resoluções móveis
+      designSize: const Size(375, 820),
       minTextAdapt: true,
     );
 
     final TextStyle headerStyle = TextStyle(
       fontSize: 19.sp,
-      fontWeight: FontWeight.normal, // Ajuste o peso da fonte para normal
+      fontWeight: FontWeight.normal,
       color: Colors.black,
-      fontFamily: 'Roboto', // Define a fonte Roboto
+      fontFamily: 'Roboto',
     );
 
     final TextStyle bodyStyle = TextStyle(
       fontSize: 16.sp,
-      fontWeight: FontWeight.normal, // Ajuste o peso da fonte para normal
+      fontWeight: FontWeight.normal,
       color: Colors.black,
-      fontFamily: 'Roboto', // Define a fonte Roboto
+      fontFamily: 'Roboto',
     );
 
     final TextStyle titleStyle = TextStyle(
       fontSize: 20.sp,
-      fontWeight: FontWeight.normal, // Ajuste o peso da fonte para bold
+      fontWeight: FontWeight.normal,
       color: Colors.black,
-      fontFamily: 'Roboto', // Define a fonte Roboto
+      fontFamily: 'Roboto',
     );
 
     return Scaffold(
-      backgroundColor:
-          Colors.grey[300], // Define a cor de fundo para o Scaffold
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         backgroundColor: Colors.grey[300],
         leading: IconButton(
@@ -57,40 +83,35 @@ class NotificationPage extends StatelessWidget {
           'Notificações',
           style: titleStyle,
         ),
-        // actions: [ButtonNotification(nameUser: nameUser)],
       ),
       body: Container(
-        color: Colors.grey[300], // Define a cor de fundo para o Container
+        color: Colors.grey[300],
         padding: EdgeInsets.all(20.w),
         child: Column(
           children: [
             Divider(
               height: 1.h,
-              color: const Color(0x0ff7bac9), // Corrigido o código de cor
+              color: const Color(0x0ff7bac9),
             ),
             SizedBox(height: 10.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Text(
-                  'Você recebeu uma nova ',
-                  style: bodyStyle,
-                ),
-                Text(
-                  '01/01',
-                  style: bodyStyle,
-                ),
-              ],
-            ),
+            if (_showMessage) // Condicional para mostrar a mensagem
+              Wrap(
+                children: [
+                  Text(
+                    'Uau! Mais uma semana está liberada. Continue brilhando!',
+                    style: bodyStyle,
+                  ),
+                ],
+              ),
             SizedBox(height: 10.h),
             Divider(
               height: 1.h,
-              color: const Color(0x0ff7bac9), // Corrigido o código de cor
+              color: const Color(0x0ff7bac9),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: SubMenuWidget(nameUser: nameUser),
+      bottomNavigationBar: SubMenuWidget(nameUser: widget.nameUser),
     );
   }
 }

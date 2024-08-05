@@ -28,13 +28,16 @@ class NotificationController {
   static Future<void> onActionReceivedMethod(
     ReceivedNotification receivedNotification,
   ) async {
-    // Verifica o payload da notificação
     final String? page = receivedNotification.payload?['page'];
     if (page == 'notification_page') {
-      // Navegar para NotificationPage
+      // Navegar para NotificationPage com a mensagem visível
       Navigator.of(navigatorKey.currentContext!).push(
         MaterialPageRoute(
-          builder: (context) => NotificationPage(nameUser: 'UserName'),
+          builder: (context) => const NotificationPage(
+            nameUser: 'UserName',
+            showMessage:
+                true, // Mostrar a mensagem quando a notificação é clicada
+          ),
         ),
       );
     }

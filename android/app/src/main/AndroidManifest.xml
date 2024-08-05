@@ -6,7 +6,8 @@
     <application
         android:label="app_leitura"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true"> <!-- Adicione esta linha -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
