@@ -2,14 +2,54 @@ import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/points_card.dart';
 import 'package:app_leitura/widgets/sub_menu_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class LevelCompletedPage extends StatelessWidget {
+class LevelCompletedPage extends StatefulWidget {
   final String nameUser;
   const LevelCompletedPage({
     super.key,
     this.nameUser = '',
   });
+
+  @override
+  _LevelCompletedPageState createState() => _LevelCompletedPageState();
+}
+
+class _LevelCompletedPageState extends State<LevelCompletedPage> {
+  int _maxUnlockedLevel = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserPoints();
+  }
+
+  void _fetchUserPoints() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return;
+    }
+
+    try {
+      final userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
+      final docSnapshot = await userDoc.get();
+
+      if (docSnapshot.exists) {
+        final data = docSnapshot.data()!;
+        int points = data['points'] ?? 0;
+        
+        // Calcular o nível desbloqueado com base nos pontos
+        setState(() {
+          _maxUnlockedLevel = (points ~/ 120);
+          // Limitar o máximo nível a 9
+          _maxUnlockedLevel = _maxUnlockedLevel > 9 ? 9 : _maxUnlockedLevel;
+        });
+      }
+    } catch (e) {
+      print('Erro ao buscar pontos do usuário: ${e.toString()}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +65,6 @@ class LevelCompletedPage extends StatelessWidget {
       'assets/backgrounds/teste99.png',
     ];
 
-    // Nível máximo desbloqueado (você pode alterar essa variável conforme os níveis são concluídos)
-    const int maxUnlockedLevel =
-        1; // Apenas nível 1 está desbloqueado inicialmente
-
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
@@ -43,7 +79,7 @@ class LevelCompletedPage extends StatelessWidget {
         actions: [
           PointsCard(userId: user.uid),
           const SizedBox(width: 16),
-          ButtonNotification(nameUser: nameUser),
+          ButtonNotification(nameUser: widget.nameUser),
           const SizedBox(width: 16),
         ],
       ),
@@ -57,7 +93,7 @@ class LevelCompletedPage extends StatelessWidget {
           ),
           itemCount: imagePaths.length,
           itemBuilder: (BuildContext context, int index) {
-            bool isUnlocked = index < maxUnlockedLevel;
+            bool isUnlocked = index < _maxUnlockedLevel;
 
             return GestureDetector(
               onTap: isUnlocked
@@ -116,7 +152,7 @@ class LevelCompletedPage extends StatelessWidget {
           },
         ),
       ),
-      bottomNavigationBar: SubMenuWidget(nameUser: nameUser),
+      bottomNavigationBar: SubMenuWidget(nameUser: widget.nameUser),
     );
   }
 }
