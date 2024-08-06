@@ -269,7 +269,7 @@ class _PageTasksState extends State<PageTasks> {
                           _completeActivity();
                         },
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xff012363),
+                            backgroundColor: const Color(0xffF5792F),
                             padding:
                                 const EdgeInsets.symmetric(vertical: 15.0)),
                         child: const Text(
