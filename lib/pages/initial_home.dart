@@ -83,22 +83,25 @@ class InitialHomeState extends State<InitialHome> {
 
   Future<void> _loadNextWeekThemes() async {
     try {
-      // Obtenha a data de início da semana do Firestore
       final startDate = await _getStartDateFromFirestore();
       if (startDate == null) {
         print('Data de início da semana não encontrada.');
         return;
       }
 
-      // Encontre o início da próxima semana
+      DateTime today = DateTime.now();
       DateTime startOfCurrentWeek = startDate.subtract(Duration(days: startDate.weekday - 1));
       DateTime startOfNextWeek = startOfCurrentWeek.add(const Duration(days: 7));
+
+      // Verifica se a semana atual passou
+      if (today.isAfter(startOfNextWeek.subtract(const Duration(days: 1)))) {
+        startOfNextWeek = startOfNextWeek.add(const Duration(days: 7));
+      }
 
       print('Start of next week: $startOfNextWeek'); // Depuração
 
       List<Map<String, String>> themesList = [];
 
-      // Encontre a próxima semana ativa
       for (var levelName in weeksData.keys) {
         final levelRef = FirebaseFirestore.instance.collection('levels').doc(levelName).collection('weeks');
         final querySnapshot = await levelRef.get();
@@ -121,15 +124,12 @@ class InitialHomeState extends State<InitialHome> {
 
           print('Active date from Firestore: $activedata'); // Depuração
 
-          // Atualize a lógica para verificar se a data ativa está dentro do intervalo da próxima semana
           if (activedata != null && activedata.isAfter(startOfNextWeek.subtract(const Duration(days: 1))) &&
               activedata.isBefore(startOfNextWeek.add(const Duration(days: 7)))) {
-            // Atualize o status ativo
             if (weekData['active'] != true) {
               await levelRef.doc(doc.id).update({'active': true});
             }
 
-            // Carregue os temas para a próxima semana
             final themeCollection = levelRef.doc(doc.id).collection('themes');
             final themeQuerySnapshot = await themeCollection.get();
             final List<Map<String, String>> themes = themeQuerySnapshot.docs.map((doc) {
@@ -145,7 +145,7 @@ class InitialHomeState extends State<InitialHome> {
             });
 
             print('Loaded themes for next week: $themes'); // Depuração
-            return; // Saia do loop assim que encontrar a próxima semana
+            return;
           }
         }
       }
@@ -153,6 +153,7 @@ class InitialHomeState extends State<InitialHome> {
       print('Erro ao carregar temas da próxima semana: $e');
     }
   }
+
 
   bool isCardClickable(int levelNumber) {
     // Simplesmente habilita todos os cartões
