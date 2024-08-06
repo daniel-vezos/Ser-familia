@@ -1,3 +1,4 @@
+import 'package:app_leitura/widgets/sub_menu_widget.dart';
 import 'package:flutter/material.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -76,6 +77,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 ),
         ],
       ),
+      bottomNavigationBar: SubMenuWidget(nameUser: widget.nameUser)
     );
   }
 }

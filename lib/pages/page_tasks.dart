@@ -73,6 +73,7 @@ class _PageTasksState extends State<PageTasks> {
   }
 
   void _speak(String text) async {
+    print('Iniciando a fala com o texto: $text');
     setState(() {
       _isPlaying = true;
       _currentSliderValue = 0.0; // Reiniciar o slider no início
@@ -182,8 +183,6 @@ class _PageTasksState extends State<PageTasks> {
           },
         ),
         actions: [
-          PointsCard(userId: user.uid),
-          const SizedBox(width: 16),
           ButtonNotification(nameUser: widget.nameUser),
           const SizedBox(width: 16),
         ],

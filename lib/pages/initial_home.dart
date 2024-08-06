@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:app_leitura/pages/weeks_page.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
-import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/points_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -33,6 +32,7 @@ class InitialHomeState extends State<InitialHome> {
   void initState() {
     super.initState();
     _loadWeeksData();
+    _loadNextWeekThemes();
   }
 
   Future<void> _loadWeeksData() async {
@@ -48,20 +48,57 @@ class InitialHomeState extends State<InitialHome> {
       });
 
       // Load current week themes
-      await _loadCurrentWeekThemes();
+      await _loadNextWeekThemes();
     } catch (e) {
       print('Erro ao carregar dados do Firestore: $e');
     }
   }
 
-  Future<void> _loadCurrentWeekThemes() async {
+  Future<DateTime?> _getStartDateFromFirestore() async {
     try {
-      final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
+      final startDateDoc = await FirebaseFirestore.instance
+          .collection('startDateWeekPhrase')
+          .doc('dateStartTitleWeeks')
+          .get();
+
+      if (startDateDoc.exists) {
+        final startDateString = startDateDoc.data()?['dateStart'] as String?;
+        if (startDateString != null) {
+          final dateComponents = startDateString.split('-');
+          if (dateComponents.length == 3) {
+            return DateTime(
+              int.parse(dateComponents[0]),
+              int.parse(dateComponents[1]),
+              int.parse(dateComponents[2]),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      print('Erro ao carregar a data de início da semana: $e');
+    }
+    return null;
+  }
+
+
+  Future<void> _loadNextWeekThemes() async {
+    try {
+      // Obtenha a data de início da semana do Firestore
+      final startDate = await _getStartDateFromFirestore();
+      if (startDate == null) {
+        print('Data de início da semana não encontrada.');
+        return;
+      }
+
+      // Encontre o início da próxima semana
+      DateTime startOfCurrentWeek = startDate.subtract(Duration(days: startDate.weekday - 1));
+      DateTime startOfNextWeek = startOfCurrentWeek.add(const Duration(days: 7));
+
+      print('Start of next week: $startOfNextWeek'); // Depuração
 
       List<Map<String, String>> themesList = [];
 
-      // Find the current active week
+      // Encontre a próxima semana ativa
       for (var levelName in weeksData.keys) {
         final levelRef = FirebaseFirestore.instance.collection('levels').doc(levelName).collection('weeks');
         final querySnapshot = await levelRef.get();
@@ -82,13 +119,17 @@ class InitialHomeState extends State<InitialHome> {
             }
           }
 
-          if (activedata != null && (today.isAfter(activedata) || today.isAtSameMomentAs(activedata))) {
-            // Update the active status
+          print('Active date from Firestore: $activedata'); // Depuração
+
+          // Atualize a lógica para verificar se a data ativa está dentro do intervalo da próxima semana
+          if (activedata != null && activedata.isAfter(startOfNextWeek.subtract(const Duration(days: 1))) &&
+              activedata.isBefore(startOfNextWeek.add(const Duration(days: 7)))) {
+            // Atualize o status ativo
             if (weekData['active'] != true) {
               await levelRef.doc(doc.id).update({'active': true});
             }
 
-            // Load themes for the active week
+            // Carregue os temas para a próxima semana
             final themeCollection = levelRef.doc(doc.id).collection('themes');
             final themeQuerySnapshot = await themeCollection.get();
             final List<Map<String, String>> themes = themeQuerySnapshot.docs.map((doc) {
@@ -103,12 +144,13 @@ class InitialHomeState extends State<InitialHome> {
               currentWeekThemes = themes;
             });
 
-            return; // Exit the loop once we find the current week
+            print('Loaded themes for next week: $themes'); // Depuração
+            return; // Saia do loop assim que encontrar a próxima semana
           }
         }
       }
     } catch (e) {
-      print('Erro ao carregar temas da semana atual: $e');
+      print('Erro ao carregar temas da próxima semana: $e');
     }
   }
 
@@ -158,7 +200,7 @@ class InitialHomeState extends State<InitialHome> {
     );
 
     final TextStyle regularTextStyle = TextStyle(
-      fontSize: 14.sp,
+      fontSize: 18.sp,
       fontWeight: FontWeight.normal,
       color: Colors.black,
       fontFamily: 'Roboto',
@@ -170,115 +212,172 @@ class InitialHomeState extends State<InitialHome> {
       return const Center(child: Text('Usuário não autenticado.'));
     }
 
-    return Scaffold(
-      backgroundColor: Colors.grey[300],
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      appBar: AppBar(
-        title: Text("Olá ${widget.nameUser.split(' ')[0]}", 
-          style: TextStyle(fontSize: 25.sp,
-          fontWeight: FontWeight.w500,
-          fontFamily: 'Roboto',
-          ),
-        ),
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          PointsCard(userId: user.uid),
-          const SizedBox(width: 16),
-          ButtonNotification(nameUser: widget.nameUser),
-          const SizedBox(width: 16),
-        ],
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 25.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 25.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance.collection('users').doc(user.uid).snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            backgroundColor: Colors.grey[300],
+            appBar: AppBar(
+              title: Text("Olá ${widget.nameUser.split(' ')[0]}", 
+                style: TextStyle(fontSize: 30.sp,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Roboto',
+                ),
+              ),
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              actions: [
+                PointsCard(userId: user.uid),
+                const SizedBox(width: 16),
+                ButtonNotification(nameUser: widget.nameUser),
+                const SizedBox(width: 16),
+              ],
+            ),
+            body: const Center(child: CircularProgressIndicator()),
+          );
+        } else if (snapshot.hasError) {
+          return Scaffold(
+            backgroundColor: Colors.grey[300],
+            appBar: AppBar(
+              title: Text("Olá ${widget.nameUser.split(' ')[0]}", 
+                style: TextStyle(fontSize: 30.sp,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Roboto',
+                ),
+              ),
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              actions: [
+                PointsCard(userId: user.uid),
+                const SizedBox(width: 16),
+                ButtonNotification(nameUser: widget.nameUser),
+                const SizedBox(width: 16),
+              ],
+            ),
+            body: Center(child: Text('Erro: ${snapshot.error}')),
+          );
+        } else if (!snapshot.hasData || !snapshot.data!.exists) {
+          return Scaffold(
+            backgroundColor: Colors.grey[300],
+            appBar: AppBar(
+              title: Text("Olá ${widget.nameUser.split(' ')[0]}", 
+                style: TextStyle(fontSize: 30.sp,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Roboto',
+                ),
+              ),
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              actions: [
+                PointsCard(userId: user.uid),
+                const SizedBox(width: 16),
+                ButtonNotification(nameUser: widget.nameUser),
+                const SizedBox(width: 16),
+              ],
+            ),
+            body: const Center(child: Text('Nome do usuário não encontrado.')),
+          );
+        } else {
+          final userData = snapshot.data!.data() as Map<String, dynamic>;
+          final userName = userData['name'] as String? ?? widget.nameUser;
+
+          return Scaffold(
+            backgroundColor: Colors.grey[300],
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+            appBar: AppBar(
+              title: Text("Olá ${userName.split(' ')[0]}", 
+                style: TextStyle(fontSize: 30.sp,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Roboto',
+                ),
+              ),
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              actions: [
+                PointsCard(userId: user.uid),
+                const SizedBox(width: 16),
+                ButtonNotification(nameUser: userName),
+                const SizedBox(width: 16),
+              ],
+            ),
+            body: SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Text(
-                          "Olá ${widget.nameUser.split(' ')[0]}",
-                          style: TextStyle(
-                            fontSize: 25.sp,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Roboto',
+                      SizedBox(height: 20.h),
+                      Text(
+                        "Seja bem-vindo ao seu desafio.",
+                        style: TextStyle(
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                      SizedBox(height: 15.h),
+                      Text(
+                        "Celebre suas vitórias e continue avançando!",
+                        style: regularTextStyle,
+                      ),
+                      SizedBox(height: 40.h),
+                      SizedBox(
+                        height: 260.h, // Ajuste a altura mínima conforme necessário
+                        child: PageView(
+                          scrollDirection: Axis.horizontal,
+                          controller: _controller,
+                          children: buildLevelCards(),
+                        ),
+                      ),
+                      SizedBox(height: 30.h),
+                      Center(
+                        child: SmoothPageIndicator(
+                          controller: _controller,
+                          count: weeksData.keys.length,
+                          effect: ExpandingDotsEffect(
+                            dotColor: Colors.grey,
+                            activeDotColor: const Color.fromARGB(255, 13, 61, 144),
+                            dotHeight: 8.h,
+                            dotWidth: 8.w,
+                            spacing: 10.w,
                           ),
                         ),
                       ),
-                      Container(
-                        padding: EdgeInsets.all(8.w),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[400],
-                          shape: BoxShape.circle,
+                      SizedBox(height: 40.h),
+                      Center(
+                        child: Text(
+                          "Próximas tarefas a serem liberadas",
+                          style: regularTextStyle,
                         ),
-                        child: ButtonNotification(nameUser: widget.nameUser),
                       ),
+                      SizedBox(height: 20.h),
+                      Column(
+                      children: currentWeekThemes.isEmpty
+                        ? [const Center(child: Text('Nenhum tema disponível para a próxima semana.'))]
+                        : currentWeekThemes.map((theme) {
+                            return MyListTile(
+                              inconImagePath: theme['iconPath'] ?? "assets/backgrounds/botao1.png",
+                              tileTile: theme['title'] ?? 'Sem título',
+                            );
+                          }).toList(),
+                    ),
+                      SizedBox(height: 50.h),
                     ],
                   ),
                 ),
-                SizedBox(height: 20.h),
-                Text(
-                  "Seja bem-vindo ao seu desafio.",
-                  style: regularTextStyle,
-                ),
-                SizedBox(height: 15.h),
-                Text(
-                  "Celebre suas vitórias e continue avançando!",
-                  style: regularTextStyle,
-                ),
-                SizedBox(height: 30.h),
-                SizedBox(
-                  height: 260.h, // Ajuste a altura mínima conforme necessário
-                  child: PageView(
-                    scrollDirection: Axis.horizontal,
-                    controller: _controller,
-                    children: buildLevelCards(),
-                  ),
-                ),
-                SizedBox(height: 30.h),
-                Center(
-                  child: SmoothPageIndicator(
-                    controller: _controller,
-                    count: weeksData.keys.length,
-                    effect: ExpandingDotsEffect(
-                      dotColor: Colors.grey,
-                      activeDotColor: const Color.fromARGB(255, 13, 61, 144),
-                      dotHeight: 8.h,
-                      dotWidth: 8.w,
-                      spacing: 10.w,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 40.h),
-                Center(
-                  child: Text(
-                    "Próximas tarefas a serem liberadas",
-                    style: regularTextStyle,
-                  ),
-                ),
-                SizedBox(height: 20.h),
-                Column(
-                  children: currentWeekThemes.map((theme) {
-                    return MyListTile(
-                      inconImagePath: theme['iconPath'] ?? "assets/backgrounds/botao3.png", // Usa o caminho do ícone
-                      tileTile: theme['title'] ?? 'Sem título',
-                    );
-                  }).toList(),
-                ),
-                SizedBox(height: 50.h),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
-      bottomNavigationBar: SubMenuWidget(nameUser: widget.nameUser),
+            bottomNavigationBar: SubMenuWidget(nameUser: userName),
+          );
+        }
+      },
     );
   }
 }
