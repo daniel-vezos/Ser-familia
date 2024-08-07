@@ -98,7 +98,7 @@ class InitialHomeState extends State<InitialHome> {
         startOfNextWeek = startOfNextWeek.add(const Duration(days: 7));
       }
 
-      print('Start of next week: $startOfNextWeek'); // Depuração
+      //print('Start of next week: $startOfNextWeek'); // Depuração
 
       List<Map<String, String>> themesList = [];
 
@@ -122,7 +122,7 @@ class InitialHomeState extends State<InitialHome> {
             }
           }
 
-          print('Active date from Firestore: $activedata'); // Depuração
+          //print('Active date from Firestore: $activedata'); // Depuração
 
           if (activedata != null && activedata.isAfter(startOfNextWeek.subtract(const Duration(days: 1))) &&
               activedata.isBefore(startOfNextWeek.add(const Duration(days: 7)))) {
@@ -144,7 +144,7 @@ class InitialHomeState extends State<InitialHome> {
               currentWeekThemes = themes;
             });
 
-            print('Loaded themes for next week: $themes'); // Depuração
+            //print('Loaded themes for next week: $themes'); // Depuração
             return;
           }
         }
