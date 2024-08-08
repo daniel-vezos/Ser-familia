@@ -171,21 +171,19 @@ class ProfilePage extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(height: 32),
+                GestureDetector(
+                  onTap: () => _deleteUser(context),
+                  child: const Row(
+                    children: [
+                      Text(
+                        'Excluir a conta',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ],
+                  ),
+                ),
               ],
-            ),
-            Center(
-              child: ElevatedButton(
-                onPressed: () => _deleteUser(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xff012363),
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                  textStyle: const TextStyle(fontSize: 18),
-                ),
-                child: const Text(
-                  'Excluir Conta',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
             ),
             Center(
               child: ElevatedButton(
