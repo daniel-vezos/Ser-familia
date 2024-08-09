@@ -30,16 +30,11 @@ class _InitialPageState extends State<InitialPage> {
 
   Future<void> _checkIfUserIsLoggedIn() async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      // Se o usuário estiver autenticado, navegue para a tela inicial
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => InitialHome(
-            nameUser: user.displayName ?? 'Usuário',
-          ),
-        ),
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Usuário não está autenticado.')),
       );
+      return;
     }
   }
 
