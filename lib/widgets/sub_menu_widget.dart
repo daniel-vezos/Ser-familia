@@ -1,9 +1,9 @@
+import 'package:app_leitura/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:app_leitura/pages/initial_home.dart';
 import 'package:app_leitura/pages/level_completed.dart';
 import 'package:app_leitura/pages/ranking_page.dart';
-import '../pages/profile_page.dart';
 
 class SubMenuWidget extends StatelessWidget {
   final String nameUser;

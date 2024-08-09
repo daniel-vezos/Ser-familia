@@ -30,9 +30,9 @@ class ButtonNotification extends StatelessWidget {
       content: NotificationContent(
         id: 1,
         channelKey: "basic_channel",
-        title: 'Semana Liberada',
+        title: 'Semana Liberadaaa',
         body:
-            'A semana seguinte foi liberada! Continue avançando e alcançando seus objetivos!',
+            'A semanaaaa seguinte foiii liberada! Continue avançando e alcançando seus objetivos!',
         payload: {'page': 'notification_page'},
       ),
     );

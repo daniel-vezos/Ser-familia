@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:app_leitura/auth/auth_service.dart';
+import 'package:app_leitura/pages/privacy_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -78,6 +79,38 @@ class _InitialPageState extends State<InitialPage> {
     }
   }
 
+  Future<void> _showLoginSuccessDialog(String userName) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible:
+          false, // Impede o usuário de fechar o diálogo tocando fora
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Bem-vindo!'),
+          content: const Text(
+              'Antes de começar, por favor, leia nossa política de privacidade.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                // Ação ao pressionar "OK": redirecionar para a política de privacidade
+                Navigator.of(context).pop(); // Fecha o diálogo
+                // Substitua a URL abaixo pela URL real da sua política de privacidade
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const PrivacyPolicyPage(), // Adicione a página da política de privacidade
+                  ),
+                );
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -145,6 +178,9 @@ class _InitialPageState extends State<InitialPage> {
                   _isLoading = true; // Inicia o carregamento
                 });
                 User? user = await _auth.loginWithGoogle();
+                setState(() {
+                  _isLoading = false; // Termina o carregamento
+                });
                 if (user != null) {
                   Navigator.pushReplacement(
                     context,
@@ -154,14 +190,13 @@ class _InitialPageState extends State<InitialPage> {
                       ),
                     ),
                   );
+                  // Mostra o AlertDialog após o login
+                  _showLoginSuccessDialog(user.displayName ?? 'Usuário');
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Falha no login')),
                   );
                 }
-                setState(() {
-                  _isLoading = false; // Termina o carregamento
-                });
               },
               title: 'Conectar com Google',
               width: 250,

@@ -36,7 +36,7 @@ class _NotificationPageState extends State<NotificationPage> {
   void _updateMessage() {
     if (widget.showMessage) {
       _message =
-          'A semana seguinte foi liberada! Continue avançando e alcançando seus objetivos!';
+          'A semanaaa seguinte foi liberadaaa! Continue avançando e alcançando seus objetivos!';
     } else {
       _message = null;
     }
@@ -53,31 +53,30 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+        appBar: AppBar(
+          backgroundColor: Colors.grey[300],
+          title: const Text('Notificação'),
+        ),
         backgroundColor: Colors.grey[300],
-        title: const Text('Notificação'),
-      ),
-      backgroundColor: Colors.grey[300],
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          // Espaçamento entre o título e a mensagem
-          const SizedBox(height: 20), // Ajuste a altura conforme necessário
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            // Espaçamento entre o título e a mensagem
+            const SizedBox(height: 20), // Ajuste a altura conforme necessário
 
-          _message != null
-              ? Text(
-                  _message!,
-                  style: const TextStyle(fontSize: 15),
-                  textAlign: TextAlign.center,
-                )
-              : Text(
-                  'Espere as proximas liberações, ${widget.nameUser}!',
-                  style: const TextStyle(fontSize: 18),
-                  textAlign: TextAlign.center,
-                ),
-        ],
-      ),
-      bottomNavigationBar: SubMenuWidget(nameUser: widget.nameUser)
-    );
+            _message != null
+                ? Text(
+                    _message!,
+                    style: const TextStyle(fontSize: 15),
+                    textAlign: TextAlign.center,
+                  )
+                : Text(
+                    'Espere as proximas liberações, ${widget.nameUser}!',
+                    style: const TextStyle(fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
+          ],
+        ),
+        bottomNavigationBar: SubMenuWidget(nameUser: widget.nameUser));
   }
 }

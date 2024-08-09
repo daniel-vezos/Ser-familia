@@ -1,4 +1,5 @@
 import 'package:app_leitura/pages/initial_page.dart';
+import 'package:app_leitura/pages/privacy_page.dart';
 import 'package:app_leitura/pages/privacy_policy_page.dart';
 import 'package:app_leitura/pages/terms_of_use_page.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
@@ -44,8 +45,7 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back,
-              color: Colors.grey[600]), // Um cinza mais escuro
+          icon: Icon(Icons.arrow_back, color: Colors.grey[600]),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
@@ -60,11 +60,11 @@ class ProfilePage extends StatelessWidget {
             child: ButtonNotification(nameUser: nameUser),
           ),
         ],
-        backgroundColor: Colors.grey[300], // Cor de fundo da AppBar
-        elevation: 0, // Remove a sombra da AppBar
+        backgroundColor: Colors.grey[300],
+        elevation: 0,
       ),
       body: Container(
-        color: Colors.grey[300], // Define a cor de fundo
+        color: Colors.grey[300],
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,17 +78,17 @@ class ProfilePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              PrivacyPolicyPage(nameUser: nameUser)),
+                        builder: (context) => const PrivacyPolicyPage(),
+                      ),
                     );
                   },
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Text(
+                      Icon(Icons.lock, color: Colors.grey[600]),
+                      const SizedBox(width: 8),
+                      const Text(
                         'Política de Privacidade',
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
+                        style: TextStyle(fontSize: 18),
                       ),
                     ],
                   ),
@@ -99,20 +99,12 @@ class ProfilePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              TermsOfUsePage(nameUser: nameUser)),
+                        builder: (context) =>
+                            TermsOfUsePage(nameUser: nameUser),
+                      ),
                     );
                   },
-                  child: const Row(
-                    children: [
-                      Text(
-                        'Termos de Uso',
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: const Row(),
                 ),
               ],
             ),
@@ -121,11 +113,9 @@ class ProfilePage extends StatelessWidget {
                 onPressed: () => _signOut(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xff012363),
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 16,
-                      horizontal: 32), // Ajusta o padding do botão
-                  textStyle: const TextStyle(
-                      fontSize: 18), // Ajusta o tamanho do texto
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                  textStyle: const TextStyle(fontSize: 18),
                 ),
                 child: const Text(
                   'Sair',

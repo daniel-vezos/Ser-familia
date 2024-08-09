@@ -26,7 +26,8 @@ class InitialHome extends StatefulWidget {
 class InitialHomeState extends State<InitialHome> {
   final PageController _controller = PageController();
   late Map<String, dynamic> weeksData = {};
-  List<Map<String, String>> currentWeekThemes = []; // Lista de mapas com ícone e título
+  List<Map<String, String>> currentWeekThemes =
+      []; // Lista de mapas com ícone e título
 
   @override
   void initState() {
@@ -37,7 +38,8 @@ class InitialHomeState extends State<InitialHome> {
 
   Future<void> _loadWeeksData() async {
     try {
-      final snapshot = await FirebaseFirestore.instance.collection('levels').get();
+      final snapshot =
+          await FirebaseFirestore.instance.collection('levels').get();
       final data = snapshot.docs.fold<Map<String, dynamic>>({}, (map, doc) {
         map[doc.id] = doc.data();
         return map;
@@ -80,7 +82,6 @@ class InitialHomeState extends State<InitialHome> {
     return null;
   }
 
-
   Future<void> _loadNextWeekThemes() async {
     try {
       final startDate = await _getStartDateFromFirestore();
@@ -90,8 +91,10 @@ class InitialHomeState extends State<InitialHome> {
       }
 
       DateTime today = DateTime.now();
-      DateTime startOfCurrentWeek = startDate.subtract(Duration(days: startDate.weekday - 1));
-      DateTime startOfNextWeek = startOfCurrentWeek.add(const Duration(days: 7));
+      DateTime startOfCurrentWeek =
+          startDate.subtract(Duration(days: startDate.weekday - 1));
+      DateTime startOfNextWeek =
+          startOfCurrentWeek.add(const Duration(days: 7));
 
       // Verifica se a semana atual passou
       if (today.isAfter(startOfNextWeek.subtract(const Duration(days: 1)))) {
@@ -103,7 +106,10 @@ class InitialHomeState extends State<InitialHome> {
       List<Map<String, String>> themesList = [];
 
       for (var levelName in weeksData.keys) {
-        final levelRef = FirebaseFirestore.instance.collection('levels').doc(levelName).collection('weeks');
+        final levelRef = FirebaseFirestore.instance
+            .collection('levels')
+            .doc(levelName)
+            .collection('weeks');
         final querySnapshot = await levelRef.get();
 
         for (var doc in querySnapshot.docs) {
@@ -124,19 +130,24 @@ class InitialHomeState extends State<InitialHome> {
 
           //print('Active date from Firestore: $activedata'); // Depuração
 
-          if (activedata != null && activedata.isAfter(startOfNextWeek.subtract(const Duration(days: 1))) &&
-              activedata.isBefore(startOfNextWeek.add(const Duration(days: 7)))) {
+          if (activedata != null &&
+              activedata
+                  .isAfter(startOfNextWeek.subtract(const Duration(days: 1))) &&
+              activedata
+                  .isBefore(startOfNextWeek.add(const Duration(days: 7)))) {
             if (weekData['active'] != true) {
               await levelRef.doc(doc.id).update({'active': true});
             }
 
             final themeCollection = levelRef.doc(doc.id).collection('themes');
             final themeQuerySnapshot = await themeCollection.get();
-            final List<Map<String, String>> themes = themeQuerySnapshot.docs.map((doc) {
+            final List<Map<String, String>> themes =
+                themeQuerySnapshot.docs.map((doc) {
               final data = doc.data();
               return {
                 'title': data['title'] as String? ?? 'Sem título',
-                'iconPath': data['iconPath'] as String? ?? 'assets/backgrounds/botao1.png',
+                'iconPath': data['iconPath'] as String? ??
+                    'assets/backgrounds/botao1.png',
               };
             }).toList();
 
@@ -153,7 +164,6 @@ class InitialHomeState extends State<InitialHome> {
       print('Erro ao carregar temas da próxima semana: $e');
     }
   }
-
 
   bool isCardClickable(int levelNumber) {
     // Simplesmente habilita todos os cartões
@@ -176,18 +186,22 @@ class InitialHomeState extends State<InitialHome> {
     return MyCard(
       imagePath: 'assets/backgrounds/trofeu1.png',
       title: levelName,
-      onPressed: clickable ? () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => WeeksPage(
-              nivel: levelName,
-              userName: widget.nameUser,
-              titles: weeksData[levelName] is List ? weeksData[levelName] : [],
-            ),
-          ),
-        );
-      } : null,
+      onPressed: clickable
+          ? () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WeeksPage(
+                    nivel: levelName,
+                    userName: widget.nameUser,
+                    titles: weeksData[levelName] is List
+                        ? weeksData[levelName]
+                        : [],
+                  ),
+                ),
+              );
+            }
+          : null,
       color: clickable ? Colors.white : Colors.grey.withOpacity(0.5),
     );
   }
@@ -214,16 +228,21 @@ class InitialHomeState extends State<InitialHome> {
     }
 
     return StreamBuilder<DocumentSnapshot>(
-      stream: FirebaseFirestore.instance.collection('users').doc(user.uid).snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             backgroundColor: Colors.grey[300],
             appBar: AppBar(
-              title: Text("Olá ${widget.nameUser.split(' ')[0]}", 
-                style: TextStyle(fontSize: 30.sp,
-                fontWeight: FontWeight.w500,
-                fontFamily: 'Roboto',
+              title: Text(
+                "Olá ${widget.nameUser.split(' ')[0]}",
+                style: TextStyle(
+                  fontSize: 30.sp,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Roboto',
                 ),
               ),
               automaticallyImplyLeading: false,
@@ -242,10 +261,12 @@ class InitialHomeState extends State<InitialHome> {
           return Scaffold(
             backgroundColor: Colors.grey[300],
             appBar: AppBar(
-              title: Text("Olá ${widget.nameUser.split(' ')[0]}", 
-                style: TextStyle(fontSize: 30.sp,
-                fontWeight: FontWeight.w500,
-                fontFamily: 'Roboto',
+              title: Text(
+                "Olá ${widget.nameUser.split(' ')[0]}",
+                style: TextStyle(
+                  fontSize: 30.sp,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Roboto',
                 ),
               ),
               automaticallyImplyLeading: false,
@@ -264,10 +285,12 @@ class InitialHomeState extends State<InitialHome> {
           return Scaffold(
             backgroundColor: Colors.grey[300],
             appBar: AppBar(
-              title: Text("Olá ${widget.nameUser.split(' ')[0]}", 
-                style: TextStyle(fontSize: 30.sp,
-                fontWeight: FontWeight.w500,
-                fontFamily: 'Roboto',
+              title: Text(
+                "Olá ${widget.nameUser.split(' ')[0]}",
+                style: TextStyle(
+                  fontSize: 30.sp,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Roboto',
                 ),
               ),
               automaticallyImplyLeading: false,
@@ -288,12 +311,15 @@ class InitialHomeState extends State<InitialHome> {
 
           return Scaffold(
             backgroundColor: Colors.grey[300],
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
             appBar: AppBar(
-              title: Text("Olá ${userName.split(' ')[0]}", 
-                style: TextStyle(fontSize: 30.sp,
-                fontWeight: FontWeight.w500,
-                fontFamily: 'Roboto',
+              title: Text(
+                "Olá ${userName.split(' ')[0]}",
+                style: TextStyle(
+                  fontSize: 30.sp,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Roboto',
                 ),
               ),
               automaticallyImplyLeading: false,
@@ -330,7 +356,8 @@ class InitialHomeState extends State<InitialHome> {
                       ),
                       SizedBox(height: 40.h),
                       SizedBox(
-                        height: 260.h, // Ajuste a altura mínima conforme necessário
+                        height:
+                            260.h, // Ajuste a altura mínima conforme necessário
                         child: PageView(
                           scrollDirection: Axis.horizontal,
                           controller: _controller,
@@ -344,7 +371,8 @@ class InitialHomeState extends State<InitialHome> {
                           count: weeksData.keys.length,
                           effect: ExpandingDotsEffect(
                             dotColor: Colors.grey,
-                            activeDotColor: const Color.fromARGB(255, 13, 61, 144),
+                            activeDotColor:
+                                const Color.fromARGB(255, 13, 61, 144),
                             dotHeight: 8.h,
                             dotWidth: 8.w,
                             spacing: 10.w,
@@ -360,15 +388,20 @@ class InitialHomeState extends State<InitialHome> {
                       ),
                       SizedBox(height: 20.h),
                       Column(
-                      children: currentWeekThemes.isEmpty
-                        ? [const Center(child: Text('Nenhum tema disponível para a próxima semana.'))]
-                        : currentWeekThemes.map((theme) {
-                            return MyListTile(
-                              inconImagePath: theme['iconPath'] ?? "assets/backgrounds/botao1.png",
-                              tileTile: theme['title'] ?? 'Sem título',
-                            );
-                          }).toList(),
-                    ),
+                        children: currentWeekThemes.isEmpty
+                            ? [
+                                const Center(
+                                    child: Text(
+                                        'Nenhum tema disponível para a próxima semana.'))
+                              ]
+                            : currentWeekThemes.map((theme) {
+                                return MyListTile(
+                                  inconImagePath: theme['iconPath'] ??
+                                      "assets/backgrounds/botao1.png",
+                                  tileTile: theme['title'] ?? 'Sem título',
+                                );
+                              }).toList(),
+                      ),
                       SizedBox(height: 50.h),
                     ],
                   ),
