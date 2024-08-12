@@ -1,10 +1,28 @@
 import 'dart:async';
+import 'package:app_leitura/api/firebase_api_notification.dart';
 import 'package:app_leitura/pages/initial_page.dart';
-import 'package:app_leitura/widgets/notification_controller.dart';
+import 'package:app_leitura/widgets/notification_key.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:app_leitura/pages/notification_page.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
+
+Future<void> backgroundMessageHandler(RemoteMessage message) async {
+  // You can also handle background messages here if needed
+  print('Title: ${message.notification?.title}');
+  print('Body: ${message.notification?.body}');
+  print('Payload: ${message.data}');
+
+  navigatorKey.currentState?.pushNamed(
+    NotificationPage.route,
+    arguments: message,
+  );
+}
+
+final navigationKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,68 +30,12 @@ Future<void> main() async {
   // Inicialize o Firebase
   await Firebase.initializeApp();
 
-  // Inicialize o Firebase Cloud Messaging
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
 
-  // Obtenha e imprima o token de registro FCM
-  String? token = await messaging.getToken();
-  print('FCM Token: $token');
+  await FirebaseApi().initNotifications();
 
-  // Configuração de notificações, se necessário
-  await requestNotificationPermission();
-
-  try {
-    await AwesomeNotifications().initialize(
-      'resource://drawable/res_app_icon',
-      [
-        NotificationChannel(
-          channelKey: 'basic_channel',
-          channelName: 'Basic notifications',
-          channelDescription: 'Notification channel for basic tests',
-          defaultColor: const Color(0xFF9D50DD),
-          ledColor: Colors.white,
-          importance: NotificationImportance.High,
-          playSound: true,
-          enableLights: true,
-          enableVibration: true,
-        )
-      ],
-    );
-    print('AwesomeNotifications initialized successfully.');
-  } catch (e) {
-    print('Failed to initialize AwesomeNotifications: $e');
-  }
-
-  try {
-    bool isAllowedToSendNotification =
-        await AwesomeNotifications().isNotificationAllowed();
-    if (!isAllowedToSendNotification) {
-      await AwesomeNotifications().requestPermissionToSendNotifications();
+      runApp(const MyApp());
     }
-    print('Notification permission status checked.');
-  } catch (e) {
-    print('Failed to check or request notification permissions: $e');
-  }
-
-  runApp(const MyApp());
-}
-
-Future<void> requestNotificationPermission() async {
-  try {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    NotificationSettings settings = await messaging.requestPermission(
-        alert: true,
-        announcement: false,
-        badge: true,
-        carPlay: false,
-        criticalAlert: false,
-        provisional: false,
-        sound: true);
-    print('Notification permission granted: ${settings.authorizationStatus}');
-  } catch (e) {
-    print('Failed to request notification permission: $e');
-  }
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -82,11 +44,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Ser Familia',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      navigatorKey: navigationKey,
       home: const InitialPage(),
+      routes: {
+        NotificationPage.route: (context) => const NotificationPage()
+      },
     );
   }
 }
