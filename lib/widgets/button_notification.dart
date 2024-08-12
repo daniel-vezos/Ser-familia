@@ -15,27 +15,25 @@ class ButtonNotification extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => NotificationPage(
-          nameUser: nameUser,
-          showMessage: false, // Passe true ou false conforme necessário
+        builder: (context) => const NotificationPage(
         ),
       ),
     );
 
-    // Adiciona um pequeno delay para garantir que a primeira navegação ocorra
-    await Future.delayed(const Duration(milliseconds: 300));
+    // // Adiciona um pequeno delay para garantir que a primeira navegação ocorra
+    // await Future.delayed(const Duration(milliseconds: 300));
 
-    // Cria e exibe a notificação
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 1,
-        channelKey: "basic_channel",
-        title: 'Semana Liberadaaa',
-        body:
-            'A semanaaaa seguinte foiii liberada! Continue avançando e alcançando seus objetivos!',
-        payload: {'page': 'notification_page'},
-      ),
-    );
+    // // Cria e exibe a notificação
+    // await AwesomeNotifications().createNotification(
+    //   content: NotificationContent(
+    //     id: 1,
+    //     channelKey: "basic_channel",
+    //     title: 'Semana Liberadaaa',
+    //     body:
+    //         'A semanaaaa seguinte foiii liberada! Continue avançando e alcançando seus objetivos!',
+    //     payload: {'page': 'notification_page'},
+    //   ),
+    // );
   }
 
   @override
