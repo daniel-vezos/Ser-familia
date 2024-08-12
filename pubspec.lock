@@ -757,8 +757,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
-<<<<<<< HEAD
-=======
   timezone:
     dependency: transitive
     description:
@@ -767,7 +765,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.9.4"
->>>>>>> c0dd2b4994f372b6b867410fc82e71bc66b429c5
   typed_data:
     dependency: transitive
     description:
