@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:app_leitura/pages/initial_page.dart';
+import 'package:app_leitura/util/secreenutil.dart';
 import 'package:app_leitura/widgets/notification_controller.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,81 +12,66 @@ Future<void> main() async {
   // Inicialize o Firebase
   await Firebase.initializeApp();
 
-  // Inicialize o Firebase Cloud Messaging
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  // Inicialize o Awesome Notifications
+  await AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(
+        channelGroupKey: "basic_channel_group",
+        channelKey: "basic_channel",
+        channelName: "Basic Notification",
+        channelDescription: "Basic notifications channel",
+      )
+    ],
+    channelGroups: [
+      NotificationChannelGroup(
+        channelGroupKey: "basic_channel_group",
+        channelGroupName: "Basic Group",
+      )
+    ],
+  );
 
-  // Obtenha e imprima o token de registro FCM
-  String? token = await messaging.getToken();
-  print('FCM Token: $token');
-
-  // Configuração de notificações, se necessário
-  await requestNotificationPermission();
-
-  try {
-    await AwesomeNotifications().initialize(
-      'resource://drawable/res_app_icon',
-      [
-        NotificationChannel(
-          channelKey: 'basic_channel',
-          channelName: 'Basic notifications',
-          channelDescription: 'Notification channel for basic tests',
-          defaultColor: const Color(0xFF9D50DD),
-          ledColor: Colors.white,
-          importance: NotificationImportance.High,
-          playSound: true,
-          enableLights: true,
-          enableVibration: true,
-        )
-      ],
-    );
-    print('AwesomeNotifications initialized successfully.');
-  } catch (e) {
-    print('Failed to initialize AwesomeNotifications: $e');
+  // Verificar permissões e solicitar se necessário
+  bool isAllowedToSendNotification =
+      await AwesomeNotifications().isNotificationAllowed();
+  if (!isAllowedToSendNotification) {
+    AwesomeNotifications().requestPermissionToSendNotifications();
   }
 
-  try {
-    bool isAllowedToSendNotification =
-        await AwesomeNotifications().isNotificationAllowed();
-    if (!isAllowedToSendNotification) {
-      await AwesomeNotifications().requestPermissionToSendNotifications();
-    }
-    print('Notification permission status checked.');
-  } catch (e) {
-    print('Failed to check or request notification permissions: $e');
-  }
+  // Agendar notificações para cada minuto
+  scheduleNotifications();
 
   runApp(const MyApp());
 }
 
-Future<void> requestNotificationPermission() async {
+Future<void> scheduleNotifications() async {
   try {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    NotificationSettings settings = await messaging.requestPermission(
-        alert: true,
-        announcement: false,
-        badge: true,
-        carPlay: false,
-        criticalAlert: false,
-        provisional: false,
-        sound: true);
-    print('Notification permission granted: ${settings.authorizationStatus}');
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 1,
+        channelKey: 'basic_channel',
+        title: 'Reminder',
+        body: 'This is a scheduled notification every minute.',
+      ),
+      schedule: NotificationInterval(
+        interval: 60, // Intervalo de 60 segundos (1 minuto)
+        preciseAlarm: true, // Para garantir precisão
+      ),
+    );
+    print('Notification scheduled successfully.');
   } catch (e) {
-    print('Failed to request notification permission: $e');
+    print('Failed to schedule notification: $e');
   }
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const InitialPage(),
+    return const MaterialApp(
+      home: InitialPage(), // Altere aqui para a página que você deseja abrir
     );
   }
 }

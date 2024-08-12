@@ -21,7 +21,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   void initState() {
     super.initState();
-    _updateMessage();
+    // _updateMessage();
   }
 
   @override
@@ -29,19 +29,19 @@ class _NotificationPageState extends State<NotificationPage> {
     super.didUpdateWidget(oldWidget);
     // Atualiza a mensagem quando os parâmetros mudam
     if (widget.showMessage != oldWidget.showMessage) {
-      _updateMessage();
+      // _updateMessage();
     }
   }
 
-  void _updateMessage() {
-    if (widget.showMessage) {
-      _message =
-          'A semanaaa seguinte foi liberadaaa! Continue avançando e alcançando seus objetivos!';
-    } else {
-      _message = null;
-    }
-    setState(() {});
-  }
+  // void _updateMessage() {
+  //   if (widget.showMessage) {
+  //     _message =
+  //         'A semanaa seguinte foi liberadaa! Continue avançando e alcançando seus objetivos!';
+  //   } else {
+  //     _message = null;
+  //   }
+  //   setState(() {});
+  // }
 
   @override
   void dispose() {
