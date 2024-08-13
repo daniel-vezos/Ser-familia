@@ -1,25 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app_leitura/pages/initial_home.dart'; // Ajuste o caminho conforme necessário
+import 'package:app_leitura/pages/initial_page.dart'; // Ajuste o caminho conforme necessário
 
-class PrivacyPolicyPageContent extends StatelessWidget {
+class PrivacityPage extends StatefulWidget {
   final String nameUser;
-  final VoidCallback onAccept;
-  final VoidCallback onReject;
 
-  const PrivacyPolicyPageContent({
+  const PrivacityPage({
     super.key,
     required this.nameUser,
-    required this.onAccept,
-    required this.onReject,
   });
+
+  @override
+  _PrivacityPageState createState() => _PrivacityPageState();
+}
+
+class _PrivacityPageState extends State<PrivacityPage> {
+  bool _buttonsEnabled = true;
+  bool _showMessage = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void _onAccept() {
+    setState(() {
+      _buttonsEnabled = false;
+      _showMessage = false;
+    });
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const InitialHome(nameUser: '')),
+    );
+  }
+
+  void _onReject() {
+    setState(() {
+      _buttonsEnabled = false;
+      _showMessage = true;
+    });
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const InitialPage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Política de Privacidade'),
-        backgroundColor: Colors.grey[300], // Cor de fundo da AppBar
-        elevation: 0, // Remove a sombra da AppBar
+        backgroundColor: Colors.grey[300],
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -83,7 +120,7 @@ class PrivacyPolicyPageContent extends StatelessWidget {
                       '• Finalidade: propósitos legítimos, específicos e explícitos;\n'
                       '• Adequação: compatibilidade do tratamento com as finalidades;\n'
                       '• Necessidade: limitação ao mínimo necessário;\n'
-                      '• Livre acesso: acesso do titular aos seus dados pessoais enquanto estiverem conosco;\n'
+                      '• Livre acesso: acesso do titular aos seus dados pessoais enquanto estiver conosco;\n'
                       '• Qualidade dos dados: dados exatos, corretos e com possibilidade de correção e/ou atualização;\n'
                       '• Transparência: compromisso de prestação de informações claras, precisas e facilitadas aos titulares dos dados, relativamente aos seus dados pessoais;\n'
                       '• Segurança: utilização de medidas técnicas e administrativas para a proteção dos dados pessoais que tratamos;\n'
@@ -106,45 +143,36 @@ class PrivacyPolicyPageContent extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: onAccept,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff012363), // Cor do botão
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 32), // Padding do botão
-                    textStyle:
-                        const TextStyle(fontSize: 18), // Tamanho da fonte
+            if (_showMessage)
+              const SizedBox(height: 15), // Espaço adicional abaixo dos botões
+            if (_buttonsEnabled) // Adiciona condição para mostrar os botões somente quando habilitados
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: _onAccept,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(
+                          255, 6, 48, 81), // Cor de fundo do botão
+                    ),
+                    child: const Text(
+                      'Aceitar',
+                      style: TextStyle(color: Colors.white), // Cor do texto
+                    ),
                   ),
-                  child: const Text(
-                    'Aceitar',
-                    style: TextStyle(
-                        color:
-                            Color.fromARGB(255, 246, 246, 246)), // Cor do texto
+                  ElevatedButton(
+                    onPressed: _onReject,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(
+                          255, 6, 48, 81), // Cor de fundo do botão
+                    ),
+                    child: const Text(
+                      'Recusar',
+                      style: TextStyle(color: Colors.white), // Cor do texto
+                    ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: onReject,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff012363), // Cor do botão
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 32), // Padding do botão
-                    textStyle:
-                        const TextStyle(fontSize: 18), // Tamanho da fonte
-                  ),
-                  child: const Text(
-                    'Recusar',
-                    style: TextStyle(
-                        color:
-                            Color.fromARGB(255, 246, 246, 246)), // Cor do texto
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 15), // Espaço adicional abaixo dos botões
+                ],
+              ),
           ],
         ),
       ),

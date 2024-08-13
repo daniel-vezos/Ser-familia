@@ -1,14 +1,11 @@
 import 'package:app_leitura/pages/initial_page.dart';
-import 'package:app_leitura/pages/privacy_page.dart';
-import 'package:app_leitura/pages/privacy_policy_page.dart';
-import 'package:app_leitura/pages/terms_of_use_page.dart';
+import 'package:app_leitura/pages/privacity_page.dart';
+
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/points_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../widgets/sub_menu_widget.dart';
 
@@ -30,7 +27,8 @@ class ProfilePage extends StatelessWidget {
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Confirmar Exclusão'),
-          content: const Text('Tem certeza de que deseja excluir sua conta? Esta ação é irreversível.'),
+          content: const Text(
+              'Tem certeza de que deseja excluir sua conta? Esta ação é irreversível.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
@@ -69,7 +67,6 @@ class ProfilePage extends StatelessWidget {
       );
     }
   }
-
 
   Future<void> _deleteUserData(String uid) async {
     try {
@@ -116,11 +113,11 @@ class ProfilePage extends StatelessWidget {
           PointsCard(userId: user.uid),
           const SizedBox(width: 16),
           Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.grey[400],
-              shape: BoxShape.circle,
-            ),
+            // padding: const EdgeInsets.all(8),
+            // decoration: BoxDecoration(
+            //   color: Colors.grey[400],
+            //   shape: BoxShape.circle,
+            // ),
             child: ButtonNotification(nameUser: nameUser),
           ),
         ],
@@ -142,7 +139,7 @@ class ProfilePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PrivacyPolicyPage(),
+                        builder: (context) => PrivacityPage(nameUser: nameUser),
                       ),
                     );
                   },
@@ -152,25 +149,6 @@ class ProfilePage extends StatelessWidget {
                       const SizedBox(width: 8),
                       const Text(
                         'Política de Privacidade',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 32),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TermsOfUsePage(nameUser: nameUser),
-                      ),
-                    );
-                  },
-                  child: const Row(
-                    children: [
-                      Text(
-                        'Termos de Uso',
                         style: TextStyle(fontSize: 18),
                       ),
                     ],
@@ -195,7 +173,8 @@ class ProfilePage extends StatelessWidget {
                 onPressed: () => _signOut(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xff012363),
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
                   textStyle: const TextStyle(fontSize: 18),
                 ),
                 child: const Text(

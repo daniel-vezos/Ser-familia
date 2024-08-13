@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:app_leitura/pages/notification_page.dart'; // Verifique o caminho
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +16,7 @@ class ButtonNotification extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const NotificationPage(
-        ),
+        builder: (context) => const NotificationPage(),
       ),
     );
 

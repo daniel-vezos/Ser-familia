@@ -7,16 +7,18 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class FirebaseApi {
-  final _firebaseMessaging = FirebaseMessaging.instance;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-  final _androidChannel = const AndroidNotificationChannel(
+  final AndroidNotificationChannel _androidChannel =
+      const AndroidNotificationChannel(
     'high_importance_channel',
     'High Importance Notifications',
     description: 'This channel is used for important notifications',
     importance: Importance.defaultImportance,
   );
 
-  final _localNotifications = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _localNotifications =
+      FlutterLocalNotificationsPlugin();
 
   Future<void> handleBackgroundMessage(RemoteMessage message) async {
     print('Title: ${message.notification?.title}');
@@ -24,7 +26,7 @@ class FirebaseApi {
     print('Payload: ${message.data}');
   }
 
-  void handleMessage(RemoteMessage? message){
+  void handleMessage(RemoteMessage? message) {
     if (message == null) return;
 
     navigatorKey.currentState?.pushNamed(
@@ -33,9 +35,9 @@ class FirebaseApi {
     );
   }
 
-  Future initPushNotifications() async {
+  Future<void> initPushNotifications() async {
     await FirebaseMessaging.instance
-    .setForegroundNotificationPresentationOptions(
+        .setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
@@ -44,6 +46,7 @@ class FirebaseApi {
     FirebaseMessaging.instance.getInitialMessage().then(handleMessage);
     FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
+
     FirebaseMessaging.onMessage.listen((message) {
       final notification = message.notification;
       if (notification == null) return;
@@ -57,17 +60,17 @@ class FirebaseApi {
             _androidChannel.id,
             _androidChannel.name,
             channelDescription: _androidChannel.description,
-            icon: '@drawable/ic_launcher',
-          )
+            icon: '@drawable/ic_launcher.png',
+          ),
         ),
-        payload: jsonEncode(message.toMap())
+        payload: jsonEncode(message.toMap()),
       );
     });
   }
 
-  Future initLocalNotifications() async {
+  Future<void> initLocalNotifications() async {
     const iOS = DarwinInitializationSettings();
-    const android = AndroidInitializationSettings('@drawable/ic_launcher');
+    const android = AndroidInitializationSettings('@drawable/ic_launcher.png');
     const settings = InitializationSettings(android: android, iOS: iOS);
 
     await _localNotifications.initialize(
@@ -78,17 +81,31 @@ class FirebaseApi {
       },
     );
 
-    final platform = _localNotifications.resolvePlatformSpecificImplementation
-      <AndroidFlutterLocalNotificationsPlugin>();
+    final platform = _localNotifications.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
     await platform?.createNotificationChannel(_androidChannel);
   }
 
+  Future<String?> getDeviceToken() async {
+    return await _firebaseMessaging.getToken();
+  }
+
   Future<void> initNotifications() async {
-    await _firebaseMessaging.requestPermission();
+    await FirebaseMessaging.instance.requestPermission();
     final fCMToken = await _firebaseMessaging.getToken();
+    print("###### PRINT DEVICE TOKEN TO USE FOR PUSH NOTIFICATION ########");
     print('Token: $fCMToken');
-    initPushNotifications();
-    initLocalNotifications();
+    print("###### PRINT DEVICE TOKEN TO USE FOR PUSH NOTIFICATION ########");
+
+    // String? deviceToken = await getDeviceToken();
+    // if (deviceToken != null) {
+    //   print('Device Token: $deviceToken');
+    // } else {
+    //   print('Failed to get device token.');
+    // }
+
+    await initPushNotifications();
+    await initLocalNotifications();
 
     FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
       await handleBackgroundMessage(message);

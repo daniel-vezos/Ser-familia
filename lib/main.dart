@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'package:app_leitura/api/firebase_api_notification.dart';
 import 'package:app_leitura/pages/initial_page.dart';
+import 'package:app_leitura/util/secreenutil.dart';
 import 'package:app_leitura/widgets/notification_key.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:app_leitura/pages/notification_page.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -34,8 +35,57 @@ Future<void> main() async {
 
   await FirebaseApi().initNotifications();
 
-      runApp(const MyApp());
-    }
+  // Inicialize o Awesome Notifications
+  await AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(
+        channelGroupKey: "basic_channel_group",
+        channelKey: "basic_channel",
+        channelName: "Basic Notification",
+        channelDescription: "Basic notifications channel",
+      )
+    ],
+    channelGroups: [
+      NotificationChannelGroup(
+        channelGroupKey: "basic_channel_group",
+        channelGroupName: "Basic Group",
+      )
+    ],
+  );
+
+  // Verificar permissões e solicitar se necessário
+  bool isAllowedToSendNotification =
+      await AwesomeNotifications().isNotificationAllowed();
+  if (!isAllowedToSendNotification) {
+    AwesomeNotifications().requestPermissionToSendNotifications();
+  }
+
+  // Agendar notificações para cada minuto
+  // scheduleNotifications();
+
+  runApp(const MyApp());
+}
+
+// Future<void> scheduleNotifications() async {
+//   try {
+//     await AwesomeNotifications().createNotification(
+//       content: NotificationContent(
+//         id: 1,
+//         channelKey: 'basic_channel',
+//         title: 'Reminder',
+//         body: 'This is a scheduled notification every minute.',
+//       ),
+//       schedule: NotificationInterval(
+//         interval: 60, // Intervalo de 60 segundos (1 minuto)
+//         preciseAlarm: true, // Para garantir precisão
+//       ),
+//     );
+//     print('Notification scheduled successfully.');
+//   } catch (e) {
+//     print('Failed to schedule notification: $e');
+//   }
+// }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -50,9 +100,7 @@ class MyApp extends StatelessWidget {
       ),
       navigatorKey: navigationKey,
       home: const InitialPage(),
-      routes: {
-        NotificationPage.route: (context) => const NotificationPage()
-      },
+      routes: {NotificationPage.route: (context) => const NotificationPage()},
     );
   }
 }
