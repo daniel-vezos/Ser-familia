@@ -46,10 +46,10 @@ class RankingPage extends StatelessWidget {
           const SizedBox(width: 16),
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.grey[400],
-              shape: BoxShape.circle,
-            ),
+            // decoration: BoxDecoration(
+            //   color: Colors.grey[400],
+            //   shape: BoxShape.circle,
+            // ),
             child: ButtonNotification(nameUser: nameUser),
           ),
         ],

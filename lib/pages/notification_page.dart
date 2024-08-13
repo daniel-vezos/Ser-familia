@@ -24,34 +24,41 @@ class _NotificationPageState extends State<NotificationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final notificationBody = message?.notification?.body ?? 'Sem notificações no momento';
+    final notificationBody =
+        message?.notification?.body ?? 'Sem notificações no momento';
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.grey[300],
         title: const Text(
           'Notificações',
           style: TextStyle(color: Colors.black),
         ),
       ),
-      body: Column(
-        children: [
-          const Divider(
-            height: 1,
-            color: Color(0xfffb7bac9),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(notificationBody),
-            ],
-          ),
-          const SizedBox(height: 10),
-          const Divider(
-            height: 1,
-            color: Color(0xfffb7bac9),
-          ),
-        ],
+      body: Container(
+        color: Colors.grey[300], // Define a cor de fundo da página
+        child: Column(
+          children: [
+            Divider(
+              height: 1,
+              color: Colors.grey[500], // Ajusta a cor dos divisores
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(notificationBody,
+                    style: const TextStyle(
+                        color: Colors.black)), // Ajusta a cor do texto
+              ],
+            ),
+            const SizedBox(height: 10),
+            Divider(
+              height: 1,
+              color: Colors.grey[500], // Ajusta a cor dos divisores
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:app_leitura/auth/auth_service.dart';
-import 'package:app_leitura/pages/privacy_page.dart';
+import 'package:app_leitura/pages/privacity_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -93,8 +93,9 @@ class _InitialPageState extends State<InitialPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        const PrivacyPolicyPage(), // Adicione a página da política de privacidade
+                    builder: (context) => const PrivacityPage(
+                      nameUser: '',
+                    ), // Adicione a página da política de privacidade
                   ),
                 );
               },

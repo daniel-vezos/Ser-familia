@@ -62,30 +62,30 @@ Future<void> main() async {
   }
 
   // Agendar notificações para cada minuto
-  scheduleNotifications();
+  // scheduleNotifications();
 
   runApp(const MyApp());
 }
 
-Future<void> scheduleNotifications() async {
-  try {
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 1,
-        channelKey: 'basic_channel',
-        title: 'Reminder',
-        body: 'This is a scheduled notification every minute.',
-      ),
-      schedule: NotificationInterval(
-        interval: 60, // Intervalo de 60 segundos (1 minuto)
-        preciseAlarm: true, // Para garantir precisão
-      ),
-    );
-    print('Notification scheduled successfully.');
-  } catch (e) {
-    print('Failed to schedule notification: $e');
-  }
-}
+// Future<void> scheduleNotifications() async {
+//   try {
+//     await AwesomeNotifications().createNotification(
+//       content: NotificationContent(
+//         id: 1,
+//         channelKey: 'basic_channel',
+//         title: 'Reminder',
+//         body: 'This is a scheduled notification every minute.',
+//       ),
+//       schedule: NotificationInterval(
+//         interval: 60, // Intervalo de 60 segundos (1 minuto)
+//         preciseAlarm: true, // Para garantir precisão
+//       ),
+//     );
+//     print('Notification scheduled successfully.');
+//   } catch (e) {
+//     print('Failed to schedule notification: $e');
+//   }
+// }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -100,9 +100,7 @@ class MyApp extends StatelessWidget {
       ),
       navigatorKey: navigationKey,
       home: const InitialPage(),
-      routes: {
-        NotificationPage.route: (context) => const NotificationPage()
-      },
+      routes: {NotificationPage.route: (context) => const NotificationPage()},
     );
   }
 }
