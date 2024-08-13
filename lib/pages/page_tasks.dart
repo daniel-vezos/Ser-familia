@@ -222,142 +222,123 @@ class _PageTasksState extends State<PageTasks> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
-          if (snapshot.hasData && snapshot.data!.exists) {
-            final activityData = snapshot.data!.data() as Map<String, dynamic>?;
-            final isActivityCompleted = activityData?['completed'] ?? false;
-
-            return isActivityCompleted
-                ? const Center(child: Text('A atividade já foi realizada.'))
-                : SingleChildScrollView(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Container(
-                      color:
-                          Colors.grey[300], // Cor de fundo do corpo da página
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Tarefa',
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            widget.title,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            widget.challenge,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                        ],
-                      ),
-                    ),
-                  );
+          if (!snapshot.hasData || snapshot.data!.exists) {
+            return const Center(child: Text('A atividade já foi realizada.'));
           }
 
-          return const Center(child: Text('Erro ao carregar a atividade.'));
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(20.0),
+            child: Container(
+              color: Colors.grey[300], // Cor de fundo do corpo da página
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Tarefa',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    widget.title,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    widget.challenge,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          );
         },
       ),
       bottomNavigationBar: StreamBuilder<DocumentSnapshot>(
         stream: activityDoc.snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const SizedBox(
-                height: 60, child: Center(child: CircularProgressIndicator()));
-          }
+          bool isActivityCompleted = snapshot.hasData && snapshot.data!.exists;
 
-          if (snapshot.hasData && snapshot.data!.exists) {
-            final activityData = snapshot.data!.data() as Map<String, dynamic>?;
-            final isActivityCompleted = activityData?['completed'] ?? false;
-
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            radius: 25,
-                            backgroundColor: Colors.grey[400],
-                            child: IconButton(
-                              icon: Icon(
-                                _isPlaying ? Icons.pause : Icons.play_arrow,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                if (_isPlaying) {
-                                  _pause();
-                                } else {
-                                  _speak(widget.challenge);
-                                }
-                              },
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 25,
+                          backgroundColor: Colors.grey[400],
+                          child: IconButton(
+                            icon: Icon(
+                              _isPlaying ? Icons.pause : Icons.play_arrow,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              if (_isPlaying) {
+                                _pause();
+                              } else {
+                                _speak(widget.challenge);
+                              }
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        CircleAvatar(
+                          radius: 25,
+                          backgroundColor: Colors.grey[400],
+                          child: IconButton(
+                            icon: const Icon(Icons.stop, color: Colors.white),
+                            onPressed: () {
+                              _stop();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: isActivityCompleted
+                                ? null
+                                : () {
+                                    _stop();
+                                    _completeActivity();
+                                  },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: isActivityCompleted
+                                    ? Colors.grey
+                                    : const Color(0xffF5792F),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15.0)),
+                            child: const Text(
+                              'Atividade Realizada',
+                              style: TextStyle(color: Colors.white),
                             ),
                           ),
-                          const SizedBox(width: 20),
-                          CircleAvatar(
-                            radius: 25,
-                            backgroundColor: Colors.grey[400],
-                            child: IconButton(
-                              icon: const Icon(Icons.stop, color: Colors.white),
-                              onPressed: () {
-                                _stop();
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: isActivityCompleted
-                                  ? null
-                                  : () {
-                                      _stop();
-                                      _completeActivity();
-                                    },
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: isActivityCompleted
-                                      ? Colors.grey
-                                      : const Color(0xffF5792F),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 15.0)),
-                              child: const Text(
-                                'Atividade Realizada',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 20),
-                SubMenuWidget(nameUser: widget.nameUser.split(' ')[0]),
-              ],
-            );
-          }
-
-          return const SizedBox(
-              height: 60,
-              child: Center(
-                  child: Text('Erro ao carregar o status da atividade.')));
+              ),
+              const SizedBox(height: 20),
+              SubMenuWidget(
+                  nameUser: widget.nameUser
+                      .split(' ')[0]), // Adicionado o SubMenuDefaultWidget
+            ],
+          );
         },
       ),
     );
