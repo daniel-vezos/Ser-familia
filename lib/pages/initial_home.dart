@@ -180,28 +180,66 @@ class InitialHomeState extends State<InitialHome> {
 
   Widget buildLevelCard(String levelName, int levelNumber) {
     bool clickable = isCardClickable(levelNumber);
-    return MyCard(
-      imagePath: 'assets/backgrounds/teste2.png',
-      title: levelName,
-      onPressed: clickable
-          ? () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => WeeksPage(
-                    nivel: levelName,
-                    userName: widget.nameUser,
-                    titles: weeksData[levelName] is List
-                        ? weeksData[levelName]
-                        : [],
-                  ),
-                ),
-              );
-            }
-          : null,
-      color: clickable ? Colors.white : Colors.grey.withOpacity(0.5),
+    String backgroundImagePath = 'assets/backgrounds/trofeu.png';
+    // Fetch the image path from Firestore if needed
+    Future<void> fetchBackgroundImagePath() async {
+      try {
+        final levelDoc = await FirebaseFirestore.instance
+            .collection('levels')
+            .doc(levelName)
+            .get();
+
+        if (levelDoc.exists) {
+          final levelData = levelDoc.data();
+          backgroundImagePath = levelData?['backgroundLevel'] as String? ?? "assets/backgrounds/trofeu.png";
+        }
+      } catch (e) {
+        print('Erro ao carregar o caminho da imagem: $e');
+      }
+    }
+
+    // Call the fetch function before building the card
+    fetchBackgroundImagePath();
+
+    return FutureBuilder(
+      future: fetchBackgroundImagePath(), // Ensure background path is fetched
+      builder: (context, snapshot) {
+        // If data is still being fetched, show a placeholder
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return MyCard(
+            imagePath: 'assets/backgrounds/teste2.png', // Default or placeholder image
+            title: levelName,
+            onPressed: null,
+            color: Colors.grey.withOpacity(0.5),
+          );
+        }
+
+        // Once data is fetched, build the card
+        return MyCard(
+          imagePath: backgroundImagePath,
+          title: levelName,
+          onPressed: clickable
+              ? () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WeeksPage(
+                        nivel: levelName,
+                        userName: widget.nameUser,
+                        titles: weeksData[levelName] is List
+                            ? weeksData[levelName]
+                            : [],
+                      ),
+                    ),
+                  );
+                }
+              : null,
+          color: clickable ? Colors.white : Colors.grey.withOpacity(0.5),
+        );
+      },
     );
   }
+
 
   List<Widget> buildThemeButtons() {
     return currentWeekThemes.map((theme) {

@@ -62,7 +62,7 @@ class _LevelCompletedPageState extends State<LevelCompletedPage> {
       'assets/backgrounds/teste6.png',
       'assets/backgrounds/teste7.png',
       'assets/backgrounds/teste8.png',
-      'assets/backgrounds/teste99.png',
+      'assets/backgrounds/teste9.png',
     ];
 
     final user = FirebaseAuth.instance.currentUser;
