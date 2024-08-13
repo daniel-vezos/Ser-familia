@@ -32,7 +32,7 @@ class _PrivacityPageState extends State<PrivacityPage> {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const InitialHome(nameUser: '')),
+      MaterialPageRoute(builder: (context) => InitialHome(nameUser: widget.nameUser)),
     );
   }
 

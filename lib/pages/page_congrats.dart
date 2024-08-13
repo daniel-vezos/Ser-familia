@@ -1,5 +1,4 @@
-import 'package:app_leitura/pages/level_completed.dart';
-import 'package:app_leitura/pages/page_theme.dart';
+import 'package:app_leitura/pages/page_theme.dart'; // Certifique-se de que esta importação está correta
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 import 'package:lottie/lottie.dart'; // Certifique-se de ter esta dependência no pubspec.yaml
@@ -7,9 +6,16 @@ import 'dart:async';
 
 class CongratsPage extends StatefulWidget {
   final String nameUser;
+  final String weekTitle;
+  final List<Map<String, dynamic>> themes;
+  final String title;
+
   const CongratsPage({
     super.key,
     required this.nameUser,
+    required this.weekTitle,
+    required this.themes,
+    required this.title,
   });
 
   @override
@@ -28,7 +34,13 @@ class _CongratsPageState extends State<CongratsPage> {
     Timer(const Duration(seconds: 3), () {
       if (mounted) { // Verifica se o widget ainda está montado antes de navegar
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => LevelCompletedPage(nameUser: widget.nameUser)),
+          MaterialPageRoute(
+            builder: (context) => PageTheme(
+              nameUser: widget.nameUser,
+              weekTitle: widget.title,
+              themes: widget.themes,
+            ),
+          ),
         );
       }
     });

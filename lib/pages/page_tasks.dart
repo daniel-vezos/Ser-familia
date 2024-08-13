@@ -12,12 +12,14 @@ class PageTasks extends StatefulWidget {
   final String nameUser;
   final String title;
   final String challenge;
+  final List<Map<String, dynamic>> themes;
 
   const PageTasks({
     super.key,
     required this.title,
     required this.challenge,
     required this.nameUser,
+    required this.themes,
   });
 
   @override
@@ -152,7 +154,7 @@ class _PageTasksState extends State<PageTasks> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => CongratsPage(nameUser: widget.nameUser),
+          builder: (context) => CongratsPage(nameUser: widget.nameUser, weekTitle: widget.title, themes: widget.themes, title: widget.title,),
         ),
       );
     } catch (e) {

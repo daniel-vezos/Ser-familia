@@ -93,8 +93,8 @@ class _InitialPageState extends State<InitialPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const PrivacityPage(
-                      nameUser: '',
+                    builder: (context) => PrivacityPage(
+                      nameUser: userName,
                     ), // Adicione a página da política de privacidade
                   ),
                 );

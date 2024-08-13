@@ -35,6 +35,7 @@ class _WeeksPageState extends State<WeeksPage> {
   void initState() {
     super.initState();
     _loadWeeks();
+    print('userName recebido em WeeksPage: ${widget.userName}');
   }
 
   Future<void> _loadWeeks() async {

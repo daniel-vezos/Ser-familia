@@ -79,7 +79,8 @@ class PageTheme extends StatelessWidget {
                         builder: (context) => PageTasks(
                           title: title,
                           challenge: challenge,
-                          nameUser: nameUser,
+                          nameUser: nameUser, 
+                          themes: themes,
                         ),
                       ),
                     );
