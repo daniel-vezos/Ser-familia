@@ -14,7 +14,7 @@ class FirebaseApi {
     'high_importance_channel',
     'High Importance Notifications',
     description: 'This channel is used for important notifications',
-    importance: Importance.defaultImportance,
+    importance: Importance.high, // Alterado para Importance.high
   );
 
   final FlutterLocalNotificationsPlugin _localNotifications =
@@ -60,7 +60,7 @@ class FirebaseApi {
             _androidChannel.id,
             _androidChannel.name,
             channelDescription: _androidChannel.description,
-            icon: '@drawable/ic_launcher.png',
+            icon: 'ic_launcher', // Alterado para ic_launcher
           ),
         ),
         payload: jsonEncode(message.toMap()),
@@ -70,7 +70,8 @@ class FirebaseApi {
 
   Future<void> initLocalNotifications() async {
     const iOS = DarwinInitializationSettings();
-    const android = AndroidInitializationSettings('@drawable/ic_launcher.png');
+    const android = AndroidInitializationSettings(
+        'ic_launcher'); // Alterado para ic_launcher
     const settings = InitializationSettings(android: android, iOS: iOS);
 
     await _localNotifications.initialize(
@@ -97,18 +98,7 @@ class FirebaseApi {
     print('Token: $fCMToken');
     print("###### PRINT DEVICE TOKEN TO USE FOR PUSH NOTIFICATION ########");
 
-    // String? deviceToken = await getDeviceToken();
-    // if (deviceToken != null) {
-    //   print('Device Token: $deviceToken');
-    // } else {
-    //   print('Failed to get device token.');
-    // }
-
     await initPushNotifications();
     await initLocalNotifications();
-
-    FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
-      await handleBackgroundMessage(message);
-    });
   }
 }
