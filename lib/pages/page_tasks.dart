@@ -1,8 +1,8 @@
 import 'package:app_leitura/pages/page_congrats.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
-import 'package:app_leitura/widgets/points_card.dart';
 import 'package:app_leitura/widgets/sub_menu_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import necessário para Firestore
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:app_leitura/auth/auth_service.dart';
@@ -32,7 +32,6 @@ class _PageTasksState extends State<PageTasks> {
   final double _maxSliderValue = 1.0; // Slider vai de 0.0 a 1.0
   late FlutterTts _flutterTts;
   Timer? _timer;
-  // ignore: unused_field
   double _lastPausedPosition = 0.0;
   final double _speechRate = 0.5; // Defina a taxa de fala desejada
   int _textLength = 0;
@@ -149,12 +148,37 @@ class _PageTasksState extends State<PageTasks> {
   final AuthService _authService = AuthService();
 
   void _completeActivity() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Usuário não autenticado.')),
+      );
+      return;
+    }
+
+    final firestore = FirebaseFirestore.instance;
+    final userDoc = firestore.collection('users').doc(user.uid);
+    final activityDoc = userDoc.collection('activities').doc(widget.title);
+
     try {
-      await _authService.updatePoints(10); // Adiciona 6 pontos
+      await firestore.runTransaction((transaction) async {
+        final snapshot = await transaction.get(activityDoc);
+        if (snapshot.exists) {
+          throw Exception('A atividade já foi realizada.');
+        }
+        transaction.set(activityDoc, {'completed': true});
+        await _authService.updatePoints(10); // Adiciona 10 pontos
+      });
+
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => CongratsPage(nameUser: widget.nameUser, weekTitle: widget.title, themes: widget.themes, title: widget.title,),
+          builder: (context) => CongratsPage(
+            nameUser: widget.nameUser,
+            weekTitle: widget.title,
+            themes: widget.themes,
+            title: widget.title,
+          ),
         ),
       );
     } catch (e) {
@@ -169,10 +193,13 @@ class _PageTasksState extends State<PageTasks> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-
     if (user == null) {
       return const Center(child: Text('Usuário não autenticado.'));
     }
+
+    final firestore = FirebaseFirestore.instance;
+    final userDoc = firestore.collection('users').doc(user.uid);
+    final activityDoc = userDoc.collection('activities').doc(widget.title);
 
     return Scaffold(
       backgroundColor: Colors.grey[300], // Cor de fundo do Scaffold
@@ -189,107 +216,149 @@ class _PageTasksState extends State<PageTasks> {
           const SizedBox(width: 16),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
-        child: Container(
-          color: Colors.grey[300], // Cor de fundo do corpo da página
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Tarefa',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                widget.title,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                widget.challenge,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              const SizedBox(height: 20),
-            ],
-          ),
-        ),
+      body: StreamBuilder<DocumentSnapshot>(
+        stream: activityDoc.snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasData && snapshot.data!.exists) {
+            final activityData = snapshot.data!.data() as Map<String, dynamic>?;
+            final isActivityCompleted = activityData?['completed'] ?? false;
+
+            return isActivityCompleted
+                ? const Center(child: Text('A atividade já foi realizada.'))
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Container(
+                      color:
+                          Colors.grey[300], // Cor de fundo do corpo da página
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Tarefa',
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            widget.title,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            widget.challenge,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  );
+          }
+
+          return const Center(child: Text('Erro ao carregar a atividade.'));
+        },
       ),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
+      bottomNavigationBar: StreamBuilder<DocumentSnapshot>(
+        stream: activityDoc.snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SizedBox(
+                height: 60, child: Center(child: CircularProgressIndicator()));
+          }
+
+          if (snapshot.hasData && snapshot.data!.exists) {
+            final activityData = snapshot.data!.data() as Map<String, dynamic>?;
+            final isActivityCompleted = activityData?['completed'] ?? false;
+
+            return Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 25,
-                      backgroundColor: Colors.grey[400],
-                      child: IconButton(
-                        icon: Icon(
-                          _isPlaying ? Icons.pause : Icons.play_arrow,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          if (_isPlaying) {
-                            _pause();
-                          } else {
-                            _speak(widget.challenge);
-                          }
-                        },
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            radius: 25,
+                            backgroundColor: Colors.grey[400],
+                            child: IconButton(
+                              icon: Icon(
+                                _isPlaying ? Icons.pause : Icons.play_arrow,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                if (_isPlaying) {
+                                  _pause();
+                                } else {
+                                  _speak(widget.challenge);
+                                }
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          CircleAvatar(
+                            radius: 25,
+                            backgroundColor: Colors.grey[400],
+                            child: IconButton(
+                              icon: const Icon(Icons.stop, color: Colors.white),
+                              onPressed: () {
+                                _stop();
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(width: 20),
-                    CircleAvatar(
-                      radius: 25,
-                      backgroundColor: Colors.grey[400],
-                      child: IconButton(
-                        icon: const Icon(Icons.stop, color: Colors.white),
-                        onPressed: () {
-                          _stop();
-                        },
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: isActivityCompleted
+                                  ? null
+                                  : () {
+                                      _stop();
+                                      _completeActivity();
+                                    },
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: isActivityCompleted
+                                      ? Colors.grey
+                                      : const Color(0xffF5792F),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 15.0)),
+                              child: const Text(
+                                'Atividade Realizada',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _stop();
-                          _completeActivity();
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xffF5792F),
-                            padding:
-                                const EdgeInsets.symmetric(vertical: 15.0)),
-                        child: const Text(
-                          'Atividade Realizada',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                SubMenuWidget(nameUser: widget.nameUser.split(' ')[0]),
               ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          SubMenuWidget(
-              nameUser: widget.nameUser.split(' ')[0]
-          ), // Adicionado o SubMenuDefaultWidget
-        ],
+            );
+          }
+
+          return const SizedBox(
+              height: 60,
+              child: Center(
+                  child: Text('Erro ao carregar o status da atividade.')));
+        },
       ),
     );
   }
