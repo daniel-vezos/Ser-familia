@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:app_leitura/pages/page_tasks.dart'; // Supondo que PageTasks seja a tela de tarefas
 import 'package:app_leitura/pages/weeks_page.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/points_card.dart';
@@ -101,8 +102,6 @@ class InitialHomeState extends State<InitialHome> {
         startOfNextWeek = startOfNextWeek.add(const Duration(days: 7));
       }
 
-      //print('Start of next week: $startOfNextWeek'); // Depuração
-
       List<Map<String, String>> themesList = [];
 
       for (var levelName in weeksData.keys) {
@@ -128,8 +127,6 @@ class InitialHomeState extends State<InitialHome> {
             }
           }
 
-          //print('Active date from Firestore: $activedata'); // Depuração
-
           if (activedata != null &&
               activedata
                   .isAfter(startOfNextWeek.subtract(const Duration(days: 1))) &&
@@ -148,6 +145,7 @@ class InitialHomeState extends State<InitialHome> {
                 'title': data['title'] as String? ?? 'Sem título',
                 'iconPath': data['iconPath'] as String? ??
                     'assets/backgrounds/botao1.png',
+                'challenge': data['challenge'] as String? ?? 'Sem descrição',
               };
             }).toList();
 
@@ -155,7 +153,6 @@ class InitialHomeState extends State<InitialHome> {
               currentWeekThemes = themes;
             });
 
-            //print('Loaded themes for next week: $themes'); // Depuração
             return;
           }
         }
@@ -184,7 +181,7 @@ class InitialHomeState extends State<InitialHome> {
   Widget buildLevelCard(String levelName, int levelNumber) {
     bool clickable = isCardClickable(levelNumber);
     return MyCard(
-      imagePath: 'assets/backgrounds/trofeu1.png',
+      imagePath: 'assets/backgrounds/teste2.png',
       title: levelName,
       onPressed: clickable
           ? () {
@@ -204,6 +201,56 @@ class InitialHomeState extends State<InitialHome> {
           : null,
       color: clickable ? Colors.white : Colors.grey.withOpacity(0.5),
     );
+  }
+
+  List<Widget> buildThemeButtons() {
+    return currentWeekThemes.map((theme) {
+      final iconPath = theme['iconPath'] ?? ''; // Obtém o caminho da imagem
+      final title = theme['title'] ?? 'Sem Título';
+      final challenge = theme['challenge'] ?? 'Sem Descrição';
+
+      return Column(
+        children: [
+          Center(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.grey[200],
+              ),
+              child: SizedBox(
+                height: 60.h,
+                width: MediaQuery.of(context).size.width * 0.8, // 80% da largura da tela
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      iconPath.isNotEmpty
+                          ? Image.asset(
+                              iconPath,
+                              height: 40.h, // Ajuste o tamanho do ícone conforme necessário
+                            )
+                          : Container(),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 20.sp,
+                            color: Colors.black,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 10.h),
+        ],
+      );
+    }).toList();
   }
 
   @override
@@ -227,11 +274,11 @@ class InitialHomeState extends State<InitialHome> {
       return const Center(child: Text('Usuário não autenticado.'));
     }
 
-    return StreamBuilder<DocumentSnapshot>(
-      stream: FirebaseFirestore.instance
+    return FutureBuilder<DocumentSnapshot>(
+      future: FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
-          .snapshots(),
+          .get(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
@@ -339,7 +386,6 @@ class InitialHomeState extends State<InitialHome> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 20.h),
                       Text(
                         "Seja bem-vindo ao seu desafio.",
                         style: TextStyle(
@@ -354,17 +400,17 @@ class InitialHomeState extends State<InitialHome> {
                         "Celebre suas vitórias e continue avançando!",
                         style: regularTextStyle,
                       ),
-                      SizedBox(height: 40.h),
+                      SizedBox(height: 20.h),
                       SizedBox(
                         height:
-                            260.h, // Ajuste a altura mínima conforme necessário
+                            220.h, // Ajuste a altura mínima conforme necessário
                         child: PageView(
                           scrollDirection: Axis.horizontal,
                           controller: _controller,
                           children: buildLevelCards(),
                         ),
                       ),
-                      SizedBox(height: 30.h),
+                      SizedBox(height: 20.h),
                       Center(
                         child: SmoothPageIndicator(
                           controller: _controller,
@@ -379,7 +425,7 @@ class InitialHomeState extends State<InitialHome> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 40.h),
+                      SizedBox(height: 30.h),
                       Center(
                         child: Text(
                           "Próximas tarefas a serem liberadas",
@@ -394,15 +440,8 @@ class InitialHomeState extends State<InitialHome> {
                                     child: Text(
                                         'Nenhum tema disponível para a próxima semana.'))
                               ]
-                            : currentWeekThemes.map((theme) {
-                                return MyListTile(
-                                  inconImagePath: theme['iconPath'] ??
-                                      "assets/backgrounds/botao1.png",
-                                  tileTile: theme['title'] ?? 'Sem título',
-                                );
-                              }).toList(),
+                            : buildThemeButtons(),
                       ),
-                      SizedBox(height: 50.h),
                     ],
                   ),
                 ),

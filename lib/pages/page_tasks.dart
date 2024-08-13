@@ -36,12 +36,14 @@ class _PageTasksState extends State<PageTasks> {
   final double _speechRate = 0.5; // Defina a taxa de fala desejada
   int _textLength = 0;
   late Duration _totalDuration;
+  bool _isActivityCompleted = false;
 
   @override
   void initState() {
     super.initState();
     _flutterTts = FlutterTts();
     _initTts();
+    _checkActivityStatus(); // Verifica o status da atividade
   }
 
   void _initTts() async {
@@ -71,6 +73,34 @@ class _PageTasksState extends State<PageTasks> {
     _textLength = widget.challenge.length;
     _totalDuration =
         Duration(seconds: (_textLength / (_speechRate * 200)).round());
+  }
+
+  void _checkActivityStatus() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return;
+    }
+
+    final firestore = FirebaseFirestore.instance;
+    final userDoc = firestore.collection('users').doc(user.uid);
+    final activityDoc = userDoc.collection('activities').doc(widget.title);
+
+    try {
+      final doc = await activityDoc.get();
+      if (doc.exists) {
+        // Ensure proper casting of the data
+        final data = doc.data(); // Cast to Map<String, dynamic> if data exists
+        setState(() {
+          _isActivityCompleted = data?['completed'] ?? false; // Use safe access with `?`
+        });
+      } else {
+        setState(() {
+          _isActivityCompleted = false;
+        });
+      }
+    } catch (e) {
+      print('Erro ao verificar o status da atividade: ${e.toString()}');
+    }
   }
 
   void _speak(String text) async {
@@ -170,6 +200,11 @@ class _PageTasksState extends State<PageTasks> {
         await _authService.updatePoints(10); // Adiciona 10 pontos
       });
 
+      // Atualiza o estado da atividade após completar
+      setState(() {
+        _isActivityCompleted = true;
+      });
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -197,10 +232,6 @@ class _PageTasksState extends State<PageTasks> {
       return const Center(child: Text('Usuário não autenticado.'));
     }
 
-    final firestore = FirebaseFirestore.instance;
-    final userDoc = firestore.collection('users').doc(user.uid);
-    final activityDoc = userDoc.collection('activities').doc(widget.title);
-
     return Scaffold(
       backgroundColor: Colors.grey[300], // Cor de fundo do Scaffold
       appBar: AppBar(
@@ -217,7 +248,12 @@ class _PageTasksState extends State<PageTasks> {
         ],
       ),
       body: StreamBuilder<DocumentSnapshot>(
-        stream: activityDoc.snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .collection('activities')
+            .doc(widget.title)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -260,86 +296,78 @@ class _PageTasksState extends State<PageTasks> {
           );
         },
       ),
-      bottomNavigationBar: StreamBuilder<DocumentSnapshot>(
-        stream: activityDoc.snapshots(),
-        builder: (context, snapshot) {
-          bool isActivityCompleted = snapshot.hasData && snapshot.data!.exists;
-
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Column(
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (!_isActivityCompleted)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Colors.grey[400],
-                          child: IconButton(
-                            icon: Icon(
-                              _isPlaying ? Icons.pause : Icons.play_arrow,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              if (_isPlaying) {
-                                _pause();
-                              } else {
-                                _speak(widget.challenge);
-                              }
-                            },
-                          ),
+                    CircleAvatar(
+                      radius: 25,
+                      backgroundColor: Colors.grey[400],
+                      child: IconButton(
+                        icon: Icon(
+                          _isPlaying ? Icons.pause : Icons.play_arrow,
+                          color: Colors.white,
                         ),
-                        const SizedBox(width: 20),
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Colors.grey[400],
-                          child: IconButton(
-                            icon: const Icon(Icons.stop, color: Colors.white),
-                            onPressed: () {
-                              _stop();
-                            },
-                          ),
-                        ),
-                      ],
+                        onPressed: () {
+                          if (_isPlaying) {
+                            _pause();
+                          } else {
+                            _speak(widget.challenge);
+                          }
+                        },
+                      ),
                     ),
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: isActivityCompleted
-                                ? null
-                                : () {
-                                    _stop();
-                                    _completeActivity();
-                                  },
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: isActivityCompleted
-                                    ? Colors.grey
-                                    : const Color(0xffF5792F),
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 15.0)),
-                            child: const Text(
-                              'Atividade Realizada',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ],
+                    const SizedBox(width: 20),
+                    CircleAvatar(
+                      radius: 25,
+                      backgroundColor: Colors.grey[400],
+                      child: IconButton(
+                        icon: const Icon(Icons.stop, color: Colors.white),
+                        onPressed: () {
+                          _stop();
+                        },
+                      ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 20),
-              SubMenuWidget(
-                  nameUser: widget.nameUser
-                      .split(' ')[0]), // Adicionado o SubMenuDefaultWidget
-            ],
-          );
-        },
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _isActivityCompleted
+                            ? null
+                            : () {
+                                _stop();
+                                _completeActivity();
+                              },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: _isActivityCompleted
+                                ? Colors.grey
+                                : const Color(0xffF5792F),
+                            padding:
+                                const EdgeInsets.symmetric(vertical: 15.0)),
+                        child: const Text(
+                          'Marcar como Realizada',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          SubMenuWidget(nameUser: widget.nameUser.split(' ')[0]), // Adicionado o SubMenuWidget
+        ],
       ),
     );
   }

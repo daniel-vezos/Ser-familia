@@ -26,24 +26,24 @@ class MyCard extends StatelessWidget {
           child: Container(
             width: 250,
             padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: Colors.white, // Define a cor de fundo para o card
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: const Offset(0, 3), // Sombra do card
-                ),
-              ],
+            decoration: const BoxDecoration(
+              // color: Colors.transparent, // Define a cor de fundo para o card
+              // borderRadius: BorderRadius.circular(20),
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: Colors.black.withOpacity(0.1),
+              //     spreadRadius: 2,
+              //     blurRadius: 5,
+              //     offset: const Offset(0, 3), // Sombra do card
+              //   ),
+              // ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset(
                   imagePath,
-                  width: 280,
+                  width: 290,
                   height: 130,
                   fit: BoxFit.contain,
                 ),
@@ -52,7 +52,7 @@ class MyCard extends StatelessWidget {
                   Text(
                     title!,
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
