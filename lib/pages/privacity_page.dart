@@ -1,5 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app_leitura/pages/initial_home.dart'; // Ajuste o caminho conforme necessário
 import 'package:app_leitura/pages/initial_page.dart'; // Ajuste o caminho conforme necessário
 
@@ -24,11 +25,32 @@ class _PrivacityPageState extends State<PrivacityPage> {
     super.initState();
   }
 
-  void _onAccept() {
+  // Método para salvar o status da política de privacidade no Firestore
+  Future<void> _savePrivacyStatus(bool accepted) async {
+    try {
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        throw Exception('Usuário não autenticado.');
+      }
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update({'privacyAccepted': accepted});
+
+      print('Status da política de privacidade salvo com sucesso.');
+    } catch (e) {
+      print('Erro ao salvar o status da política de privacidade: $e');
+    }
+  }
+
+  void _onAccept() async {
     setState(() {
       _buttonsEnabled = false;
       _showMessage = false;
     });
+
+    await _savePrivacyStatus(true);
 
     Navigator.pushReplacement(
       context,
@@ -36,15 +58,17 @@ class _PrivacityPageState extends State<PrivacityPage> {
     );
   }
 
-  void _onReject() {
+  void _onReject() async {
     setState(() {
       _buttonsEnabled = false;
       _showMessage = true;
     });
 
+    await _savePrivacyStatus(false);
+
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const InitialPage()),
+      MaterialPageRoute(builder: (context) => InitialPage()),
     );
   }
 
