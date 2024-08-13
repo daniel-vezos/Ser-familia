@@ -4,25 +4,91 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app_leitura/pages/initial_home.dart'; // Ajuste o caminho conforme necessário
 import 'package:app_leitura/pages/initial_page.dart'; // Ajuste o caminho conforme necessário
 
-class PrivacityPage extends StatefulWidget {
+class PrivacityPageController extends StatefulWidget {
   final String nameUser;
 
-  const PrivacityPage({
+  const PrivacityPageController({
     super.key,
     required this.nameUser,
   });
 
   @override
-  _PrivacityPageState createState() => _PrivacityPageState();
+  _PrivacityPageControllerState createState() => _PrivacityPageControllerState();
 }
 
-class _PrivacityPageState extends State<PrivacityPage> {
-  final bool _buttonsEnabled = true;
-  final bool _showMessage = false;
+class _PrivacityPageControllerState extends State<PrivacityPageController> {
+  bool _buttonsEnabled = true;
+  bool _showMessage = false;
 
   @override
   void initState() {
     super.initState();
+  }
+  
+  // Método para verificar o status da política de privacidade no Firestore
+  Future<void> _checkPrivacyStatus() async {
+    try {
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        throw Exception('Usuário não autenticado.');
+      }
+
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+      final privacyAccepted = userDoc.data()?['privacyAccepted'] as bool? ?? false;
+
+      setState(() {
+        _buttonsEnabled = !privacyAccepted; // Habilita/desabilita os botões com base no status
+      });
+    } catch (e) {
+      print('Erro ao verificar o status da política de privacidade: $e');
+    }
+  }
+
+  // Método para salvar o status da política de privacidade no Firestore
+  Future<void> _savePrivacyStatus(bool accepted) async {
+    try {
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        throw Exception('Usuário não autenticado.');
+      }
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update({'privacyAccepted': accepted});
+
+      print('Status da política de privacidade salvo com sucesso.');
+    } catch (e) {
+      print('Erro ao salvar o status da política de privacidade: $e');
+    }
+  }
+
+  void _onAccept() async {
+    setState(() {
+      _buttonsEnabled = false;
+      _showMessage = false;
+    });
+
+    await _savePrivacyStatus(true);
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => InitialHome(nameUser: widget.nameUser)),
+    );
+  }
+
+  void _onReject() async {
+    setState(() {
+      _buttonsEnabled = false;
+      _showMessage = true;
+    });
+
+    await _savePrivacyStatus(false);
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const InitialPage()),
+    );
   }
 
   @override
@@ -30,16 +96,17 @@ class _PrivacityPageState extends State<PrivacityPage> {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Política de Privacidade'),
         backgroundColor: Colors.grey[300],
         elevation: 0,
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
+            const Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,6 +186,36 @@ class _PrivacityPageState extends State<PrivacityPage> {
                 ),
               ),
             ),
+            if (_showMessage)
+              const SizedBox(height: 15), // Espaço adicional abaixo dos botões
+            if (_buttonsEnabled) // Adiciona condição para mostrar os botões somente quando habilitados
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: _onAccept,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(
+                          255, 6, 48, 81), // Cor de fundo do botão
+                    ),
+                    child: const Text(
+                      'Aceitar',
+                      style: TextStyle(color: Colors.white), // Cor do texto
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: _onReject,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(
+                          255, 6, 48, 81), // Cor de fundo do botão
+                    ),
+                    child: const Text(
+                      'Recusar',
+                      style: TextStyle(color: Colors.white), // Cor do texto
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       ),

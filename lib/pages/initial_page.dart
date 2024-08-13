@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:app_leitura/auth/auth_service.dart';
-import 'package:app_leitura/pages/privacity_page.dart';
+import 'package:app_leitura/controller/privacity_page_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +35,27 @@ class _InitialPageState extends State<InitialPage> {
         const SnackBar(content: Text('Usuário não está autenticado.')),
       );
       return;
+    }
+
+    // Verificar o status da política de privacidade do usuário
+    try {
+      final userId = user.uid;
+      final userDoc = await _firestore.collection('users').doc(userId).get();
+      final privacyAccepted = userDoc.data()?['privacyAccepted'] as bool? ?? false;
+
+      if (privacyAccepted) {
+        // Se a política de privacidade já foi aceita, redireciona para a tela inicial
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => InitialHome(
+              nameUser: user.displayName ?? 'Usuário',
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Erro ao verificar o status da política de privacidade: $e');
     }
   }
 
@@ -75,36 +96,60 @@ class _InitialPageState extends State<InitialPage> {
   }
 
   Future<void> _showLoginSuccessDialog(String userName) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible:
-          false, // Impede o usuário de fechar o diálogo tocando fora
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Bem-vindo!'),
-          content: const Text(
-              'Antes de começar, por favor, leia nossa política de privacidade.'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                // Ação ao pressionar "OK": redirecionar para a política de privacidade
-                Navigator.of(context).pop(); // Fecha o diálogo
-                // Substitua a URL abaixo pela URL real da sua política de privacidade
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PrivacityPage(
-                      nameUser: userName,
-                    ), // Adicione a página da política de privacidade
-                  ),
-                );
-              },
-              child: const Text('OK'),
+    // Verificar o status da política de privacidade do usuário
+    try {
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        throw Exception('Usuário não autenticado.');
+      }
+
+      final userDoc = await _firestore.collection('users').doc(userId).get();
+      final privacyAccepted = userDoc.data()?['privacyAccepted'] as bool? ?? false;
+
+      if (privacyAccepted) {
+        // Se a política de privacidade já foi aceita, não exiba o diálogo
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => InitialHome(
+              nameUser: userName,
             ),
-          ],
+          ),
         );
-      },
-    );
+      } else {
+        // Se a política de privacidade não foi aceita, exiba o diálogo
+        return showDialog<void>(
+          context: context,
+          barrierDismissible: false, // Impede o usuário de fechar o diálogo tocando fora
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Bem-vindo!'),
+              content: const Text(
+                  'Antes de começar, por favor, leia nossa política de privacidade.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    // Ação ao pressionar "OK": redirecionar para a política de privacidade
+                    Navigator.of(context).pop(); // Fecha o diálogo
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PrivacityPageController(
+                          nameUser: userName,
+                        ), // Adicione a página da política de privacidade
+                      ),
+                    );
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      print('Erro ao verificar o status da política de privacidade: $e');
+    }
   }
 
   @override
