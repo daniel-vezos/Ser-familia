@@ -53,6 +53,7 @@ class _PrivacityPageState extends State<PrivacityPage> {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Política de Privacidade'),
         backgroundColor: Colors.grey[300],
         elevation: 0,
