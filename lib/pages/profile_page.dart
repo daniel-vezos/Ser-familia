@@ -68,10 +68,22 @@ class ProfilePage extends StatelessWidget {
     }
   }
 
+  Future<void> _deleteCollection(CollectionReference collection) async {
+    final query = await collection.get();
+    final batch = FirebaseFirestore.instance.batch();
+
+    for (final doc in query.docs) {
+      batch.delete(doc.reference);
+    }
+
+    await batch.commit();
+  }
+
   Future<void> _deleteUserData(String uid) async {
     try {
       final firestore = FirebaseFirestore.instance;
       await firestore.collection('users').doc(uid).delete();
+      await _deleteCollection(firestore.collection('users').doc(uid).collection('activities'));
       print('Dados do usuário excluídos com sucesso.');
     } catch (e) {
       print('Erro ao excluir dados do Firestore: ${e.toString()}');
