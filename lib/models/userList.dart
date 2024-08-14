@@ -8,7 +8,11 @@ class UsersList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('users').orderBy('points', descending: true).snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .orderBy('points', descending: true)
+          .limit(10) // Limite para os 10 primeiros usuários
+          .snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -22,7 +26,7 @@ class UsersList extends StatelessWidget {
         final users = snapshot.data!.docs;
 
         return ListView.builder(
-          itemCount: users.length ,
+          itemCount: users.length,
           itemBuilder: (context, index) {
             final userData = users[index].data() as Map<String, dynamic>;
             final userName = userData['name'] ?? 'Nome desconhecido'; // Verifique se o campo do nome está correto

@@ -9,6 +9,7 @@ import 'package:app_leitura/auth/auth_service.dart';
 import 'dart:async';
 
 class PageTasks extends StatefulWidget {
+  final String nivel;
   final String nameUser;
   final String title;
   final String challenge;
@@ -17,6 +18,7 @@ class PageTasks extends StatefulWidget {
   const PageTasks({
     super.key,
     required this.title,
+    required this.nivel,
     required this.challenge,
     required this.nameUser,
     required this.themes,
@@ -213,6 +215,7 @@ class _PageTasksState extends State<PageTasks> {
             weekTitle: widget.title,
             themes: widget.themes,
             title: widget.title,
+            nivel: widget.nivel,
           ),
         ),
       );

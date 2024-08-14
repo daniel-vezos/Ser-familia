@@ -1,3 +1,4 @@
+import 'package:app_leitura/pages/initial_home.dart';
 import 'package:app_leitura/widgets/points_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -140,7 +141,8 @@ class _WeeksPageState extends State<WeeksPage> {
                   builder: (context) => PageTheme(
                     weekTitle: titulo,
                     themes: themesByWeek[titulo] ?? [],
-                    nameUser: widget.userName,
+                    nameUser: widget.userName, nivel: 
+                    widget.nivel,
                   ),
                 ),
               );
@@ -169,6 +171,19 @@ class _WeeksPageState extends State<WeeksPage> {
           ButtonNotification(nameUser: widget.userName),
           SizedBox(width: 16.w),
         ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => InitialHome(
+                    nameUser: widget.userName,
+                  ),
+                ),
+              );
+          },
+        ),
       ),
 
       body: Container(

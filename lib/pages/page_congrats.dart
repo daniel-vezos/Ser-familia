@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart'; // Certifique-se de ter esta dependência n
 import 'dart:async';
 
 class CongratsPage extends StatefulWidget {
+  final String nivel;
   final String nameUser;
   final String weekTitle;
   final List<Map<String, dynamic>> themes;
@@ -12,6 +13,7 @@ class CongratsPage extends StatefulWidget {
 
   const CongratsPage({
     super.key,
+    required this.nivel,
     required this.nameUser,
     required this.weekTitle,
     required this.themes,
@@ -39,6 +41,7 @@ class _CongratsPageState extends State<CongratsPage> {
               nameUser: widget.nameUser,
               weekTitle: widget.title,
               themes: widget.themes,
+              nivel: widget.nivel,
             ),
           ),
         );

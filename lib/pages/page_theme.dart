@@ -1,3 +1,4 @@
+import 'package:app_leitura/pages/weeks_page.dart';
 import 'package:flutter/material.dart';
 import 'package:app_leitura/pages/page_tasks.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
@@ -7,12 +8,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart'; // Import ScreenUtil
 
 class PageTheme extends StatelessWidget {
+  final String nivel;
   final String nameUser;
   final String weekTitle;
   final List<Map<String, dynamic>> themes;
 
   const PageTheme({
     super.key,
+    required this.nivel,
     required this.weekTitle,
     required this.themes,
     required this.nameUser,
@@ -81,6 +84,7 @@ class PageTheme extends StatelessWidget {
                           challenge: challenge,
                           nameUser: nameUser, 
                           themes: themes,
+                          nivel: nivel,
                         ),
                       ),
                     );
@@ -130,7 +134,16 @@ class PageTheme extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WeeksPage(
+                    nivel: nivel,
+                    titles: themes,
+                    userName: nameUser,
+                  ),
+                ),
+              );
           },
         ),
         actions: [
