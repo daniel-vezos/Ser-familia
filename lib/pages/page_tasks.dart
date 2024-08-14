@@ -2,7 +2,7 @@ import 'package:app_leitura/pages/page_congrats.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/sub_menu_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import necessário para Firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:app_leitura/auth/auth_service.dart';
@@ -31,11 +31,11 @@ class PageTasks extends StatefulWidget {
 class _PageTasksState extends State<PageTasks> {
   bool _isPlaying = false;
   double _currentSliderValue = 0.0;
-  final double _maxSliderValue = 1.0; // Slider vai de 0.0 a 1.0
+  final double _maxSliderValue = 1.0;
   late FlutterTts _flutterTts;
   Timer? _timer;
   double _lastPausedPosition = 0.0;
-  final double _speechRate = 0.5; // Defina a taxa de fala desejada
+  final double _speechRate = 0.5;
   int _textLength = 0;
   late Duration _totalDuration;
   bool _isActivityCompleted = false;
@@ -45,13 +45,13 @@ class _PageTasksState extends State<PageTasks> {
     super.initState();
     _flutterTts = FlutterTts();
     _initTts();
-    _checkActivityStatus(); // Verifica o status da atividade
+    _checkActivityStatus();
   }
 
   void _initTts() async {
     await _flutterTts.setLanguage('pt-BR');
     await _flutterTts.setSpeechRate(_speechRate);
-    await _flutterTts.awaitSpeakCompletion(true); // Esperar a conclusão da fala
+    await _flutterTts.awaitSpeakCompletion(true);
     _flutterTts.setCompletionHandler(() {
       if (mounted) {
         setState(() {
@@ -71,7 +71,6 @@ class _PageTasksState extends State<PageTasks> {
       _timer?.cancel();
     });
 
-    // Estime o tempo total de fala
     _textLength = widget.challenge.length;
     _totalDuration =
         Duration(seconds: (_textLength / (_speechRate * 200)).round());
@@ -90,10 +89,9 @@ class _PageTasksState extends State<PageTasks> {
     try {
       final doc = await activityDoc.get();
       if (doc.exists) {
-        // Ensure proper casting of the data
-        final data = doc.data(); // Cast to Map<String, dynamic> if data exists
+        final data = doc.data();
         setState(() {
-          _isActivityCompleted = data?['completed'] ?? false; // Use safe access with `?`
+          _isActivityCompleted = data?['completed'] ?? false;
         });
       } else {
         setState(() {
@@ -109,8 +107,8 @@ class _PageTasksState extends State<PageTasks> {
     print('Iniciando a fala com o texto: $text');
     setState(() {
       _isPlaying = true;
-      _currentSliderValue = 0.0; // Reiniciar o slider no início
-      _lastPausedPosition = 0.0; // Reiniciar a posição pausada no início
+      _currentSliderValue = 0.0;
+      _lastPausedPosition = 0.0;
     });
     await _flutterTts.stop();
     await _flutterTts.speak(text);
@@ -134,8 +132,8 @@ class _PageTasksState extends State<PageTasks> {
     if (mounted) {
       setState(() {
         _isPlaying = false;
-        _currentSliderValue = 0.0; // Resetar slider para o início
-        _lastPausedPosition = 0.0; // Resetar a posição pausada para o início
+        _currentSliderValue = 0.0;
+        _lastPausedPosition = 0.0;
       });
     }
   }
@@ -199,10 +197,9 @@ class _PageTasksState extends State<PageTasks> {
           throw Exception('A atividade já foi realizada.');
         }
         transaction.set(activityDoc, {'completed': true});
-        await _authService.updatePoints(10); // Adiciona 10 pontos
+        await _authService.updatePoints(10);
       });
 
-      // Atualiza o estado da atividade após completar
       setState(() {
         _isActivityCompleted = true;
       });
@@ -228,6 +225,12 @@ class _PageTasksState extends State<PageTasks> {
     }
   }
 
+  void _pauseAudioOnMenuOpen() {
+    if (_isPlaying) {
+      _pause();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -236,7 +239,7 @@ class _PageTasksState extends State<PageTasks> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[300], // Cor de fundo do Scaffold
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         backgroundColor: Colors.grey[300],
         leading: IconButton(
@@ -268,7 +271,7 @@ class _PageTasksState extends State<PageTasks> {
           return SingleChildScrollView(
             padding: const EdgeInsets.all(20.0),
             child: Container(
-              color: Colors.grey[300], // Cor de fundo do corpo da página
+              color: Colors.grey[300],
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -303,73 +306,76 @@ class _PageTasksState extends State<PageTasks> {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (!_isActivityCompleted)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 25,
-                      backgroundColor: Colors.grey[400],
-                      child: IconButton(
-                        icon: Icon(
-                          _isPlaying ? Icons.pause : Icons.play_arrow,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          if (_isPlaying) {
-                            _pause();
-                          } else {
-                            _speak(widget.challenge);
-                          }
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    CircleAvatar(
-                      radius: 25,
-                      backgroundColor: Colors.grey[400],
-                      child: IconButton(
-                        icon: const Icon(Icons.stop, color: Colors.white),
-                        onPressed: () {
-                          _stop();
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: _isActivityCompleted
-                            ? null
-                            : () {
-                                _stop();
-                                _completeActivity();
-                              },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: _isActivityCompleted
-                                ? Colors.grey
-                                : const Color(0xffF5792F),
-                            padding:
-                                const EdgeInsets.symmetric(vertical: 15.0)),
-                        child: const Text(
-                          'Marcar como Realizada',
-                          style: TextStyle(color: Colors.white),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor: Colors.grey[400],
+                        child: IconButton(
+                          icon: Icon(
+                            _isPlaying ? Icons.pause : Icons.play_arrow,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            if (_isPlaying) {
+                              _pause();
+                            } else {
+                              _speak(widget.challenge);
+                            }
+                          },
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      const SizedBox(width: 20),
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor: Colors.grey[400],
+                        child: IconButton(
+                          icon: const Icon(Icons.stop, color: Colors.white),
+                          onPressed: () {
+                            _stop();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: _isActivityCompleted
+                              ? null
+                              : () {
+                                  _stop();
+                                  _completeActivity();
+                                },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: _isActivityCompleted
+                                  ? Colors.grey
+                                  : const Color(0xffF5792F),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 15.0)),
+                          child: const Text(
+                            'Marcar como Realizada',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
           const SizedBox(height: 20),
-          SubMenuWidget(nameUser: widget.nameUser.split(' ')[0]), // Adicionado o SubMenuWidget
+          SubMenuWidget(
+            nameUser: widget.nameUser.split(' ')[0],
+            onMenuOpen: _pauseAudioOnMenuOpen, // Adicione este parâmetro
+          ),
         ],
       ),
     );
