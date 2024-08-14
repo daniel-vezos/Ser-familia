@@ -14,7 +14,7 @@ class FirebaseApi {
     'high_importance_channel',
     'High Importance Notifications',
     description: 'This channel is used for important notifications',
-    importance: Importance.high, // Alterado para Importance.high
+    importance: Importance.high,
   );
 
   final FlutterLocalNotificationsPlugin _localNotifications =
@@ -24,11 +24,16 @@ class FirebaseApi {
     print('Title: ${message.notification?.title}');
     print('Body: ${message.notification?.body}');
     print('Payload: ${message.data}');
+    // Redirecionar o usuário para a NotificationPage quando o aplicativo estiver em segundo plano
+    if (message.data['redirect'] == 'notification_page') {
+      // Manter a navegação adequada aqui, se necessário
+    }
   }
 
   void handleMessage(RemoteMessage? message) {
     if (message == null) return;
 
+    // Navegar para a NotificationPage ao clicar na notificação
     navigatorKey.currentState?.pushNamed(
       NotificationPage.route,
       arguments: message,
@@ -43,8 +48,16 @@ class FirebaseApi {
       sound: true,
     );
 
-    FirebaseMessaging.instance.getInitialMessage().then(handleMessage);
-    FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      // Quando o aplicativo é iniciado a partir de uma notificação
+      handleMessage(message);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      // Quando o aplicativo é aberto a partir de uma notificação
+      handleMessage(message);
+    });
+
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
 
     FirebaseMessaging.onMessage.listen((message) {
@@ -60,7 +73,7 @@ class FirebaseApi {
             _androidChannel.id,
             _androidChannel.name,
             channelDescription: _androidChannel.description,
-            icon: 'ic_launcher', // Alterado para ic_launcher
+            icon: 'ic_launcher',
           ),
         ),
         payload: jsonEncode(message.toMap()),
