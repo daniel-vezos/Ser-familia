@@ -207,7 +207,7 @@ class InitialHomeState extends State<InitialHome> {
         // If data is still being fetched, show a placeholder
         if (snapshot.connectionState == ConnectionState.waiting) {
           return MyCard(
-            imagePath: 'assets/backgrounds/teste2.png', // Default or placeholder image
+            imagePath: 'assets/backgrounds/trofeu.png', // Default or placeholder image
             title: levelName,
             onPressed: null,
             color: Colors.grey.withOpacity(0.5),

@@ -134,6 +134,17 @@ class _LevelCompletedPageState extends State<LevelCompletedPage> {
                           ),
                         ),
                       ),
+                      if (isUnlocked)
+                        Container(
+                          color: Colors.black.withOpacity(0.2),
+                          child: Center(
+                            child: Image.asset(
+                              'assets/backgrounds/trofeu.png', // Caminho para a imagem da medalha
+                              width: 90,
+                              height: 90,
+                            ),
+                          ),
+                        ),
                       if (!isUnlocked)
                         Container(
                           color: Colors.black.withOpacity(0.5),
