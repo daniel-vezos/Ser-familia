@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget {
         NotificationPage.route: (context) => const NotificationPage(),
         // Outras rotas, se necessário
       },
+       initialRoute: '/',
     );
   }
 }

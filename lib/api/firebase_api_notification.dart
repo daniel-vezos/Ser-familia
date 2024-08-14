@@ -21,23 +21,24 @@ class FirebaseApi {
       FlutterLocalNotificationsPlugin();
 
   Future<void> handleBackgroundMessage(RemoteMessage message) async {
-    print('Title: ${message.notification?.title}');
-    print('Body: ${message.notification?.body}');
-    print('Payload: ${message.data}');
-    // Redirecionar o usuário para a NotificationPage quando o aplicativo estiver em segundo plano
-    if (message.data['redirect'] == 'notification_page') {
-      // Manter a navegação adequada aqui, se necessário
-    }
+    // Este método é chamado quando o aplicativo está em segundo plano ou fechado.
+    // Você pode armazenar o payload aqui, se necessário.
   }
 
   void handleMessage(RemoteMessage? message) {
     if (message == null) return;
 
-    // Navegar para a NotificationPage ao clicar na notificação
-    navigatorKey.currentState?.pushNamed(
-      NotificationPage.route,
-      arguments: message,
-    );
+    print('Handling notification message');
+
+    // Se o aplicativo está em primeiro plano, navegue para NotificationPage.
+    if (navigatorKey.currentState?.mounted ?? false) {
+      navigatorKey.currentState?.pushNamed(
+        NotificationPage.route,
+        arguments: message,
+      );
+    } else {
+      print('Navigator is not mounted or not available');
+    }
   }
 
   Future<void> initPushNotifications() async {
@@ -48,22 +49,26 @@ class FirebaseApi {
       sound: true,
     );
 
+    // Quando o aplicativo é iniciado a partir de uma notificação
     FirebaseMessaging.instance.getInitialMessage().then((message) {
-      // Quando o aplicativo é iniciado a partir de uma notificação
-      handleMessage(message);
+      if (message != null) {
+        handleMessage(message);
+      }
     });
 
+    // Quando o usuário abre o aplicativo clicando na notificação
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      // Quando o aplicativo é aberto a partir de uma notificação
       handleMessage(message);
     });
 
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
 
+    // Quando a notificação é recebida enquanto o aplicativo está em primeiro plano
     FirebaseMessaging.onMessage.listen((message) {
       final notification = message.notification;
       if (notification == null) return;
 
+      // Exibe a notificação local
       _localNotifications.show(
         notification.hashCode,
         notification.title,
@@ -76,7 +81,7 @@ class FirebaseApi {
             icon: 'ic_launcher',
           ),
         ),
-        payload: jsonEncode(message.toMap()),
+        payload: jsonEncode(message.toMap()), // Armazena o payload
       );
     });
   }
@@ -89,8 +94,10 @@ class FirebaseApi {
     await _localNotifications.initialize(
       settings,
       onDidReceiveNotificationResponse: (payload) {
-        final message = RemoteMessage.fromMap(jsonDecode(payload as String));
-        handleMessage(message);
+        if (payload.payload != null) {
+          final message = RemoteMessage.fromMap(jsonDecode(payload.payload!));
+          handleMessage(message);
+        }
       },
     );
 
