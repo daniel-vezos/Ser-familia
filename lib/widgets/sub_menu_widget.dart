@@ -7,10 +7,12 @@ import 'package:app_leitura/pages/ranking_page.dart';
 
 class SubMenuWidget extends StatelessWidget {
   final String nameUser;
+  final VoidCallback? onMenuOpen; // Adicionado o parâmetro opcional
 
   const SubMenuWidget({
     super.key,
     required this.nameUser,
+    this.onMenuOpen, // Inicializado o parâmetro
   });
 
   @override
@@ -38,106 +40,120 @@ class SubMenuWidget extends StatelessWidget {
                           context,
                           Icons.home,
                           'Home',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  InitialHome(nameUser: nameUser),
-                            ),
-                          ),
+                          () {
+                            _handleMenuOpen(context, () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    InitialHome(nameUser: nameUser),
+                              ),
+                            ));
+                          },
                         ),
                         _buildMenuItem(
                           context,
                           Icons.emoji_events,
                           'Conquistas',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  LevelCompletedPage(nameUser: nameUser),
-                            ),
-                          ),
+                          () {
+                            _handleMenuOpen(context, () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    LevelCompletedPage(nameUser: nameUser),
+                              ),
+                            ));
+                          },
                         ),
                         _buildMenuItem(
                           context,
                           FontAwesomeIcons.rankingStar,
                           'Ranking',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  RankingPage(nameUser: nameUser),
-                            ),
-                          ),
+                          () {
+                            _handleMenuOpen(context, () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    RankingPage(nameUser: nameUser),
+                              ),
+                            ));
+                          },
                         ),
                         _buildMenuItem(
                           context,
                           Icons.person,
                           'Perfil',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ProfilePage(nameUser: nameUser),
-                            ),
-                          ),
+                          () {
+                            _handleMenuOpen(context, () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ProfilePage(nameUser: nameUser),
+                              ),
+                            ));
+                          },
                         ),
                       ],
                     )
                   : Wrap(
-                      alignment: WrapAlignment.center, // Ajusta o alinhamento
-                      spacing:
-                          30, // Aumente o valor para mais espaçamento horizontal entre ícones
-                      runSpacing:
-                          20, // Aumente o valor para mais espaçamento vertical entre linhas
+                      alignment: WrapAlignment.center,
+                      spacing: 30,
+                      runSpacing: 20,
                       children: [
                         _buildMenuItem(
                           context,
                           Icons.home,
                           'Home',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  InitialHome(nameUser: nameUser),
-                            ),
-                          ),
+                          () {
+                            _handleMenuOpen(context, () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    InitialHome(nameUser: nameUser),
+                              ),
+                            ));
+                          },
                         ),
                         _buildMenuItem(
                           context,
                           Icons.emoji_events,
                           'Conquistas',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  LevelCompletedPage(nameUser: nameUser),
-                            ),
-                          ),
+                          () {
+                            _handleMenuOpen(context, () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    LevelCompletedPage(nameUser: nameUser),
+                              ),
+                            ));
+                          },
                         ),
                         _buildMenuItem(
                           context,
                           FontAwesomeIcons.rankingStar,
                           'Ranking',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  RankingPage(nameUser: nameUser),
-                            ),
-                          ),
+                          () {
+                            _handleMenuOpen(context, () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    RankingPage(nameUser: nameUser),
+                              ),
+                            ));
+                          },
                         ),
                         _buildMenuItem(
                           context,
                           Icons.person,
                           'Perfil',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ProfilePage(nameUser: nameUser),
-                            ),
-                          ),
+                          () {
+                            _handleMenuOpen(context, () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ProfilePage(nameUser: nameUser),
+                              ),
+                            ));
+                          },
                         ),
                       ],
                     ),
@@ -148,6 +164,13 @@ class SubMenuWidget extends StatelessWidget {
     );
   }
 
+  void _handleMenuOpen(BuildContext context, VoidCallback onTap) {
+    if (onMenuOpen != null) {
+      onMenuOpen!(); // Chama o callback se fornecido
+    }
+    onTap(); // Executa a ação do menu
+  }
+
   Widget _buildMenuItem(
     BuildContext context,
     IconData icon,
@@ -155,7 +178,7 @@ class SubMenuWidget extends StatelessWidget {
     VoidCallback onTap,
   ) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => _handleMenuOpen(context, onTap),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -164,9 +187,7 @@ class SubMenuWidget extends StatelessWidget {
             icon,
             color: Colors.white,
           ),
-          const SizedBox(
-              height:
-                  5), // Ajuste o espaçamento vertical entre o ícone e o texto
+          const SizedBox(height: 5),
           Text(
             label,
             style: const TextStyle(color: Colors.white, fontSize: 13),
