@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:app_leitura/pages/app_bar_icons.dart';
 import 'package:app_leitura/pages/page_tasks.dart'; // Supondo que PageTasks seja a tela de tarefas
 import 'package:app_leitura/pages/weeks_page.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
@@ -29,6 +30,7 @@ class InitialHomeState extends State<InitialHome> {
   late Map<String, dynamic> weeksData = {};
   List<Map<String, String>> currentWeekThemes =
       []; // Lista de mapas com ícone e título
+  final int _notificationCount = 0; // Contador de notificações
 
   @override
   void initState() {
@@ -181,6 +183,7 @@ class InitialHomeState extends State<InitialHome> {
   Widget buildLevelCard(String levelName, int levelNumber) {
     bool clickable = isCardClickable(levelNumber);
     String backgroundImagePath = 'assets/backgrounds/trofeu.png';
+
     // Fetch the image path from Firestore if needed
     Future<void> fetchBackgroundImagePath() async {
       try {
@@ -191,7 +194,8 @@ class InitialHomeState extends State<InitialHome> {
 
         if (levelDoc.exists) {
           final levelData = levelDoc.data();
-          backgroundImagePath = levelData?['backgroundLevel'] as String? ?? "assets/backgrounds/trofeu.png";
+          backgroundImagePath = levelData?['backgroundLevel'] as String? ??
+              "assets/backgrounds/trofeu.png";
         }
       } catch (e) {
         print('Erro ao carregar o caminho da imagem: $e');
@@ -207,7 +211,8 @@ class InitialHomeState extends State<InitialHome> {
         // If data is still being fetched, show a placeholder
         if (snapshot.connectionState == ConnectionState.waiting) {
           return MyCard(
-            imagePath: 'assets/backgrounds/trofeu.png', // Default or placeholder image
+            imagePath:
+                'assets/backgrounds/trofeu.png', // Default or placeholder image
             title: levelName,
             onPressed: null,
             color: Colors.grey.withOpacity(0.5),
@@ -240,7 +245,6 @@ class InitialHomeState extends State<InitialHome> {
     );
   }
 
-
   List<Widget> buildThemeButtons() {
     return currentWeekThemes.map((theme) {
       final iconPath = theme['iconPath'] ?? ''; // Obtém o caminho da imagem
@@ -257,7 +261,8 @@ class InitialHomeState extends State<InitialHome> {
               ),
               child: SizedBox(
                 height: 60.h,
-                width: MediaQuery.of(context).size.width * 0.8, // 80% da largura da tela
+                width: MediaQuery.of(context).size.width *
+                    0.8, // 80% da largura da tela
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -265,7 +270,8 @@ class InitialHomeState extends State<InitialHome> {
                       iconPath.isNotEmpty
                           ? Image.asset(
                               iconPath,
-                              height: 40.h, // Ajuste o tamanho do ícone conforme necessário
+                              height: 40
+                                  .h, // Ajuste o tamanho do ícone conforme necessário
                             )
                           : Container(),
                       const SizedBox(width: 16),
@@ -273,19 +279,42 @@ class InitialHomeState extends State<InitialHome> {
                         child: Text(
                           title,
                           style: TextStyle(
-                            fontSize: 20.sp,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
-                          textAlign: TextAlign.left,
                         ),
                       ),
+                      if (challenge.isNotEmpty)
+                        IconButton(
+                          icon: const Icon(Icons.info, color: Colors.blue),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Desafio'),
+                                  content: Text(challenge),
+                                  actions: [
+                                    TextButton(
+                                      child: const Text('OK'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
                     ],
                   ),
                 ),
               ),
             ),
           ),
-          SizedBox(height: 10.h),
+          SizedBox(height: 16.h),
         ],
       );
     }).toList();
@@ -293,19 +322,6 @@ class InitialHomeState extends State<InitialHome> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(
-      context,
-      designSize: const Size(375, 820),
-      minTextAdapt: true,
-    );
-
-    final TextStyle regularTextStyle = TextStyle(
-      fontSize: 18.sp,
-      fontWeight: FontWeight.normal,
-      color: Colors.black,
-      fontFamily: 'Roboto',
-    );
-
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
@@ -313,10 +329,8 @@ class InitialHomeState extends State<InitialHome> {
     }
 
     return FutureBuilder<DocumentSnapshot>(
-      future: FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get(),
+      future:
+          FirebaseFirestore.instance.collection('users').doc(user.uid).get(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
@@ -334,10 +348,12 @@ class InitialHomeState extends State<InitialHome> {
               backgroundColor: Colors.transparent,
               elevation: 0,
               actions: [
+                myAppBarIcon(
+                    _notificationCount), // Use o widget personalizado aqui
                 PointsCard(userId: user.uid),
-                const SizedBox(width: 16),
-                ButtonNotification(nameUser: widget.nameUser),
-                const SizedBox(width: 16),
+                // onPressed: () {
+                //           Navigator.pushNamed(context, '/notificationpage');
+                //         },
               ],
             ),
             body: const Center(child: CircularProgressIndicator()),
@@ -358,10 +374,12 @@ class InitialHomeState extends State<InitialHome> {
               backgroundColor: Colors.transparent,
               elevation: 0,
               actions: [
+                myAppBarIcon(
+                    _notificationCount), // Use o widget personalizado aqui
                 PointsCard(userId: user.uid),
-                const SizedBox(width: 16),
-                ButtonNotification(nameUser: widget.nameUser),
-                const SizedBox(width: 16),
+                // onPressed: () {
+                //           Navigator.pushNamed(context, '/notificationpage');
+                //         },
               ],
             ),
             body: Center(child: Text('Erro: ${snapshot.error}')),
@@ -382,10 +400,12 @@ class InitialHomeState extends State<InitialHome> {
               backgroundColor: Colors.transparent,
               elevation: 0,
               actions: [
+                myAppBarIcon(
+                    _notificationCount), // Use o widget personalizado aqui
                 PointsCard(userId: user.uid),
-                const SizedBox(width: 16),
-                ButtonNotification(nameUser: widget.nameUser),
-                const SizedBox(width: 16),
+                // onPressed: () {
+                //           Navigator.pushNamed(context, '/notificationpage');
+                //         },
               ],
             ),
             body: const Center(child: Text('Nome do usuário não encontrado.')),
@@ -411,10 +431,12 @@ class InitialHomeState extends State<InitialHome> {
               backgroundColor: Colors.transparent,
               elevation: 0,
               actions: [
+                myAppBarIcon(
+                    _notificationCount), // Use o widget personalizado aqui
                 PointsCard(userId: user.uid),
-                const SizedBox(width: 16),
-                ButtonNotification(nameUser: userName),
-                const SizedBox(width: 16),
+                // onPressed: () {
+                //           Navigator.pushNamed(context, '/notificationpage');
+                //         },
               ],
             ),
             body: SafeArea(
@@ -436,7 +458,10 @@ class InitialHomeState extends State<InitialHome> {
                       SizedBox(height: 15.h),
                       Text(
                         "Celebre suas vitórias e continue avançando!",
-                        style: regularTextStyle,
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                       SizedBox(height: 20.h),
                       SizedBox(
@@ -467,7 +492,10 @@ class InitialHomeState extends State<InitialHome> {
                       Center(
                         child: Text(
                           "Próximas tarefas a serem liberadas",
-                          style: regularTextStyle,
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       SizedBox(height: 20.h),
