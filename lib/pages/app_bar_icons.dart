@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
 
-Widget myAppBarIcon(int counter) {
+Widget myAppBarIcon(BuildContext context, int counter) {
   return SizedBox(
-    width: 35,
-    height: 30,
+    width: 39,
+    height: 70,
     child: Stack(
       children: [
-        const Icon(
-          Icons.notifications,
-          color: Colors.black,
-          size: 30,
+        Positioned(
+          top: 0,
+          right: 3,
+          child: IconButton(
+            icon: const Icon(
+              Icons.notifications,
+              color: Colors.black,
+              size: 25,
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, '/notificationpage');
+            },
+          ),
         ),
         Container(
-          width: 30,
-          height: 30,
+          width: 40,
+          height: 60,
           alignment: Alignment.topRight,
           margin: const EdgeInsets.only(top: 5, right: 5),
           child: Container(

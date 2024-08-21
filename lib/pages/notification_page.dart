@@ -66,9 +66,9 @@ class _NotificationPageState extends State<NotificationPage> {
           'Notificações',
           style: TextStyle(color: Colors.black),
         ),
-        actions: [
-          myAppBarIcon(_notificationCount), // Use o widget personalizado aqui
-        ],
+        // actions: [
+        //   myAppBarIcon(context, _notificationCount), // Pass BuildContext and notification count
+        // ],
       ),
       body: Container(
         color: Colors.grey[300],
