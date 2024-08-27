@@ -963,7 +963,7 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.32):
     - BoringSSL-GRPC/Interface (= 0.0.32)
   - BoringSSL-GRPC/Interface (0.0.32)
-  - cloud_firestore (5.1.0):
+  - cloud_firestore (5.2.1):
     - Firebase/Firestore (= 10.29.0)
     - firebase_core
     - Flutter
@@ -978,7 +978,7 @@ PODS:
   - Firebase/Messaging (10.29.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 10.29.0)
-  - firebase_auth (5.1.2):
+  - firebase_auth (5.1.4):
     - Firebase/Auth (= 10.29.0)
     - firebase_core
     - Flutter
@@ -1266,9 +1266,9 @@ SPEC CHECKSUMS:
   audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
   awesome_notifications: 66d28ab7174ca2823b04d275cb043e0a4a3eb9cf
   BoringSSL-GRPC: 1e2348957acdbcad360b80a264a90799984b2ba6
-  cloud_firestore: 65b92bd5db2a75160ef73b5abb29688073cfa249
+  cloud_firestore: 8a2ff2bb050f87d0ca996866625cefbe2395a83b
   Firebase: cec914dab6fd7b1bd8ab56ea07ce4e03dd251c2d
-  firebase_auth: 34ea4e6a58280c0fc8c9c405545b2ee496356865
+  firebase_auth: 8dbfcdd635cc4fb2ea213aeee8c9a979b3d3373b
   firebase_core: 57aeb91680e5d5e6df6b888064be7c785f146efb
   firebase_messaging: c862b3d2b973ecc769194dc8de09bd22c77ae757
   FirebaseAppCheckInterop: 6a1757cfd4067d8e00fccd14fcc1b8fd78cfac07

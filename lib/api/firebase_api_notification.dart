@@ -1,10 +1,8 @@
 import 'dart:convert';
-
 import 'package:app_leitura/pages/notification_page.dart';
 import 'package:app_leitura/widgets/notification_key.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FirebaseApi {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -20,71 +18,69 @@ class FirebaseApi {
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
 
+  // Lista para armazenar as notificações recebidas
+  final List<RemoteMessage> _notifications = [];
+
   Future<void> handleBackgroundMessage(RemoteMessage message) async {
-    // Este método é chamado quando o aplicativo está em segundo plano ou fechado.
-    // Você pode armazenar o payload aqui, se necessário.
+    // Armazena a notificação recebida em background
+    _notifications.add(message);
   }
+void handleMessage(RemoteMessage? message) {
+  if (message == null) return;
 
-  void handleMessage(RemoteMessage? message) {
-    if (message == null) return;
+  // Adiciona a notificação à lista
+  _notifications.add(message);
 
-    print('Handling notification message');
+  // Atualiza a lista de notificações e navega para a página de notificações
+  if (navigatorKey.currentState?.mounted ?? false) {
+    navigatorKey.currentState?.pushNamed(
+      NotificationPage.route,
+      arguments: _notifications, // Passa a lista atualizada de notificações
+    );
+  } else {
+    print('Navigator is not mounted or not available');
+  }
+}
 
-    // Se o aplicativo está em primeiro plano, navegue para NotificationPage.
+Future<void> initPushNotifications() async {
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  FirebaseMessaging.onMessage.listen((message) {
+    final notification = message.notification;
+    if (notification == null) return;
+
+    _localNotifications.show(
+      notification.hashCode,
+      notification.title,
+      notification.body,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          _androidChannel.id,
+          _androidChannel.name,
+          channelDescription: _androidChannel.description,
+          icon: 'ic_launcher',
+        ),
+      ),
+      payload: jsonEncode(message.toMap()), // Armazena o payload
+    );
+
+    // Adiciona a notificação à lista
+    _notifications.add(message);
+
+    // Navega para NotificationPage se o aplicativo estiver aberto
     if (navigatorKey.currentState?.mounted ?? false) {
       navigatorKey.currentState?.pushNamed(
         NotificationPage.route,
-        arguments: message,
+        arguments: _notifications, // Passa a lista atualizada de notificações
       );
-    } else {
-      print('Navigator is not mounted or not available');
     }
-  }
+  });
+}
 
-  Future<void> initPushNotifications() async {
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    // Quando o aplicativo é iniciado a partir de uma notificação
-    FirebaseMessaging.instance.getInitialMessage().then((message) {
-      if (message != null) {
-        handleMessage(message);
-      }
-    });
-
-    // Quando o usuário abre o aplicativo clicando na notificação
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      handleMessage(message);
-    });
-
-    FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
-
-    // Quando a notificação é recebida enquanto o aplicativo está em primeiro plano
-    FirebaseMessaging.onMessage.listen((message) {
-      final notification = message.notification;
-      if (notification == null) return;
-
-      // Exibe a notificação local
-      _localNotifications.show(
-        notification.hashCode,
-        notification.title,
-        notification.body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            _androidChannel.id,
-            _androidChannel.name,
-            channelDescription: _androidChannel.description,
-            icon: 'ic_launcher',
-          ),
-        ),
-        payload: jsonEncode(message.toMap()), // Armazena o payload
-      );
-    });
-  }
 
   Future<void> initLocalNotifications() async {
     const iOS = DarwinInitializationSettings();
@@ -120,4 +116,7 @@ class FirebaseApi {
     await initPushNotifications();
     await initLocalNotifications();
   }
+
+  // Método para obter a lista de notificações
+  List<RemoteMessage> getNotifications() => _notifications;
 }

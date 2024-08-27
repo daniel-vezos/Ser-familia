@@ -55,10 +55,10 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey, // Use the navigatorKey here
       home: const InitialPage(),
       routes: {
-        NotificationPage.route: (context) => const NotificationPage(),
+        NotificationPage.route: (context) => NotificationPage(),
         // Outras rotas, se necessário
       },
-       initialRoute: '/',
+      initialRoute: '/',
     );
   }
 }
