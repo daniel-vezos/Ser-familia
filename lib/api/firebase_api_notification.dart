@@ -1,10 +1,8 @@
 import 'dart:convert';
-
 import 'package:app_leitura/pages/notification_page.dart';
 import 'package:app_leitura/widgets/notification_key.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FirebaseApi {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -14,38 +12,46 @@ class FirebaseApi {
     'high_importance_channel',
     'High Importance Notifications',
     description: 'This channel is used for important notifications',
-    importance: Importance.high, // Alterado para Importance.high
+    importance: Importance.high,
   );
 
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
 
+  // Lista para armazenar as notificações recebidas
+  final List<RemoteMessage> _notifications = [];
+
   Future<void> handleBackgroundMessage(RemoteMessage message) async {
-    print('Title: ${message.notification?.title}');
-    print('Body: ${message.notification?.body}');
-    print('Payload: ${message.data}');
+    // Armazena a notificação recebida em background
+    _notifications.add(message);
   }
 
   void handleMessage(RemoteMessage? message) {
     if (message == null) return;
 
-    navigatorKey.currentState?.pushNamed(
-      NotificationPage.route,
-      arguments: message,
-    );
+    // Adiciona a notificação à lista
+    _notifications.add(message);
+
+    // Atualiza a lista de notificações e navega para a página de notificações
+    if (navigatorKey.currentState?.mounted ?? false) {
+      navigatorKey.currentState?.pushNamed(
+        NotificationPage.route,
+        arguments: _notifications, // Passa a lista atualizada de notificações
+      ).then((_) {
+        // Limpa a lista de notificações após visualização
+        _notifications.clear();
+      });
+    } else {
+      print('Navigator is not mounted or not available');
+    }
   }
 
   Future<void> initPushNotifications() async {
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
     );
-
-    FirebaseMessaging.instance.getInitialMessage().then(handleMessage);
-    FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
-    FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
 
     FirebaseMessaging.onMessage.listen((message) {
       final notification = message.notification;
@@ -60,11 +66,25 @@ class FirebaseApi {
             _androidChannel.id,
             _androidChannel.name,
             channelDescription: _androidChannel.description,
-            icon: 'ic_launcher', // Alterado para ic_launcher
+            icon: 'ic_launcher',
           ),
         ),
-        payload: jsonEncode(message.toMap()),
+        payload: jsonEncode(message.toMap()), // Armazena o payload
       );
+
+      // Adiciona a notificação à lista
+      _notifications.add(message);
+
+      // Navega para NotificationPage se o aplicativo estiver aberto
+      if (navigatorKey.currentState?.mounted ?? false) {
+        navigatorKey.currentState?.pushNamed(
+          NotificationPage.route,
+          arguments: _notifications, // Passa a lista atualizada de notificações
+        ).then((_) {
+          // Limpa a lista de notificações após visualização
+          _notifications.clear();
+        });
+      }
     });
   }
 
@@ -76,8 +96,10 @@ class FirebaseApi {
     await _localNotifications.initialize(
       settings,
       onDidReceiveNotificationResponse: (payload) {
-        final message = RemoteMessage.fromMap(jsonDecode(payload as String));
-        handleMessage(message);
+        if (payload.payload != null) {
+          final message = RemoteMessage.fromMap(jsonDecode(payload.payload!));
+          handleMessage(message);
+        }
       },
     );
 
@@ -100,4 +122,7 @@ class FirebaseApi {
     await initPushNotifications();
     await initLocalNotifications();
   }
+
+  // Método para obter a lista de notificações
+  List<RemoteMessage> getNotifications() => _notifications;
 }

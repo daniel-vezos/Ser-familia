@@ -1,10 +1,12 @@
 import 'dart:convert';
-import 'package:app_leitura/pages/page_tasks.dart'; // Supondo que PageTasks seja a tela de tarefas
+import 'package:app_leitura/pages/app_bar_icons.dart';
+import 'package:app_leitura/pages/page_tasks.dart'; 
 import 'package:app_leitura/pages/weeks_page.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/points_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:app_leitura/util/my_card.dart';
@@ -29,12 +31,37 @@ class InitialHomeState extends State<InitialHome> {
   late Map<String, dynamic> weeksData = {};
   List<Map<String, String>> currentWeekThemes =
       []; // Lista de mapas com ícone e título
+  int _notificationCount = 0; // Contador de notificações
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   @override
   void initState() {
     super.initState();
     _loadWeeksData();
     _loadNextWeekThemes();
+    _configureFirebaseMessaging();
+  }
+
+  Future<void> _configureFirebaseMessaging() async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage remoteMessage) {
+      setState(() {
+        _notificationCount++;
+      });
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage remoteMessage) {
+      setState(() {
+        _notificationCount++;
+      });
+    });
+
+    _firebaseMessaging.getInitialMessage().then((RemoteMessage? remoteMessage) {
+      if (remoteMessage != null) {
+        setState(() {
+          _notificationCount++;
+        });
+      }
+    });
   }
 
   Future<void> _loadWeeksData() async {
@@ -50,7 +77,6 @@ class InitialHomeState extends State<InitialHome> {
         weeksData = data;
       });
 
-      // Load current week themes
       await _loadNextWeekThemes();
     } catch (e) {
       print('Erro ao carregar dados do Firestore: $e');
@@ -97,7 +123,6 @@ class InitialHomeState extends State<InitialHome> {
       DateTime startOfNextWeek =
           startOfCurrentWeek.add(const Duration(days: 7));
 
-      // Verifica se a semana atual passou
       if (today.isAfter(startOfNextWeek.subtract(const Duration(days: 1)))) {
         startOfNextWeek = startOfNextWeek.add(const Duration(days: 7));
       }
@@ -163,7 +188,6 @@ class InitialHomeState extends State<InitialHome> {
   }
 
   bool isCardClickable(int levelNumber) {
-    // Simplesmente habilita todos os cartões
     return true;
   }
 
@@ -181,7 +205,7 @@ class InitialHomeState extends State<InitialHome> {
   Widget buildLevelCard(String levelName, int levelNumber) {
     bool clickable = isCardClickable(levelNumber);
     String backgroundImagePath = 'assets/backgrounds/trofeu.png';
-    // Fetch the image path from Firestore if needed
+
     Future<void> fetchBackgroundImagePath() async {
       try {
         final levelDoc = await FirebaseFirestore.instance
@@ -191,30 +215,28 @@ class InitialHomeState extends State<InitialHome> {
 
         if (levelDoc.exists) {
           final levelData = levelDoc.data();
-          backgroundImagePath = levelData?['backgroundLevel'] as String? ?? "assets/backgrounds/trofeu.png";
+          backgroundImagePath = levelData?['backgroundLevel'] as String? ??
+              "assets/backgrounds/trofeu.png";
         }
       } catch (e) {
         print('Erro ao carregar o caminho da imagem: $e');
       }
     }
 
-    // Call the fetch function before building the card
     fetchBackgroundImagePath();
 
     return FutureBuilder(
-      future: fetchBackgroundImagePath(), // Ensure background path is fetched
+      future: fetchBackgroundImagePath(),
       builder: (context, snapshot) {
-        // If data is still being fetched, show a placeholder
         if (snapshot.connectionState == ConnectionState.waiting) {
           return MyCard(
-            imagePath: 'assets/backgrounds/trofeu.png', // Default or placeholder image
+            imagePath: 'assets/backgrounds/trofeu.png',
             title: levelName,
             onPressed: null,
             color: Colors.grey.withOpacity(0.5),
           );
         }
 
-        // Once data is fetched, build the card
         return MyCard(
           imagePath: backgroundImagePath,
           title: levelName,
@@ -240,10 +262,9 @@ class InitialHomeState extends State<InitialHome> {
     );
   }
 
-
   List<Widget> buildThemeButtons() {
     return currentWeekThemes.map((theme) {
-      final iconPath = theme['iconPath'] ?? ''; // Obtém o caminho da imagem
+      final iconPath = theme['iconPath'] ?? '';
       final title = theme['title'] ?? 'Sem Título';
       final challenge = theme['challenge'] ?? 'Sem Descrição';
 
@@ -257,7 +278,7 @@ class InitialHomeState extends State<InitialHome> {
               ),
               child: SizedBox(
                 height: 60.h,
-                width: MediaQuery.of(context).size.width * 0.8, // 80% da largura da tela
+                width: MediaQuery.of(context).size.width * 0.8,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -265,7 +286,8 @@ class InitialHomeState extends State<InitialHome> {
                       iconPath.isNotEmpty
                           ? Image.asset(
                               iconPath,
-                              height: 40.h, // Ajuste o tamanho do ícone conforme necessário
+                              height: 40.h,
+                              fit: BoxFit.contain,
                             )
                           : Container(),
                       const SizedBox(width: 16),
@@ -313,10 +335,8 @@ class InitialHomeState extends State<InitialHome> {
     }
 
     return FutureBuilder<DocumentSnapshot>(
-      future: FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get(),
+      future:
+          FirebaseFirestore.instance.collection('users').doc(user.uid).get(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
@@ -334,9 +354,12 @@ class InitialHomeState extends State<InitialHome> {
               backgroundColor: Colors.transparent,
               elevation: 0,
               actions: [
+                // Use o widget personalizado aqui
+
                 PointsCard(userId: user.uid),
+                myAppBarIcon(context, _notificationCount),
                 const SizedBox(width: 16),
-                ButtonNotification(nameUser: widget.nameUser),
+                // ButtonNotification(nameUser: userName, notificationCount: _notificationCount),
                 const SizedBox(width: 16),
               ],
             ),
@@ -358,9 +381,12 @@ class InitialHomeState extends State<InitialHome> {
               backgroundColor: Colors.transparent,
               elevation: 0,
               actions: [
+                // Use o widget personalizado aqui
+
                 PointsCard(userId: user.uid),
+                myAppBarIcon(context, _notificationCount),
                 const SizedBox(width: 16),
-                ButtonNotification(nameUser: widget.nameUser),
+                // ButtonNotification(nameUser: userName, notificationCount: _notificationCount),
                 const SizedBox(width: 16),
               ],
             ),
@@ -382,9 +408,12 @@ class InitialHomeState extends State<InitialHome> {
               backgroundColor: Colors.transparent,
               elevation: 0,
               actions: [
+                // Use o widget personalizado aqui
+
                 PointsCard(userId: user.uid),
+                myAppBarIcon(context, _notificationCount),
                 const SizedBox(width: 16),
-                ButtonNotification(nameUser: widget.nameUser),
+                // ButtonNotification(nameUser: userName, notificationCount: _notificationCount),
                 const SizedBox(width: 16),
               ],
             ),
@@ -411,10 +440,12 @@ class InitialHomeState extends State<InitialHome> {
               backgroundColor: Colors.transparent,
               elevation: 0,
               actions: [
+                // Use o widget personalizado aqui
                 PointsCard(userId: user.uid),
-                const SizedBox(width: 16),
-                ButtonNotification(nameUser: userName),
-                const SizedBox(width: 16),
+                myAppBarIcon(context, _notificationCount),
+                const SizedBox(width: 15),
+                // ButtonNotification(nameUser: userName, notificationCount: _notificationCount),
+                // const SizedBox(width: 20),
               ],
             ),
             body: SafeArea(
@@ -440,8 +471,7 @@ class InitialHomeState extends State<InitialHome> {
                       ),
                       SizedBox(height: 20.h),
                       SizedBox(
-                        height:
-                            220.h, // Ajuste a altura mínima conforme necessário
+                        height: 220.h,
                         child: PageView(
                           scrollDirection: Axis.horizontal,
                           controller: _controller,

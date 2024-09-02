@@ -1,8 +1,5 @@
-import 'package:app_leitura/widgets/button_notification.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-
-import '../widgets/sub_menu_widget.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
@@ -14,19 +11,22 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  RemoteMessage? message;
+  List<RemoteMessage> _notifications = [];
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    message = ModalRoute.of(context)?.settings.arguments as RemoteMessage?;
+    // Recebe as notificações passadas como argumento
+    final arguments = ModalRoute.of(context)?.settings.arguments;
+    if (arguments is List<RemoteMessage>) {
+      setState(() {
+        _notifications = arguments;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final notificationBody =
-        message?.notification?.body ?? 'Sem notificações no momento';
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey[300],
@@ -36,28 +36,20 @@ class _NotificationPageState extends State<NotificationPage> {
         ),
       ),
       body: Container(
-        color: Colors.grey[300], // Define a cor de fundo da página
-        child: Column(
-          children: [
-            Divider(
-              height: 1,
-              color: Colors.grey[500], // Ajusta a cor dos divisores
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(notificationBody,
-                    style: const TextStyle(
-                        color: Colors.black)), // Ajusta a cor do texto
-              ],
-            ),
-            const SizedBox(height: 10),
-            Divider(
-              height: 1,
-              color: Colors.grey[500], // Ajusta a cor dos divisores
-            ),
-          ],
+        color: Colors.grey[300],
+        child: ListView.builder(
+          itemCount: _notifications.length,
+          itemBuilder: (context, index) {
+            final notification = _notifications[index];
+            final notificationBody = notification.notification?.body ??
+                'Sem notificações no momento';
+
+            return ListTile(
+              title: Text(notification.notification?.title ?? 'Sem título'),
+              subtitle: Text(notificationBody),
+              trailing: Text(notification.sentTime!.toLocal().toString()),
+            );
+          },
         ),
       ),
     );
