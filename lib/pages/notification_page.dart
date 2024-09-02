@@ -1,64 +1,56 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class NotificationPage extends StatefulWidget {
-  static const route = '/notifications';
+  const NotificationPage({super.key});
+
+  static const route = '/notificationpage';
 
   @override
-  _NotificationPageState createState() => _NotificationPageState();
+  State<NotificationPage> createState() => _NotificationPageState();
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  List<Map<String, dynamic>> _notifications = [];
+  List<RemoteMessage> _notifications = [];
 
   @override
-  void initState() {
-    super.initState();
-    _loadNotifications();
-  }
-
-  Future<void> _loadNotifications() async {
-    final prefs = await SharedPreferences.getInstance();
-    final notificationsJson = prefs.getString('notifications') ?? '[]';
-    setState(() {
-      _notifications = List<Map<String, dynamic>>.from(jsonDecode(notificationsJson));
-    });
-    await _markAllAsRead();
-    await _updateNotificationCount();
-  }
-
-  Future<void> _markAllAsRead() async {
-    final prefs = await SharedPreferences.getInstance();
-    _notifications = _notifications.map((n) {
-      n['read'] = true;
-      return n;
-    }).toList();
-    await prefs.setString('notifications', jsonEncode(_notifications));
-  }
-
-  Future<void> _updateNotificationCount() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('notificationCount', 0); // Atualiza o contador para 0
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Recebe as notificações passadas como argumento
+    final arguments = ModalRoute.of(context)?.settings.arguments;
+    if (arguments is List<RemoteMessage>) {
+      setState(() {
+        _notifications = arguments;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notificações'),
+        backgroundColor: Colors.grey[300],
+        title: const Text(
+          'Notificações',
+          style: TextStyle(color: Colors.black),
+        ),
       ),
-      body: ListView.builder(
-        itemCount: _notifications.length,
-        itemBuilder: (context, index) {
-          final notification = _notifications[index];
-          return ListTile(
-            title: Text(notification['title'] ?? 'Sem título'),
-            subtitle: Text(notification['body'] ?? 'Sem corpo'),
-            trailing: Text(notification['timestamp'] ?? ''),
-          );
-        },
+      body: Container(
+        color: Colors.grey[300],
+        child: ListView.builder(
+          itemCount: _notifications.length,
+          itemBuilder: (context, index) {
+            final notification = _notifications[index];
+            final notificationBody = notification.notification?.body ??
+                'Sem notificações no momento';
+
+            return ListTile(
+              title: Text(notification.notification?.title ?? 'Sem título'),
+              subtitle: Text(notificationBody),
+              trailing: Text(notification.sentTime!.toLocal().toString()),
+            );
+          },
+        ),
       ),
     );
   }

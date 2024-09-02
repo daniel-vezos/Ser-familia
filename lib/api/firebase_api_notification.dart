@@ -25,62 +25,68 @@ class FirebaseApi {
     // Armazena a notificação recebida em background
     _notifications.add(message);
   }
-void handleMessage(RemoteMessage? message) {
-  if (message == null) return;
 
-  // Adiciona a notificação à lista
-  _notifications.add(message);
-
-  // Atualiza a lista de notificações e navega para a página de notificações
-  if (navigatorKey.currentState?.mounted ?? false) {
-    navigatorKey.currentState?.pushNamed(
-      NotificationPage.route,
-      arguments: _notifications, // Passa a lista atualizada de notificações
-    );
-  } else {
-    print('Navigator is not mounted or not available');
-  }
-}
-
-Future<void> initPushNotifications() async {
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
-
-  FirebaseMessaging.onMessage.listen((message) {
-    final notification = message.notification;
-    if (notification == null) return;
-
-    _localNotifications.show(
-      notification.hashCode,
-      notification.title,
-      notification.body,
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          _androidChannel.id,
-          _androidChannel.name,
-          channelDescription: _androidChannel.description,
-          icon: 'ic_launcher',
-        ),
-      ),
-      payload: jsonEncode(message.toMap()), // Armazena o payload
-    );
+  void handleMessage(RemoteMessage? message) {
+    if (message == null) return;
 
     // Adiciona a notificação à lista
     _notifications.add(message);
 
-    // Navega para NotificationPage se o aplicativo estiver aberto
+    // Atualiza a lista de notificações e navega para a página de notificações
     if (navigatorKey.currentState?.mounted ?? false) {
       navigatorKey.currentState?.pushNamed(
         NotificationPage.route,
         arguments: _notifications, // Passa a lista atualizada de notificações
-      );
+      ).then((_) {
+        // Limpa a lista de notificações após visualização
+        _notifications.clear();
+      });
+    } else {
+      print('Navigator is not mounted or not available');
     }
-  });
-}
+  }
 
+  Future<void> initPushNotifications() async {
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    FirebaseMessaging.onMessage.listen((message) {
+      final notification = message.notification;
+      if (notification == null) return;
+
+      _localNotifications.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            _androidChannel.id,
+            _androidChannel.name,
+            channelDescription: _androidChannel.description,
+            icon: 'ic_launcher',
+          ),
+        ),
+        payload: jsonEncode(message.toMap()), // Armazena o payload
+      );
+
+      // Adiciona a notificação à lista
+      _notifications.add(message);
+
+      // Navega para NotificationPage se o aplicativo estiver aberto
+      if (navigatorKey.currentState?.mounted ?? false) {
+        navigatorKey.currentState?.pushNamed(
+          NotificationPage.route,
+          arguments: _notifications, // Passa a lista atualizada de notificações
+        ).then((_) {
+          // Limpa a lista de notificações após visualização
+          _notifications.clear();
+        });
+      }
+    });
+  }
 
   Future<void> initLocalNotifications() async {
     const iOS = DarwinInitializationSettings();
