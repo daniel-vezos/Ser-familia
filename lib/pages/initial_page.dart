@@ -15,17 +15,15 @@ class InitialPage extends StatefulWidget {
 
 class _InitialPageState extends State<InitialPage> {
   bool _isTextFieldFocused = false;
-  bool _isLoading = false; // Estado para o carregamento
+  bool _isLoading = false;
   final TextEditingController _matriculaController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final _auth = AuthService();
+  final AuthService _auth = AuthService();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _checkIfUserIsLoggedIn();
-    });
+    _checkIfUserIsLoggedIn();
   }
 
   Future<void> _checkIfUserIsLoggedIn() async {
@@ -37,18 +35,26 @@ class _InitialPageState extends State<InitialPage> {
       return;
     }
 
-    // Verificar o status da política de privacidade do usuário
     try {
       final userId = user.uid;
       final userDoc = await _firestore.collection('users').doc(userId).get();
-      final privacyAccepted = userDoc.data()?['privacyAccepted'] as bool? ?? false;
+      final privacyAccepted =
+          userDoc.data()?['privacyAccepted'] as bool? ?? false;
 
       if (privacyAccepted) {
-        // Se a política de privacidade já foi aceita, redireciona para a tela inicial
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => InitialHome(
+              nameUser: user.displayName ?? 'Usuário',
+            ),
+          ),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PrivacityPageController(
               nameUser: user.displayName ?? 'Usuário',
             ),
           ),
@@ -96,18 +102,20 @@ class _InitialPageState extends State<InitialPage> {
   }
 
   Future<void> _showLoginSuccessDialog(String userName) async {
-    // Verificar o status da política de privacidade do usuário
-    try {
-      final userId = FirebaseAuth.instance.currentUser?.uid;
-      if (userId == null) {
-        throw Exception('Usuário não autenticado.');
-      }
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Usuário não autenticado.')),
+      );
+      return;
+    }
 
+    try {
       final userDoc = await _firestore.collection('users').doc(userId).get();
-      final privacyAccepted = userDoc.data()?['privacyAccepted'] as bool? ?? false;
+      final privacyAccepted =
+          userDoc.data()?['privacyAccepted'] as bool? ?? false;
 
       if (privacyAccepted) {
-        // Se a política de privacidade já foi aceita, não exiba o diálogo
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -117,10 +125,9 @@ class _InitialPageState extends State<InitialPage> {
           ),
         );
       } else {
-        // Se a política de privacidade não foi aceita, exiba o diálogo
         return showDialog<void>(
           context: context,
-          barrierDismissible: false, // Impede o usuário de fechar o diálogo tocando fora
+          barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Bem-vindo!'),
@@ -129,14 +136,13 @@ class _InitialPageState extends State<InitialPage> {
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
-                    // Ação ao pressionar "OK": redirecionar para a política de privacidade
-                    Navigator.of(context).pop(); // Fecha o diálogo
+                    Navigator.of(context).pop();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => PrivacityPageController(
                           nameUser: userName,
-                        ), // Adicione a página da política de privacidade
+                        ),
                       ),
                     );
                   },
@@ -205,7 +211,7 @@ class _InitialPageState extends State<InitialPage> {
           ),
         ),
         const Spacer(),
-        if (_isLoading) // Exibe o indicador de carregamento se _isLoading for verdadeiro
+        if (_isLoading)
           const Center(
             child: CircularProgressIndicator(),
           ),
@@ -216,11 +222,11 @@ class _InitialPageState extends State<InitialPage> {
             child: CustomButtonNavigation(
               onPressed: () async {
                 setState(() {
-                  _isLoading = true; // Inicia o carregamento
+                  _isLoading = true;
                 });
                 User? user = await _auth.loginWithGoogle();
                 setState(() {
-                  _isLoading = false; // Termina o carregamento
+                  _isLoading = false;
                 });
                 if (user != null) {
                   Navigator.pushReplacement(
@@ -231,7 +237,6 @@ class _InitialPageState extends State<InitialPage> {
                       ),
                     ),
                   );
-                  // Mostra o AlertDialog após o login
                   _showLoginSuccessDialog(user.displayName ?? 'Usuário');
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -280,14 +285,13 @@ class CustomButtonNavigation extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: const Color.fromARGB(
-            255, 6, 48, 81), // Define a cor azul para o botão
+        color: const Color.fromARGB(255, 6, 48, 81),
         borderRadius: BorderRadius.circular(8),
       ),
       child: TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(
-          foregroundColor: colorText, // Cor do texto
+          foregroundColor: colorText,
           padding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),

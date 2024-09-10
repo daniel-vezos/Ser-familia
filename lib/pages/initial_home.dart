@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:app_leitura/pages/app_bar_icons.dart';
-import 'package:app_leitura/pages/page_tasks.dart'; 
+import 'package:app_leitura/pages/page_tasks.dart';
 import 'package:app_leitura/pages/weeks_page.dart';
 import 'package:app_leitura/widgets/button_notification.dart';
 import 'package:app_leitura/widgets/points_card.dart';
@@ -17,10 +17,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 class InitialHome extends StatefulWidget {
   final String nameUser;
 
-  const InitialHome({
-    super.key,
-    required this.nameUser,
-  });
+  const InitialHome({super.key, required this.nameUser});
 
   @override
   InitialHomeState createState() => InitialHomeState();
@@ -28,55 +25,44 @@ class InitialHome extends StatefulWidget {
 
 class InitialHomeState extends State<InitialHome> {
   final PageController _controller = PageController();
-  late Map<String, dynamic> weeksData = {};
-  List<Map<String, String>> currentWeekThemes =
-      []; // Lista de mapas com ícone e título
-  int _notificationCount = 0; // Contador de notificações
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  Map<String, dynamic> weeksData = {};
+  List<Map<String, String>> currentWeekThemes = [];
+  int _notificationCount = 0;
 
   @override
   void initState() {
     super.initState();
+    _initializeData();
+  }
+
+  void _initializeData() {
     _loadWeeksData();
-    _loadNextWeekThemes();
     _configureFirebaseMessaging();
   }
 
   Future<void> _configureFirebaseMessaging() async {
-    FirebaseMessaging.onMessage.listen((RemoteMessage remoteMessage) {
-      setState(() {
-        _notificationCount++;
-      });
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      setState(() => _notificationCount++);
     });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage remoteMessage) {
-      setState(() {
-        _notificationCount++;
-      });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      setState(() => _notificationCount++);
     });
 
-    _firebaseMessaging.getInitialMessage().then((RemoteMessage? remoteMessage) {
-      if (remoteMessage != null) {
-        setState(() {
-          _notificationCount++;
-        });
-      }
-    });
+    final initialMessage = await _firebaseMessaging.getInitialMessage();
+    if (initialMessage != null) {
+      setState(() => _notificationCount++);
+    }
   }
 
   Future<void> _loadWeeksData() async {
     try {
       final snapshot =
           await FirebaseFirestore.instance.collection('levels').get();
-      final data = snapshot.docs.fold<Map<String, dynamic>>({}, (map, doc) {
-        map[doc.id] = doc.data();
-        return map;
-      });
-
       setState(() {
-        weeksData = data;
+        weeksData = {for (var doc in snapshot.docs) doc.id: doc.data()};
       });
-
       await _loadNextWeekThemes();
     } catch (e) {
       print('Erro ao carregar dados do Firestore: $e');
@@ -94,13 +80,7 @@ class InitialHomeState extends State<InitialHome> {
         final startDateString = startDateDoc.data()?['dateStart'] as String?;
         if (startDateString != null) {
           final dateComponents = startDateString.split('-');
-          if (dateComponents.length == 3) {
-            return DateTime(
-              int.parse(dateComponents[0]),
-              int.parse(dateComponents[1]),
-              int.parse(dateComponents[2]),
-            );
-          }
+          return DateTime.parse(dateComponents.join('-'));
         }
       }
     } catch (e) {
@@ -127,8 +107,6 @@ class InitialHomeState extends State<InitialHome> {
         startOfNextWeek = startOfNextWeek.add(const Duration(days: 7));
       }
 
-      List<Map<String, String>> themesList = [];
-
       for (var levelName in weeksData.keys) {
         final levelRef = FirebaseFirestore.instance
             .collection('levels')
@@ -139,18 +117,9 @@ class InitialHomeState extends State<InitialHome> {
         for (var doc in querySnapshot.docs) {
           final weekData = doc.data();
           final activedataString = weekData['activedata'] as String?;
-          DateTime? activedata;
-
-          if (activedataString != null) {
-            final activedataComponents = activedataString.split('-');
-            if (activedataComponents.length == 3) {
-              activedata = DateTime(
-                int.parse(activedataComponents[0]),
-                int.parse(activedataComponents[1]),
-                int.parse(activedataComponents[2]),
-              );
-            }
-          }
+          DateTime? activedata = activedataString != null
+              ? DateTime.parse(activedataString)
+              : null;
 
           if (activedata != null &&
               activedata
@@ -163,19 +132,20 @@ class InitialHomeState extends State<InitialHome> {
 
             final themeCollection = levelRef.doc(doc.id).collection('themes');
             final themeQuerySnapshot = await themeCollection.get();
-            final List<Map<String, String>> themes =
-                themeQuerySnapshot.docs.map((doc) {
-              final data = doc.data();
-              return {
-                'title': data['title'] as String? ?? 'Sem título',
-                'iconPath': data['iconPath'] as String? ??
-                    'assets/backgrounds/botao1.png',
-                'challenge': data['challenge'] as String? ?? 'Sem descrição',
-              };
-            }).toList();
 
             setState(() {
-              currentWeekThemes = themes;
+              currentWeekThemes = themeQuerySnapshot.docs.map((doc) {
+                final data = doc.data();
+                return {
+                  'title': data['title'] as String? ?? 'Sem título',
+                  'iconPath': data.containsKey('iconPath')
+                      ? data['iconPath'] as String
+                      : 'assets/backgrounds/botao1.png',
+                  'challenge': data.containsKey('challenge')
+                      ? data['challenge'] as String
+                      : 'Sem descrição',
+                };
+              }).toList();
             });
 
             return;
@@ -187,78 +157,250 @@ class InitialHomeState extends State<InitialHome> {
     }
   }
 
-  bool isCardClickable(int levelNumber) {
-    return true;
-  }
-
-  List<Widget> buildLevelCards() {
-    List<Widget> levelCards = [];
-
-    for (var level in weeksData.keys) {
-      int levelNumber = int.tryParse(level.split(' ')[1]) ?? 0;
-      levelCards.add(buildLevelCard(level, levelNumber));
-    }
-
-    return levelCards;
-  }
-
-  Widget buildLevelCard(String levelName, int levelNumber) {
-    bool clickable = isCardClickable(levelNumber);
-    String backgroundImagePath = 'assets/backgrounds/trofeu.png';
-
-    Future<void> fetchBackgroundImagePath() async {
-      try {
-        final levelDoc = await FirebaseFirestore.instance
-            .collection('levels')
-            .doc(levelName)
-            .get();
-
-        if (levelDoc.exists) {
-          final levelData = levelDoc.data();
-          backgroundImagePath = levelData?['backgroundLevel'] as String? ??
-              "assets/backgrounds/trofeu.png";
-        }
-      } catch (e) {
-        print('Erro ao carregar o caminho da imagem: $e');
-      }
-    }
-
-    fetchBackgroundImagePath();
+  Widget _buildLevelCard(String levelName, int levelNumber) {
+    bool clickable = true; // placeholder for isCardClickable logic
+    String backgroundImagePath =
+        'assets/backgrounds/trofeu.png'; // Definir valor padrão
 
     return FutureBuilder(
-      future: fetchBackgroundImagePath(),
+      future: _fetchBackgroundImagePath(levelName),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return MyCard(
-            imagePath: 'assets/backgrounds/trofeu.png',
-            title: levelName,
-            onPressed: null,
-            color: Colors.grey.withOpacity(0.5),
-          );
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.hasData) {
+          backgroundImagePath = snapshot.data as String;
         }
-
         return MyCard(
           imagePath: backgroundImagePath,
           title: levelName,
-          onPressed: clickable
-              ? () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WeeksPage(
-                        nivel: levelName,
-                        userName: widget.nameUser,
-                        titles: weeksData[levelName] is List
-                            ? weeksData[levelName]
-                            : [],
-                      ),
-                    ),
-                  );
-                }
-              : null,
+          onPressed: clickable ? () => _navigateToWeeksPage(levelName) : null,
           color: clickable ? Colors.white : Colors.grey.withOpacity(0.5),
         );
       },
+    );
+  }
+
+  Future<String> _fetchBackgroundImagePath(String levelName) async {
+    try {
+      final levelDoc = await FirebaseFirestore.instance
+          .collection('levels')
+          .doc(levelName)
+          .get();
+      if (levelDoc.exists) {
+        final levelData = levelDoc.data();
+        return levelData != null && levelData.containsKey('backgroundLevel')
+            ? levelData['backgroundLevel'] as String
+            : "assets/backgrounds/trofeu.png";
+      }
+    } catch (e) {
+      print('Erro ao carregar o caminho da imagem: $e');
+    }
+    return "assets/backgrounds/trofeu.png";
+  }
+
+  void _navigateToWeeksPage(String levelName) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => WeeksPage(
+          nivel: levelName,
+          userName: widget.nameUser,
+          titles: weeksData[levelName] is List ? weeksData[levelName] : [],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ScreenUtil.init(context,
+        designSize: const Size(375, 820), minTextAdapt: true);
+
+    final TextStyle regularTextStyle = TextStyle(
+      fontSize: 18.sp,
+      fontWeight: FontWeight.normal,
+      color: Colors.black,
+      fontFamily: 'Roboto',
+    );
+
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return const Center(child: Text('Usuário não autenticado.'));
+    }
+
+    return FutureBuilder<DocumentSnapshot>(
+      future:
+          FirebaseFirestore.instance.collection('users').doc(user.uid).get(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _buildLoadingScreen();
+        } else if (snapshot.hasError) {
+          return _buildErrorScreen(snapshot.error.toString());
+        } else if (!snapshot.hasData || !snapshot.data!.exists) {
+          return _buildUserNotFoundScreen();
+        } else {
+          final userData = snapshot.data!.data() as Map<String, dynamic>;
+          final userName = userData.containsKey('name')
+              ? userData['name'] as String
+              : widget.nameUser;
+          return _buildMainScreen(userName);
+        }
+      },
+    );
+  }
+
+  Scaffold _buildLoadingScreen() {
+    return Scaffold(
+      backgroundColor: Colors.grey[300],
+      appBar: _buildAppBar(),
+      body: const Center(child: CircularProgressIndicator()),
+    );
+  }
+
+  Scaffold _buildErrorScreen(String error) {
+    return Scaffold(
+      backgroundColor: Colors.grey[300],
+      appBar: _buildAppBar(),
+      body: Center(child: Text('Erro: $error')),
+    );
+  }
+
+  Scaffold _buildUserNotFoundScreen() {
+    return Scaffold(
+      backgroundColor: Colors.grey[300],
+      appBar: _buildAppBar(),
+      body: const Center(child: Text('Nome do usuário não encontrado.')),
+    );
+  }
+
+  Scaffold _buildMainScreen(String userName) {
+    return Scaffold(
+      backgroundColor: Colors.grey[300],
+      appBar: _buildAppBar(),
+      body: _buildContent(userName),
+      bottomNavigationBar: SubMenuWidget(nameUser: userName),
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: Text(
+        "Olá ${widget.nameUser.split(' ')[0]}",
+        style: TextStyle(
+          fontSize: 30.sp,
+          fontWeight: FontWeight.w500,
+          fontFamily: 'Roboto',
+        ),
+      ),
+      automaticallyImplyLeading: false,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      actions: [
+        PointsCard(userId: FirebaseAuth.instance.currentUser?.uid ?? ''),
+        myAppBarIcon(context, _notificationCount),
+        const SizedBox(width: 16),
+      ],
+    );
+  }
+
+  Widget _buildContent(String userName) {
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildWelcomeText(),
+              _buildLevelCards(),
+              _buildUpcomingTasks(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWelcomeText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Seja bem-vindo ao seu desafio.",
+          style: TextStyle(
+            fontSize: 22.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            fontFamily: 'Roboto',
+          ),
+        ),
+        SizedBox(height: 15.h),
+        Text(
+          "Celebre suas vitórias e continue avançando!",
+          style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.normal,
+              color: Colors.black,
+              fontFamily: 'Roboto'),
+        ),
+        SizedBox(height: 20.h),
+      ],
+    );
+  }
+
+  Widget _buildLevelCards() {
+    return Column(
+      children: [
+        SizedBox(
+          height: 220.h,
+          child: PageView(
+            scrollDirection: Axis.horizontal,
+            controller: _controller,
+            children: weeksData.keys
+                .map((level) =>
+                    _buildLevelCard(level, int.parse(level.split(' ')[1])))
+                .toList(),
+          ),
+        ),
+        SizedBox(height: 20.h),
+        Center(
+          child: SmoothPageIndicator(
+            controller: _controller,
+            count: weeksData.keys.length,
+            effect: ExpandingDotsEffect(
+              dotColor: Colors.grey,
+              activeDotColor: const Color.fromARGB(255, 13, 61, 144),
+              dotHeight: 8.h,
+              dotWidth: 8.w,
+              spacing: 10.w,
+            ),
+          ),
+        ),
+        SizedBox(height: 30.h),
+      ],
+    );
+  }
+
+  Widget _buildUpcomingTasks() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(
+          child: Text(
+            "Próximas tarefas a serem liberadas",
+            style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.normal,
+                color: Colors.black,
+                fontFamily: 'Roboto'),
+          ),
+        ),
+        SizedBox(height: 20.h),
+        currentWeekThemes.isEmpty
+            ? const Center(
+                child: Text('Nenhum tema disponível para a próxima semana.'))
+            : Column(children: buildThemeButtons()),
+      ],
     );
   }
 
@@ -283,13 +425,12 @@ class InitialHomeState extends State<InitialHome> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      iconPath.isNotEmpty
-                          ? Image.asset(
-                              iconPath,
-                              height: 40.h,
-                              fit: BoxFit.contain,
-                            )
-                          : Container(),
+                      if (iconPath.isNotEmpty)
+                        Image.asset(
+                          iconPath,
+                          height: 30.h,
+                          fit: BoxFit.contain,
+                        ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Text(
@@ -311,214 +452,5 @@ class InitialHomeState extends State<InitialHome> {
         ],
       );
     }).toList();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    ScreenUtil.init(
-      context,
-      designSize: const Size(375, 820),
-      minTextAdapt: true,
-    );
-
-    final TextStyle regularTextStyle = TextStyle(
-      fontSize: 18.sp,
-      fontWeight: FontWeight.normal,
-      color: Colors.black,
-      fontFamily: 'Roboto',
-    );
-
-    final user = FirebaseAuth.instance.currentUser;
-
-    if (user == null) {
-      return const Center(child: Text('Usuário não autenticado.'));
-    }
-
-    return FutureBuilder<DocumentSnapshot>(
-      future:
-          FirebaseFirestore.instance.collection('users').doc(user.uid).get(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            backgroundColor: Colors.grey[300],
-            appBar: AppBar(
-              title: Text(
-                "Olá ${widget.nameUser.split(' ')[0]}",
-                style: TextStyle(
-                  fontSize: 30.sp,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-              automaticallyImplyLeading: false,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              actions: [
-                // Use o widget personalizado aqui
-
-                PointsCard(userId: user.uid),
-                myAppBarIcon(context, _notificationCount),
-                const SizedBox(width: 16),
-                // ButtonNotification(nameUser: userName, notificationCount: _notificationCount),
-                const SizedBox(width: 16),
-              ],
-            ),
-            body: const Center(child: CircularProgressIndicator()),
-          );
-        } else if (snapshot.hasError) {
-          return Scaffold(
-            backgroundColor: Colors.grey[300],
-            appBar: AppBar(
-              title: Text(
-                "Olá ${widget.nameUser.split(' ')[0]}",
-                style: TextStyle(
-                  fontSize: 30.sp,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-              automaticallyImplyLeading: false,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              actions: [
-                // Use o widget personalizado aqui
-
-                PointsCard(userId: user.uid),
-                myAppBarIcon(context, _notificationCount),
-                const SizedBox(width: 16),
-                // ButtonNotification(nameUser: userName, notificationCount: _notificationCount),
-                const SizedBox(width: 16),
-              ],
-            ),
-            body: Center(child: Text('Erro: ${snapshot.error}')),
-          );
-        } else if (!snapshot.hasData || !snapshot.data!.exists) {
-          return Scaffold(
-            backgroundColor: Colors.grey[300],
-            appBar: AppBar(
-              title: Text(
-                "Olá ${widget.nameUser.split(' ')[0]}",
-                style: TextStyle(
-                  fontSize: 30.sp,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-              automaticallyImplyLeading: false,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              actions: [
-                // Use o widget personalizado aqui
-
-                PointsCard(userId: user.uid),
-                myAppBarIcon(context, _notificationCount),
-                const SizedBox(width: 16),
-                // ButtonNotification(nameUser: userName, notificationCount: _notificationCount),
-                const SizedBox(width: 16),
-              ],
-            ),
-            body: const Center(child: Text('Nome do usuário não encontrado.')),
-          );
-        } else {
-          final userData = snapshot.data!.data() as Map<String, dynamic>;
-          final userName = userData['name'] as String? ?? widget.nameUser;
-
-          return Scaffold(
-            backgroundColor: Colors.grey[300],
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-            appBar: AppBar(
-              title: Text(
-                "Olá ${userName.split(' ')[0]}",
-                style: TextStyle(
-                  fontSize: 30.sp,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-              automaticallyImplyLeading: false,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              actions: [
-                // Use o widget personalizado aqui
-                PointsCard(userId: user.uid),
-                myAppBarIcon(context, _notificationCount),
-                const SizedBox(width: 15),
-                // ButtonNotification(nameUser: userName, notificationCount: _notificationCount),
-                // const SizedBox(width: 20),
-              ],
-            ),
-            body: SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Seja bem-vindo ao seu desafio.",
-                        style: TextStyle(
-                          fontSize: 22.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          fontFamily: 'Roboto',
-                        ),
-                      ),
-                      SizedBox(height: 15.h),
-                      Text(
-                        "Celebre suas vitórias e continue avançando!",
-                        style: regularTextStyle,
-                      ),
-                      SizedBox(height: 20.h),
-                      SizedBox(
-                        height: 220.h,
-                        child: PageView(
-                          scrollDirection: Axis.horizontal,
-                          controller: _controller,
-                          children: buildLevelCards(),
-                        ),
-                      ),
-                      SizedBox(height: 20.h),
-                      Center(
-                        child: SmoothPageIndicator(
-                          controller: _controller,
-                          count: weeksData.keys.length,
-                          effect: ExpandingDotsEffect(
-                            dotColor: Colors.grey,
-                            activeDotColor:
-                                const Color.fromARGB(255, 13, 61, 144),
-                            dotHeight: 8.h,
-                            dotWidth: 8.w,
-                            spacing: 10.w,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 30.h),
-                      Center(
-                        child: Text(
-                          "Próximas tarefas a serem liberadas",
-                          style: regularTextStyle,
-                        ),
-                      ),
-                      SizedBox(height: 20.h),
-                      Column(
-                        children: currentWeekThemes.isEmpty
-                            ? [
-                                const Center(
-                                    child: Text(
-                                        'Nenhum tema disponível para a próxima semana.'))
-                              ]
-                            : buildThemeButtons(),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            bottomNavigationBar: SubMenuWidget(nameUser: userName),
-          );
-        }
-      },
-    );
   }
 }

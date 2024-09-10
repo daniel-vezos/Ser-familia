@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Fundo transparente -->
-    <item android:drawable="@android:color/transparent"/>
-    
-    <!-- Ícone da notificação -->
     <item>
-        <bitmap
-            android:src="@drawable/notification_icon"  
-            android:gravity="center"                     
-            android:width="24dp"                         
-            android:height="24dp"/>                      
+        <bitmap android:gravity="fill" android:src="@drawable/background"/>
+    </item>
+    <item>
+        <bitmap android:gravity="center" android:src="@drawable/splash"/>
     </item>
 </layer-list>

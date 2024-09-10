@@ -16,7 +16,6 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Recebe as notificações passadas como argumento
     final arguments = ModalRoute.of(context)?.settings.arguments;
     if (arguments is List<RemoteMessage>) {
       setState(() {
