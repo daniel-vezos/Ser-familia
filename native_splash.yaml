@@ -1,5 +1,11 @@
+flutter:
+  assets:
+    - assets/backgrounds/splash.png  # Certifique-se de que este caminho esteja correto
+
 flutter_native_splash:
-  color: "#ffffff" 
-  image: assets/backgrounds/splash.png  
-  android: true  
-  ios: true  
+  color: "#00008B"  # Cor de fundo da splash screen
+  image: assets/backgrounds/splash.png  # Caminho para a imagem da splash screen
+  android: true  # Ativar para Android
+  ios: true  # Ativar para iOS
+  android_gravity: center  # (Opcional) Alinhar a imagem ao centro
+  ios_content_mode: center  # (Opcional) Alinhar a imagem ao centro no iOS

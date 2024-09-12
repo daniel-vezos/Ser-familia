@@ -1,3 +1,4 @@
+import 'dart:async'; // Adicionado para usar o Timer
 import 'dart:ui';
 import 'package:app_leitura/auth/auth_service.dart';
 import 'package:app_leitura/controller/privacity_page_controller.dart';
@@ -19,6 +20,7 @@ class _InitialPageState extends State<InitialPage> {
   final TextEditingController _matriculaController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final AuthService _auth = AuthService();
+  Timer? _timer; // Declarar o Timer
 
   @override
   void initState() {
@@ -26,12 +28,29 @@ class _InitialPageState extends State<InitialPage> {
     _checkIfUserIsLoggedIn();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // Cancelar o Timer, se estiver ativo
+    _matriculaController.dispose(); // Liberar o controlador do TextField
+    super.dispose();
+  }
+
   Future<void> _checkIfUserIsLoggedIn() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Usuário não está autenticado.')),
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          // Verificar se o widget ainda está montado
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Usuário não está autenticado.')),
+          );
+        }
+      });
       return;
     }
 
@@ -42,23 +61,27 @@ class _InitialPageState extends State<InitialPage> {
           userDoc.data()?['privacyAccepted'] as bool? ?? false;
 
       if (privacyAccepted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => InitialHome(
-              nameUser: user.displayName ?? 'Usuário',
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => InitialHome(
+                nameUser: user.displayName ?? 'Usuário',
+              ),
             ),
-          ),
-        );
+          );
+        }
       } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PrivacityPageController(
-              nameUser: user.displayName ?? 'Usuário',
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PrivacityPageController(
+                nameUser: user.displayName ?? 'Usuário',
+              ),
             ),
-          ),
-        );
+          );
+        }
       }
     } catch (e) {
       print('Erro ao verificar o status da política de privacidade: $e');
@@ -69,10 +92,14 @@ class _InitialPageState extends State<InitialPage> {
     final matricula = _matriculaController.text;
 
     if (matricula.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Por favor, preencha o campo com sua matrícula')),
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text('Por favor, preencha o campo com sua matrícula')),
+          );
+        }
+      });
       return;
     }
 
@@ -81,32 +108,46 @@ class _InitialPageState extends State<InitialPage> {
           await _firestore.collection('matriculas').doc(matricula).get();
 
       if (doc.exists) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => InitialHome(
-              nameUser: matricula,
+        if (mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => InitialHome(
+                nameUser: matricula,
+              ),
             ),
-          ),
-        );
+          );
+        }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Matrícula não encontrada')),
-        );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Matrícula não encontrada')),
+            );
+          }
+        });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro: $e')),
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Erro: $e')),
+          );
+        }
+      });
     }
   }
 
   Future<void> _showLoginSuccessDialog(String userName) async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Usuário não autenticado.')),
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Usuário não autenticado.')),
+          );
+        }
+      });
       return;
     }
 
@@ -116,42 +157,48 @@ class _InitialPageState extends State<InitialPage> {
           userDoc.data()?['privacyAccepted'] as bool? ?? false;
 
       if (privacyAccepted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => InitialHome(
-              nameUser: userName,
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => InitialHome(
+                nameUser: userName,
+              ),
             ),
-          ),
-        );
+          );
+        }
       } else {
-        return showDialog<void>(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Bem-vindo!'),
-              content: const Text(
-                  'Antes de começar, por favor, leia nossa política de privacidade.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PrivacityPageController(
-                          nameUser: userName,
-                        ),
-                      ),
-                    );
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
+        if (mounted) {
+          return showDialog<void>(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Bem-vindo!'),
+                content: const Text(
+                    'Antes de começar, por favor, leia nossa política de privacidade.'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      if (mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PrivacityPageController(
+                              nameUser: userName,
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
       }
     } catch (e) {
       print('Erro ao verificar o status da política de privacidade: $e');
@@ -225,23 +272,31 @@ class _InitialPageState extends State<InitialPage> {
                   _isLoading = true;
                 });
                 User? user = await _auth.loginWithGoogle();
-                setState(() {
-                  _isLoading = false;
-                });
+                if (mounted) {
+                  setState(() {
+                    _isLoading = false;
+                  });
+                }
                 if (user != null) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => InitialHome(
-                        nameUser: user.displayName ?? 'Usuário',
+                  if (mounted) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => InitialHome(
+                          nameUser: user.displayName ?? 'Usuário',
+                        ),
                       ),
-                    ),
-                  );
-                  _showLoginSuccessDialog(user.displayName ?? 'Usuário');
+                    );
+                    _showLoginSuccessDialog(user.displayName ?? 'Usuário');
+                  }
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Falha no login')),
-                  );
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Falha no login')),
+                      );
+                    }
+                  });
                 }
               },
               title: 'Conectar com Google',

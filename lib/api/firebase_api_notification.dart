@@ -21,33 +21,44 @@ class FirebaseApi {
   // Lista para armazenar as notificações recebidas
   final List<RemoteMessage> _notifications = [];
 
+  // Contador de notificações não vistas
+  int _unreadNotificationCount = 0;
+
+  // Método para lidar com mensagens em background
   Future<void> handleBackgroundMessage(RemoteMessage message) async {
     // Armazena a notificação recebida em background
     _notifications.add(message);
+    _unreadNotificationCount++;
   }
 
+  // Método para lidar com mensagens quando o usuário clica na notificação
   void handleMessage(RemoteMessage? message) {
     if (message == null) return;
 
     // Adiciona a notificação à lista
     _notifications.add(message);
+    _unreadNotificationCount++; // Incrementa o contador de notificações não vistas
 
-    // Atualiza a lista de notificações e navega para a página de notificações
+    // Redireciona apenas quando o usuário clica na notificação
     if (navigatorKey.currentState?.mounted ?? false) {
-      navigatorKey.currentState?.pushNamed(
+      navigatorKey.currentState
+          ?.pushNamed(
         NotificationPage.route,
         arguments: _notifications, // Passa a lista atualizada de notificações
-      ).then((_) {
-        // Limpa a lista de notificações após visualização
-        _notifications.clear();
+      )
+          .then((_) {
+        // Limpa as notificações após visualização
+        removeNotificationsAfterViewed(); // Remove notificações visualizadas e zera o contador
       });
     } else {
       print('Navigator is not mounted or not available');
     }
   }
 
+  // Método para inicializar notificações push
   Future<void> initPushNotifications() async {
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
@@ -74,20 +85,14 @@ class FirebaseApi {
 
       // Adiciona a notificação à lista
       _notifications.add(message);
+      _unreadNotificationCount++; // Incrementa o contador de notificações não vistas
 
-      // Navega para NotificationPage se o aplicativo estiver aberto
-      if (navigatorKey.currentState?.mounted ?? false) {
-        navigatorKey.currentState?.pushNamed(
-          NotificationPage.route,
-          arguments: _notifications, // Passa a lista atualizada de notificações
-        ).then((_) {
-          // Limpa a lista de notificações após visualização
-          _notifications.clear();
-        });
-      }
+      print(
+          'Notificação recebida em primeiro plano: ${message.notification?.title}');
     });
   }
 
+  // Método para inicializar notificações locais
   Future<void> initLocalNotifications() async {
     const iOS = DarwinInitializationSettings();
     const android = AndroidInitializationSettings('ic_launcher');
@@ -108,10 +113,12 @@ class FirebaseApi {
     await platform?.createNotificationChannel(_androidChannel);
   }
 
+  // Método para obter o token do dispositivo
   Future<String?> getDeviceToken() async {
     return await _firebaseMessaging.getToken();
   }
 
+  // Método para inicializar notificações
   Future<void> initNotifications() async {
     await FirebaseMessaging.instance.requestPermission();
     final fCMToken = await _firebaseMessaging.getToken();
@@ -124,5 +131,23 @@ class FirebaseApi {
   }
 
   // Método para obter a lista de notificações
-  List<RemoteMessage> getNotifications() => _notifications;
+  List<RemoteMessage> getNotifications() {
+    return _notifications;
+  }
+
+  // Método para zerar o contador de notificações não vistas
+  void clearUnreadNotifications() {
+    _unreadNotificationCount = 0;
+  }
+
+  // Método para remover notificações visualizadas
+  void removeNotificationsAfterViewed() {
+    _notifications.clear(); // Limpa todas as notificações após visualização
+    clearUnreadNotifications(); // Zera o contador de notificações não vistas
+  }
+
+  // Método para obter o contador de notificações não vistas
+  int getUnreadNotificationCount() {
+    return _unreadNotificationCount;
+  }
 }

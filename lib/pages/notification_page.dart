@@ -30,7 +30,7 @@ class _NotificationPageState extends State<NotificationPage> {
       appBar: AppBar(
         backgroundColor: Colors.grey[300],
         title: const Text(
-          'Notificações',
+          'Notificaçõesss',
           style: TextStyle(color: Colors.black),
         ),
       ),
