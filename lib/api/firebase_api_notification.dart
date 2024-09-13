@@ -5,6 +5,14 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FirebaseApi {
+  static final FirebaseApi _instance = FirebaseApi._internal();
+
+  factory FirebaseApi() {
+    return _instance;
+  }
+
+  FirebaseApi._internal();
+
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   final AndroidNotificationChannel _androidChannel =
@@ -17,45 +25,38 @@ class FirebaseApi {
 
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
-
-  // Lista para armazenar as notificações recebidas
   final List<RemoteMessage> _notifications = [];
-
-  // Contador de notificações não vistas
   int _unreadNotificationCount = 0;
 
-  // Método para lidar com mensagens em background
   Future<void> handleBackgroundMessage(RemoteMessage message) async {
-    // Armazena a notificação recebida em background
     _notifications.add(message);
     _unreadNotificationCount++;
+    print('Mensagem recebida em background: ${message.messageId}');
   }
 
-  // Método para lidar com mensagens quando o usuário clica na notificação
   void handleMessage(RemoteMessage? message) {
     if (message == null) return;
 
-    // Adiciona a notificação à lista
     _notifications.add(message);
-    _unreadNotificationCount++; // Incrementa o contador de notificações não vistas
+    _unreadNotificationCount++;
+    print('Mensagem recebida ao clicar na notificação: ${message.messageId}');
 
-    // Redireciona apenas quando o usuário clica na notificação
     if (navigatorKey.currentState?.mounted ?? false) {
+      print('Navegando para NotificationPage com argumentos: $_notifications');
       navigatorKey.currentState
           ?.pushNamed(
         NotificationPage.route,
-        arguments: _notifications, // Passa a lista atualizada de notificações
+        arguments: List.from(_notifications),
       )
           .then((_) {
-        // Limpa as notificações após visualização
-        removeNotificationsAfterViewed(); // Remove notificações visualizadas e zera o contador
+        removeNotificationsAfterViewed();
+        print('Notificações limpas após visualização.');
       });
     } else {
       print('Navigator is not mounted or not available');
     }
   }
 
-  // Método para inicializar notificações push
   Future<void> initPushNotifications() async {
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
@@ -80,19 +81,16 @@ class FirebaseApi {
             icon: 'ic_launcher',
           ),
         ),
-        payload: jsonEncode(message.toMap()), // Armazena o payload
+        payload: jsonEncode(message.toMap()),
       );
 
-      // Adiciona a notificação à lista
       _notifications.add(message);
-      _unreadNotificationCount++; // Incrementa o contador de notificações não vistas
-
+      _unreadNotificationCount++;
       print(
           'Notificação recebida em primeiro plano: ${message.notification?.title}');
     });
   }
 
-  // Método para inicializar notificações locais
   Future<void> initLocalNotifications() async {
     const iOS = DarwinInitializationSettings();
     const android = AndroidInitializationSettings('ic_launcher');
@@ -113,12 +111,6 @@ class FirebaseApi {
     await platform?.createNotificationChannel(_androidChannel);
   }
 
-  // Método para obter o token do dispositivo
-  Future<String?> getDeviceToken() async {
-    return await _firebaseMessaging.getToken();
-  }
-
-  // Método para inicializar notificações
   Future<void> initNotifications() async {
     await FirebaseMessaging.instance.requestPermission();
     final fCMToken = await _firebaseMessaging.getToken();
@@ -130,24 +122,23 @@ class FirebaseApi {
     await initLocalNotifications();
   }
 
-  // Método para obter a lista de notificações
   List<RemoteMessage> getNotifications() {
+    print('Obtendo notificações: $_notifications');
     return _notifications;
   }
 
-  // Método para zerar o contador de notificações não vistas
   void clearUnreadNotifications() {
     _unreadNotificationCount = 0;
   }
 
-  // Método para remover notificações visualizadas
   void removeNotificationsAfterViewed() {
-    _notifications.clear(); // Limpa todas as notificações após visualização
-    clearUnreadNotifications(); // Zera o contador de notificações não vistas
+    _notifications.clear();
+    clearUnreadNotifications();
+    print('Notificações removidas após visualização.');
   }
 
-  // Método para obter o contador de notificações não vistas
   int getUnreadNotificationCount() {
+    print('Contador de notificações não vistas: $_unreadNotificationCount');
     return _unreadNotificationCount;
   }
 }

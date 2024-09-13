@@ -16,30 +16,34 @@ Widget myAppBarIcon(BuildContext context, int counter) {
               size: 25,
             ),
             onPressed: () {
-              Navigator.pushNamed(context, '/notificationpage');
+              Navigator.pushNamed(context, '/notificationpage').then((_) {
+                // Zera a contagem de notificações quando o usuário volta da página de notificações
+                counter = 0;
+              });
             },
           ),
         ),
-        Container(
-          width: 40,
-          height: 60,
-          alignment: Alignment.topRight,
-          margin: const EdgeInsets.only(top: 5, right: 5),
-          child: Container(
-            width: 15,
-            height: 19,
-            decoration: BoxDecoration(
+        // Exibe o contador apenas se for maior que 0
+        if (counter > 0)
+          Positioned(
+            top: 5,
+            right: 5,
+            child: Container(
+              width: 15,
+              height: 19,
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: const Color(0xffc32c37),
-                border: Border.all(color: Colors.white, width: 1)),
-            child: Center(
-              child: Text(
-                counter.toString(),
-                style: const TextStyle(fontSize: 10, color: Colors.white),
+                border: Border.all(color: Colors.white, width: 1),
+              ),
+              child: Center(
+                child: Text(
+                  counter.toString(),
+                  style: const TextStyle(fontSize: 10, color: Colors.white),
+                ),
               ),
             ),
           ),
-        ),
       ],
     ),
   );

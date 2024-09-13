@@ -20,10 +20,10 @@ class InitialHome extends StatefulWidget {
   const InitialHome({super.key, required this.nameUser});
 
   @override
-  InitialHomeState createState() => InitialHomeState();
+  _InitialHomeState createState() => _InitialHomeState(); // Corrigido aqui
 }
 
-class InitialHomeState extends State<InitialHome> {
+class _InitialHomeState extends State<InitialHome> { // Corrigido aqui
   final PageController _controller = PageController();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   Map<String, dynamic> weeksData = {};
@@ -36,11 +36,19 @@ class InitialHomeState extends State<InitialHome> {
     _initializeData();
   }
 
+  @override
+  void dispose() {
+    // Libera o PageController quando não for mais necessário
+    _controller.dispose();
+    super.dispose();
+  }
+
   void _initializeData() {
     _loadWeeksData();
     _configureFirebaseMessaging();
   }
 
+  // Configura o Firebase Messaging para receber notificações
   Future<void> _configureFirebaseMessaging() async {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       setState(() => _notificationCount++);
@@ -56,10 +64,10 @@ class InitialHomeState extends State<InitialHome> {
     }
   }
 
+  // Carrega dados das semanas do Firestore
   Future<void> _loadWeeksData() async {
     try {
-      final snapshot =
-          await FirebaseFirestore.instance.collection('levels').get();
+      final snapshot = await FirebaseFirestore.instance.collection('levels').get();
       setState(() {
         weeksData = {for (var doc in snapshot.docs) doc.id: doc.data()};
       });
@@ -69,6 +77,7 @@ class InitialHomeState extends State<InitialHome> {
     }
   }
 
+  // Busca a data de início da semana no Firestore
   Future<DateTime?> _getStartDateFromFirestore() async {
     try {
       final startDateDoc = await FirebaseFirestore.instance
@@ -89,6 +98,7 @@ class InitialHomeState extends State<InitialHome> {
     return null;
   }
 
+  // Carrega os temas da próxima semana
   Future<void> _loadNextWeekThemes() async {
     try {
       final startDate = await _getStartDateFromFirestore();
@@ -98,10 +108,8 @@ class InitialHomeState extends State<InitialHome> {
       }
 
       DateTime today = DateTime.now();
-      DateTime startOfCurrentWeek =
-          startDate.subtract(Duration(days: startDate.weekday - 1));
-      DateTime startOfNextWeek =
-          startOfCurrentWeek.add(const Duration(days: 7));
+      DateTime startOfCurrentWeek = startDate.subtract(Duration(days: startDate.weekday - 1));
+      DateTime startOfNextWeek = startOfCurrentWeek.add(const Duration(days: 7));
 
       if (today.isAfter(startOfNextWeek.subtract(const Duration(days: 1)))) {
         startOfNextWeek = startOfNextWeek.add(const Duration(days: 7));
@@ -157,16 +165,15 @@ class InitialHomeState extends State<InitialHome> {
     }
   }
 
+  // Constrói o card de nível
   Widget _buildLevelCard(String levelName, int levelNumber) {
-    bool clickable = true; // placeholder for isCardClickable logic
-    String backgroundImagePath =
-        'assets/backgrounds/trofeu.png'; // Definir valor padrão
+    bool clickable = true; // Logica placeholder para definir se é clicável
+    String backgroundImagePath = 'assets/backgrounds/trofeu.png'; 
 
     return FutureBuilder(
       future: _fetchBackgroundImagePath(levelName),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
           backgroundImagePath = snapshot.data as String;
         }
         return MyCard(
@@ -179,12 +186,10 @@ class InitialHomeState extends State<InitialHome> {
     );
   }
 
+  // Busca o caminho da imagem de fundo para um nível específico
   Future<String> _fetchBackgroundImagePath(String levelName) async {
     try {
-      final levelDoc = await FirebaseFirestore.instance
-          .collection('levels')
-          .doc(levelName)
-          .get();
+      final levelDoc = await FirebaseFirestore.instance.collection('levels').doc(levelName).get();
       if (levelDoc.exists) {
         final levelData = levelDoc.data();
         return levelData != null && levelData.containsKey('backgroundLevel')
@@ -197,6 +202,7 @@ class InitialHomeState extends State<InitialHome> {
     return "assets/backgrounds/trofeu.png";
   }
 
+  // Navega para a página de semanas
   void _navigateToWeeksPage(String levelName) {
     Navigator.push(
       context,
@@ -212,8 +218,7 @@ class InitialHomeState extends State<InitialHome> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        designSize: const Size(375, 820), minTextAdapt: true);
+    ScreenUtil.init(context, designSize: const Size(375, 820), minTextAdapt: true);
 
     final TextStyle regularTextStyle = TextStyle(
       fontSize: 18.sp,
@@ -229,8 +234,7 @@ class InitialHomeState extends State<InitialHome> {
     }
 
     return FutureBuilder<DocumentSnapshot>(
-      future:
-          FirebaseFirestore.instance.collection('users').doc(user.uid).get(),
+      future: FirebaseFirestore.instance.collection('users').doc(user.uid).get(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _buildLoadingScreen();
@@ -297,7 +301,37 @@ class InitialHomeState extends State<InitialHome> {
       elevation: 0,
       actions: [
         PointsCard(userId: FirebaseAuth.instance.currentUser?.uid ?? ''),
-        myAppBarIcon(context, _notificationCount),
+        IconButton(
+          icon: const Icon(
+            Icons.notifications,
+            color: Colors.black,
+            size: 25,
+          ),
+          onPressed: () {
+            // Navega para a página de notificações e reseta a contagem ao retornar
+            Navigator.pushNamed(context, '/notificationpage').then((_) {
+              setState(() {
+                _notificationCount = 0; // Reseta a contagem de notificações
+              });
+            });
+          },
+        ),
+        if (_notificationCount > 0)
+          Container(
+            width: 15,
+            height: 19,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: const Color(0xffc32c37),
+              border: Border.all(color: Colors.white, width: 1),
+            ),
+            child: Center(
+              child: Text(
+                _notificationCount.toString(),
+                style: const TextStyle(fontSize: 10, color: Colors.white),
+              ),
+            ),
+          ),
         const SizedBox(width: 16),
       ],
     );
@@ -357,8 +391,7 @@ class InitialHomeState extends State<InitialHome> {
             scrollDirection: Axis.horizontal,
             controller: _controller,
             children: weeksData.keys
-                .map((level) =>
-                    _buildLevelCard(level, int.parse(level.split(' ')[1])))
+                .map((level) => _buildLevelCard(level, int.parse(level.split(' ')[1])))
                 .toList(),
           ),
         ),

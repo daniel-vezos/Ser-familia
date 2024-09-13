@@ -8,12 +8,17 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicialização do Firebase
   await Firebase.initializeApp();
+  print('Firebase inicializado com sucesso.');
 
   // Inicialize FirebaseApi e chame initNotifications
   final firebaseApi = FirebaseApi();
   await firebaseApi.initNotifications();
+  print('Notificações do Firebase inicializadas.');
 
+  // Inicialização do Awesome Notifications
   await AwesomeNotifications().initialize(
     null,
     [
@@ -31,11 +36,14 @@ Future<void> main() async {
       )
     ],
   );
+  print('Awesome Notifications inicializado.');
 
+  // Verificação de permissão para enviar notificações
   bool isAllowedToSendNotification =
       await AwesomeNotifications().isNotificationAllowed();
   if (!isAllowedToSendNotification) {
-    AwesomeNotifications().requestPermissionToSendNotifications();
+    await AwesomeNotifications().requestPermissionToSendNotifications();
+    print('Permissão para enviar notificações solicitada.');
   }
 
   runApp(const MyApp());
@@ -52,13 +60,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      navigatorKey: navigatorKey, // Use the navigatorKey here
+      navigatorKey:
+          navigatorKey, // Chave do navegador para manipulação da navegação
       home: const InitialPage(),
       routes: {
         NotificationPage.route: (context) => const NotificationPage(),
         // Outras rotas, se necessário
       },
-       initialRoute: '/',
+      initialRoute: '/',
     );
   }
 }
